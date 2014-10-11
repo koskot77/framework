@@ -100,8 +100,7 @@ bool AppFramework::verbose(const char *target, const char *action){
         return false;
 }
 
-//const char* AppFramework::getParameter(const char *modparname) const {
-char* AppFramework::getParameter(const char *modparname) {
+const char* AppFramework::getParameter(const char *modparname) const {
         string argument(modparname);
         string modname; const char *parname; size_t pos;
         if( ( pos = argument.find("::") ) != string::npos ){
@@ -114,13 +113,11 @@ char* AppFramework::getParameter(const char *modparname) {
         unordered_map<string,AppModule*>::const_iterator iter = hashOfModules.find(modname);
         if( iter == hashOfModules.end() ){
                 const_cast<AppOStream&>(cerr)<<"Undefined module: <"<<modname<<">"<<endl;
-                static const char *undef = "undef";
-                return const_cast<char*>(undef);
+                return "undef";
         }
         static string temporal;
         temporal = iter->second->getParameter(parname);
-//        return temporal.c_str();
-        return const_cast<char*>(temporal.c_str());
+        return temporal.c_str();
 }
 
 bool AppFramework::activate(const char *modname){

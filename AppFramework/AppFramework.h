@@ -29,8 +29,7 @@ private:
 public:
 	void  modList (void);
 	bool  verbose (const char *target, const char *action);
-//	const char* getParameter(const char *modparname) const ;
-	char* getParameter(const char *modparname);
+	const char* getParameter(const char *modparname) const ;
 	bool  activate(const char *modname);
 	bool  disable (const char *modname);
 	bool  modify  (const char *modparname, const char *parvalue);

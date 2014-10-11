@@ -18,7 +18,7 @@ F_LIB_FLAGS   :=
 # No dependencies on 3rd party libraries
 EXTERNAL_LIBS :=
 
-# Prefer static (.a) over shared (.so) library
+# Prefer static (.a) over shared (.so) library?
 LIBTYPE := dynamic
 
 # Add extra dependencies that are not figured automatically (form: PACKAGE_NAME/FILE_NAME)
