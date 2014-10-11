@@ -1,10 +1,10 @@
 # Dependencies 
 USING :=
 
-# No specific files to compile 
+# Specific files to compile 
 LIB_SOURCES := RegEx.cc CompiledFormula.cc Value_t.cc
 
-# Compile everything from current directory
+# Do not compile everything from the current directory
 LIB_SOURCES_DIR :=
 
 # Compiller's flags
@@ -18,7 +18,7 @@ F_LIB_FLAGS   :=
 # No dependencies on 3rd party libraries
 EXTERNAL_LIBS :=
 
-# Prefer static (.a) over shared (.so) library?
+# Prefer static (.a) over shared (.so) library
 LIBTYPE   := static
 
 # Add extra dependencies that are not figured automatically (form: PACKAGE_NAME/FILE_NAME)
