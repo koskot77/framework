@@ -1,7 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //
-// Value_t - is a some kind of ScalarValue in perl. Some times it is convinient do not
-// determ integral type values from floating point.
+// Value_t - is an analog ScalarValue in perl, which does not defferentiate integral and floating types.
 //
 ///////////////////////////////////////////////////////////////////////////////////////
 #ifndef Value_t_h

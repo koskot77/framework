@@ -16,8 +16,8 @@ public:
 class CompiledFormula{
 private:
         string formula_;
-        list<Action_t>  fChain;     // The chain of actions, which must be performed in method Eval
-        unordered_map< string, Value_t, hash<string> > fData;  // Container of data
+        list<Action_t>  fChain;     // The chain of actions that is triggered by calling Eval
+        unordered_map< string, Value_t, hash<string> > fData;  // Data container
 
 public:
         Value_t eval(void) throw(UsingUndefValue,DoubleInsteadInteger);

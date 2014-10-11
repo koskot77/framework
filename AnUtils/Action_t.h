@@ -1,7 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////////////
 //
-// It is auxilary class realize unit, which performing operations, with code 'action',
-// to they arguments 'arg1' and 'arg2' and place result to 'result'.
+// Auxilary class defining an operation to be performed over 'arg1' and 'arg2'
 //
 ///////////////////////////////////////////////////////////////////////////////////////
 #ifndef Action_t_h
@@ -11,11 +10,11 @@
 
 class Action_t{
 private:
-        short          action;        // The code of operations must be performed with arg1 and arg2
+        short          action;        // The code of operation
         const Value_t *arg1;          // First argument
         const Value_t *arg2;          // Second argument
         Value_t       *result;        // Return value
-        short          cleanup_code;  // We always use such rule: where object was created - there it must be destroyed
+        short          cleanup_code;  // Delete helper
 
 public:
         void eval(void) throw (UsingUndefValue,DoubleInsteadInteger) {

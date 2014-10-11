@@ -6,20 +6,20 @@ using namespace std;
 #include "RegEx.h"
 ///////////////////////////////////////////////////////////////////////////////////////
 //
-// The basic operations with that elements are support by this class. During the
-// construction of object you define the string to be compiled and compute by calling
-// Eval() method. For example such string "valie1+value2*3 || (value3-2)*value4!=5"
-// is valid if you set the container, with valie1, value2, value3 and value4 parameters.
+// On construction the provided string argument is compiled into a chain of actions.
+// By the time of calling Eval every element of the formula has to be initialized.
+// For example formula initialized with string "valie1+value2*3 || (value3-2)*value4!=5"
+// can be Eval'ed once valie1, value2, value3 and value4 parameters are set.
 //
 ///////////////////////////////////////////////////////////////////////////////////////
 
 CompiledFormula& CompiledFormula::operator=(const string& formula) throw(CompileError) {
-//  Creating a chain of actions
+//  Create a chain of actions
         string arg(formula);
         formula_ = formula;
         fChain.clear();
 
-//  Finding finction calls
+//  Find finction calls
 //        arg = RegExSubstitude("(\\w+ *\\(-?\\+?\\w+\\.?\\w*e?\\+?-?\\w*\\))", "($1)" , arg.c_str() );
 
 //  Set up prioritys by sequention
@@ -43,7 +43,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
         operators.push_back("&&");
         operators.push_back("||");
 
-//  Make brackets in expression to set up operators priority
+//  Use brackets in formula guiding priority
         list<string>::iterator op = operators.begin();
         while(op != operators.end()){
                 size_t pos = 0;
@@ -79,8 +79,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                 op++;
         }
 
-//  In the expression present brackets, wich set priority of some operation
-//  Now we serialize operations mathed by brackets into the brackets container
+//  Serialize operations enclosed in brackets into the brackets' container
         list<string> brackets;
         size_t bra,ket,index=1;
         while( ( ket = arg.find(")") ) != string::npos ){
@@ -117,7 +116,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                 }
 
                 brackets.push_back(arg.substr(bra+1,ket-bra-1));
-                char name[100]; sprintf(name,"$%ld",index); index++; // std ostrstream is'n work here :0(
+                char name[100]; sprintf(name,"$%ld",index); index++; // std ostrstream does'n work here :0(
                 arg.replace(bra,ket-bra+1,name);
         }
 
@@ -157,7 +156,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                         val2 = &val;
                 }
 
-                if(operand1[0] == '$'){   // first operand is already obtained before
+                if(operand1[0] == '$'){   // first operand is already found earlier
                         list<Action_t>::iterator iter = fChain.begin();
                         size_t index = atoi(operand1.c_str()+1);
                         if(index == 0) throw CompileError( string("Can't interpret:").append(operand1).c_str() );
@@ -165,7 +164,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                         if(iter == fChain.end()) throw CompileError( string("No such label:").append(operand1).c_str() );
                         val1 = iter->getResult();
                 }
-                if(operand2[0] == '$'){   // second operand is already obtained before
+                if(operand2[0] == '$'){   // second operand is already found earlier
                         list<Action_t>::iterator iter = fChain.begin();
                         size_t index = atoi(operand2.c_str()+1);
                         if(index == 0) throw CompileError( string("Can't interpret:").append(operand2).c_str() );
@@ -207,7 +206,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
 }
 
 CompiledFormula::CompiledFormula(const CompiledFormula &cf) throw() :formula_(cf.formula_),fData(cf.fData){
-//  If we need copy this object we must provide correct treatment with the list of actions
+//  Coping this object requires accurate treatment of the list of actions
         list<Action_t>::const_iterator action = cf.fChain.begin();
         while(action != cf.fChain.end()){
                 short          act    = action->getAction();
@@ -243,7 +242,7 @@ CompiledFormula::CompiledFormula(const CompiledFormula &cf) throw() :formula_(cf
 }
 
 CompiledFormula& CompiledFormula::operator=(const CompiledFormula &cf) throw() {
-//  If we need copy this object we must provide correct treatment with the list of actions
+//  Coping this object requires accurate treatment of the list of actions
         fChain.clear(); formula_ = cf.formula_; fData = cf.fData;
         list<Action_t>::const_iterator action = cf.fChain.begin();
         while(action != cf.fChain.end()){
