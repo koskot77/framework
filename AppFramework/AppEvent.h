@@ -13,7 +13,7 @@ private:
 
 public:
         const char*    name(void) const { return name_.c_str(); }
-        virtual bool   storable(void) const = 0;
+        virtual bool   serializable(void) const = 0;
 
         virtual size_t write(ostream& buff) const = 0;
         virtual void   read (istream& data) = 0;
@@ -41,7 +41,7 @@ private:
         Reader reader;
 
 public:
-        bool storable(void) const { return writer; }
+        bool serializable(void) const { return writer; }
 
         size_t write(ostream& buff) const { if(writer) return (AppData<T>::obj.*writer)(buff); return 0; }
         void   read (istream& data)       { if(reader) return (AppData<T>::obj.*reader)(data); return  ; }
@@ -59,7 +59,7 @@ private:
         Reader reader;
 
 public:
-        bool storable(void) const { return writer; }
+        bool serializable(void) const { return writer; }
 
         size_t write(ostream& buff) const { if(writer) return writer(AppData<T>::obj,buff); return 0; }
         void   read (istream& data)       { if(reader) return reader(AppData<T>::obj,data); return  ; }
@@ -71,7 +71,7 @@ public:
 
 template<> class AppData2<char>: public AppDataWrapper, public AppData<char> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -83,7 +83,7 @@ public:
 
 template<> class AppData2<unsigned char>: public AppDataWrapper, public AppData<unsigned char> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -95,7 +95,7 @@ public:
 
 template<> class AppData2<signed char>: public AppDataWrapper, public AppData<signed char> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -107,7 +107,7 @@ public:
 
 template<> class AppData2<int>: public AppDataWrapper, public AppData<int> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -119,7 +119,7 @@ public:
 
 template<> class AppData2<unsigned int>: public AppDataWrapper, public AppData<unsigned int> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -131,7 +131,7 @@ public:
 
 template<> class AppData2<long>: public AppDataWrapper, public AppData<long> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -143,7 +143,7 @@ public:
 
 template<> class AppData2<unsigned long>: public AppDataWrapper, public AppData<unsigned long> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -156,7 +156,7 @@ public:
 #if defined(__GNUC__)
 template<> class AppData2<long long>: public AppDataWrapper, public AppData<long long> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -168,7 +168,7 @@ public:
 
 template<> class AppData2<unsigned long long>: public AppDataWrapper, public AppData<unsigned long long> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -181,7 +181,7 @@ public:
 
 template<> class AppData2<short>: public AppDataWrapper, public AppData<short> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -193,7 +193,7 @@ public:
 
 template<> class AppData2<unsigned short>: public AppDataWrapper, public AppData<unsigned short> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -206,7 +206,7 @@ public:
 #if _G_HAVE_BOOL
 template<> class AppData2<bool>: public AppDataWrapper, public AppData<bool> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -219,7 +219,7 @@ public:
 
 template<> class AppData2<double>: public AppDataWrapper, public AppData<double> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -231,7 +231,7 @@ public:
 
 template<> class AppData2<float>: public AppDataWrapper, public AppData<float> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -244,7 +244,7 @@ public:
 //#if _G_HAVE_LONG_DOUBLE_IO //??????
 template<> class AppData2<long double>: public AppDataWrapper, public AppData<long double> {
 public:
-        bool storable(void) const { return true; }
+        bool serializable(void) const { return true; }
 
         size_t write(ostream& buff) const { buff.write((const char*)&obj,sizeof(obj)); return sizeof(obj); }
         void   read (istream& data)       { data.read (      (char*)&obj,sizeof(obj)); }
@@ -313,7 +313,7 @@ public:
                 if( iter != dictionary.end() ) return true;
                 AppDataWrapper *ptr = new AppData2<T>(name, obj);
                 dictionary[name] = ptr;
-                if( ptr->storable() ) storesequence.push_back(ptr);
+                if( ptr->serializable() ) storesequence.push_back(ptr);
                 return false;
         }
 

@@ -41,9 +41,9 @@ void AppEvent::save(string names){ // Mark objects with names from list 'names' 
                 pos = names.find(":");
                 string item = names.substr(prev,pos-prev);
                 unordered_map< string, AppDataWrapper* >::iterator iter = dictionary.find(item);
-                if( iter != dictionary.end() && iter->second->storable() ) storesequence.push_back( iter->second );
+                if( iter != dictionary.end() && iter->second->serializable() ) storesequence.push_back( iter->second );
                 if( iter == dictionary.end() ) cerr<<item<<" not found"<<endl;
-                if(!iter->second->storable() ) cerr<<item<<" is transistent"<<endl;
+                if(!iter->second->serializable() ) cerr<<item<<" is transistent"<<endl;
                 if( pos == string::npos ) break;
                 prev = pos+1;
         }
