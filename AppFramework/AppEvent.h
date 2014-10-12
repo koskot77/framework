@@ -394,7 +394,7 @@ public:
 
         pair<const char*,size_t> getRaw(const char *name);
 
-        void     save (string names=""); // Mark objects with names from list 'names' (separated by ":" delameter) for storing
+        void     save (string names=""); // Mark objects with names from list 'names' (separated by ":" delimeter) for serializing
         ostream& write(ostream& ostr);
         istream& read (istream& istr);
 
