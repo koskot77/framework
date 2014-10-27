@@ -19,18 +19,18 @@ private:
         list< AppModule* >                                      accessibleModules;
 
         friend class AppParameter_t;
-        void   addParameter   (AppParameter_t *par);
-        void   removeParameter(AppParameter_t *par);
-
-        friend class AppFramework;
-        string getParameter   (const char* parname=0) const;
-        void   setParameter   (const char* parname,const char* value);
+        virtual void addParameter   (AppParameter_t *par);
+        virtual void removeParameter(AppParameter_t *par);
 
 protected:
         AppOStream cout, clog, cerr;
 
         const char* name        (void) const { return name_;        }
         const char* description (void) const { return description_; }
+
+        friend class AppFramework;
+        virtual string getParameter (const char* parname=0) const;
+        virtual void   setParameter (const char* parname,const char* value);
 
         virtual AppResult beginJob(AppEvent& event) = 0;
         virtual AppResult beginRun(AppEvent& event) = 0;
