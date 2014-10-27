@@ -1,0 +1,31 @@
+#ifndef InputModule_h
+#define InputModule_h
+#include "AppFramework/AppParameter.h"
+#include "AppFramework/AppInputModule.h"
+#include "AppFramework/AppModule.h"
+#include "AppFramework/AppResult.h"
+#include "AppFramework/AppEvent.h"
+#include <string>
+#include <vector>
+
+class InputModule : public AppInputModule {
+private:
+    AppParameter<string> path; // a colon-separated list of wildcards; allows recursion via $path 
+
+    AppResult beginJob(AppEvent& event);
+    AppResult beginRun(AppEvent& event){ return AppResult(); }
+    AppResult event   (AppEvent& event){ return AppResult(); }
+    AppResult endRun  (AppEvent& event){ return AppResult(); }
+    AppResult endJob  (AppEvent& event){ return AppResult(); }
+
+    void setParameter(const char* parname, const char* value);
+
+    vector<string> inputFiles;
+
+public:
+
+    InputModule(const char *nm, const char *descr) : AppInputModule(nm,descr), path(*this,"path", ""){}
+    virtual ~InputModule(void){}
+};
+
+#endif
