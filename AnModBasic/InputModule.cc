@@ -18,8 +18,11 @@ void InputModule::setParameter(const char* parname, const char* value){
     }
 }
 
+#include<TSystem.h>
+#include<TROOT.h>
 AppResult InputModule::beginJob(AppEvent& event){
     stringstream returnMessage;
+    inputFiles.clear();
 
     size_t begin = 0, end = string::npos;
     while( true ){
@@ -49,5 +52,27 @@ AppResult InputModule::beginJob(AppEvent& event){
     }
 
     returnMessage<<"Total "<<inputFiles.size()<<" files to process"<<endl;
+
+    gSystem->Load("libFWCoreFWLite.so");
+    gROOT->ProcessLine("AutoLibraryLoader::enable()");
+    gSystem->Load("libDataFormatsFWLite.so");
+    gSystem->Load("libDataFormatsPatCandidates.so");
+
+    chain = new TChain("Events");
+    for(vector<string>::const_iterator file = inputFiles.begin(); file != inputFiles.end(); file++)
+        chain->AddFile( file->c_str() );
+
+    event.put("Events",(TTree*)chain);
+    chainEntryNumber = 0;
+    chain->GetEntry(chainEntryNumber);
+
     return AppResult(AppResult::OK|AppResult::LOG, returnMessage.str());
+}
+
+
+AppResult InputModule::event(AppEvent& event){
+    if( chain->GetEntry(chainEntryNumber++) )
+       return AppResult();
+
+    return AppResult(AppResult::STOP|AppResult::LOG, "End of stream");
 }

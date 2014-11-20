@@ -8,19 +8,23 @@
 #include <string>
 #include <vector>
 
+#include "TChain.h"
+
 class InputModule : public AppInputModule {
 private:
     AppParameter<string> path; // a colon-separated list of wildcards; allows recursion via $path 
 
     AppResult beginJob(AppEvent& event);
     AppResult beginRun(AppEvent& event){ return AppResult(); }
-    AppResult event   (AppEvent& event){ return AppResult(); }
+    AppResult event   (AppEvent& event);
     AppResult endRun  (AppEvent& event){ return AppResult(); }
     AppResult endJob  (AppEvent& event){ return AppResult(); }
 
     void setParameter(const char* parname, const char* value);
 
     vector<string> inputFiles;
+    TChain *chain;
+    int chainEntryNumber;
 
 public:
 

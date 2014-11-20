@@ -8,7 +8,7 @@ LIB_SOURCES :=
 LIB_SOURCES_DIR := ./
 
 # Compiller's flags
-CXXFLAGS := -std=c++11 -fPIC -Wall -frtti -fexceptions -fpic -g `root-config --cflags`
+CXXFLAGS := -std=c++11 -fPIC -g -Wall
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=
@@ -18,16 +18,13 @@ F_LIB_FLAGS   :=
 # No dependencies on 3rd party libraries
 EXTERNAL_LIBS :=
 
-# Prefer static (.a) over shared (.so) library?
+# Prefer static (.a) over shared (.so) library
 LIBTYPE := static
 
 # Add extra dependencies that are not figured automatically (form: PACKAGE_NAME/FILE_NAME)
-ENFORCE_DEPENDS :=
-
-# Just a link-safe way to refer to top (..) directory
 ifeq (,$(WORKDIR))
 WORKDIR := $(shell { cd ../ && pwd; } || exit $$? )
 endif
 
-# Include machinery
+#  Собственно Makefile
 include $(WORKDIR)/rules.mk
