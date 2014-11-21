@@ -40,7 +40,7 @@ public:
 
     void makeGlobal(bool global)   { is_Global = global; }
     void makePFMuon(bool pf)       { is_PFMuon = pf; }
-    void makeTracker(bool itracker){ is_Tracker = tracker; }
+    void makeTracker(bool tracker) { is_Tracker = tracker; }
     void setEcalIsolation(float isolation){ ecal_Isolation = isolation; }
     void setHcalIsolation(float isolation){ hcal_Isolation = isolation; }
     void setTrackerIsolation(float isolation){ tracker_Isolation = isolation; }

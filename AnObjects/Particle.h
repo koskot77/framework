@@ -10,7 +10,7 @@ private:
         std::string name_;
         int    type_;
         double p_, pt_, eta_, theta_, phi_, mass_, charge_;
-        double x_, y_, z_;
+        double x_, y_, z_, d0_;
         std::vector<double> vector; // energy-momentum, duplicates the previous data members
         const Particle *mother_;
         std::list<const Particle*> daughters_;
@@ -37,6 +37,8 @@ public:
         double x    (void) const { return x_;     }
         double y    (void) const { return y_;     }
         double z    (void) const { return z_;     }
+        double d0   (void) const { return d0_;    }
+        double dz   (void) const { return z_;     }
 
         std::vector<double> fourVector(void) const { return vector; }
 
@@ -77,7 +79,9 @@ public:
             vector[1] = p_*sin(theta_)*cos(phi_);
             vector[2] = p_*sin(theta_)*sin(phi_);
         }
-        void setXYZ  (double _x, double _y, double _z) { x_=_x; y_=_y; z_=_z; }
+        void setXYZ  (double x, double y, double z) {
+            d0_ = sqrt(x*x + y*y); x_ = x; y_ = y; z_ = z;
+        }
 
         const Particle*            mother   (void) const { return mother_;    }
         std::list<const Particle*> daughters(void) const { return daughters_; }
