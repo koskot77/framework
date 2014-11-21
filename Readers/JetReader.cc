@@ -20,32 +20,33 @@ AppResult JetReader::event(AppEvent& event) {
         float pz = pjet->pz();
         JetPointer jet(new Jet(energy, px, py, pz));
 //        jet->setUsedAlgorithm(usedAlgorithm);
-        jet->setMass(pjet->mass());
-        jet->setCharge(pjet->charge());
-//        jet->setGenJetPt(pjet->genJetPT);
+        jet->setMass  ( pjet->mass()     );
+        jet->setCharge( pjet->jetCharge());
+        if( pjet->genJet() )
+            jet->setGenJetPt(pjet->genJet()->pt());
 
-        jet->setEMF(0);
-        jet->setN90Hits(0);
-        jet->setFHPD(0);
+        jet->setEMF( pjet->emEnergyFraction() );
+        jet->setN90Hits( pjet->jetID().n90Hits );
+        jet->setFHPD( pjet->jetID().approximatefHPD );
 
-//        jet->setDiscriminatorForBtagType(
-//            jetstruc->btagCombinedSecVertex,
-//            BtagAlgorithm::CombinedSecondaryVertexBTag);
-/*
-        jet->setNOD(jetstruc->nconstituents);
-        jet->setCEF(jetstruc->chargedEmEnergyFraction);
-        jet->setNHF(jetstruc->neutralHadronEnergyFraction);
-        jet->setNEF(jetstruc->neutralEmEnergyFraction);
-        jet->setCHF(jetstruc->chargedHadronEnergyFraction);
-        jet->setNCH(jetstruc->chargedMultiplicity);
-        jet->setPartonFlavour(jetstruc->flavour);
-        jet->setJECUnc(jetstruc->JESunc);
+        jet->setDiscriminatorForBtagType(
+            pjet->bDiscriminator("combinedSecondaryVertexBJetTags"),
+            BtagAlgorithm::CombinedSecondaryVertexBTag);
+
+        jet->setNOD( pjet->nConstituents() );
+        jet->setCEF( pjet->chargedEmEnergyFraction() );
+        jet->setNHF( pjet->neutralHadronEnergyFraction() );
+        jet->setNEF( pjet->neutralEmEnergyFraction() );
+        jet->setCHF( pjet->chargedHadronEnergyFraction() );
+        jet->setNCH( pjet->chargedMultiplicity() );
+        jet->setPartonFlavour( pjet->partonFlavour() );
+        jet->setJECUnc( -1 );//pjet->);
         // perform adjustment only for MC:
-        if( jetstruc->flavour!=0 ){
+        if( pjet->partonFlavour() != 0 ){
 //            jet->adjForRes();
 //            jet->adjForUnc();
         }
-*/
+
         jets.push_back(jet);
     }
 
