@@ -1,4 +1,4 @@
-PACKAGES := AnUtils AppFramework
+PACKAGES := AnUtils AppFramework AnModBasic AnObjects Readers
 
 ######################
 

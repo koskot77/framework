@@ -3,7 +3,7 @@
 #include "Particle.h"
 #include <vector>
 #include <string>
-///#include <boost/array.hpp>
+#include <memory>
 
 namespace BtagAlgorithm {
   enum value {
@@ -106,7 +106,7 @@ public:
     virtual ~Jet(void){}
 };
 
-///typedef boost::shared_ptr<Jet> JetPointer;
-///typedef std::vector<JetPointer> JetCollection;
+typedef std::shared_ptr<Jet>    JetPointer;
+typedef std::vector<JetPointer> JetCollection;
 
 #endif

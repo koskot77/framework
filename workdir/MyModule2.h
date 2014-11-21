@@ -25,7 +25,7 @@ public:
                 AppResult beginJob(void){ return AppResult(); }
                 AppResult endJob  (void){ return AppResult(); }
 
-                Counter(void):AppAgentWrapper("counter3","simple object-counter"),AppAgent<int>(),AppAgent<long>(){}
+                Counter(void):AppAgentWrapper("counter3","simple object-counter"),AppAgent<int>(),AppAgent<long>(){ count=0; }
         } obj2;
 
 private:

@@ -8,7 +8,7 @@ LIB_SOURCES :=
 LIB_SOURCES_DIR := ./
 
 # Compiller's flags
-CXXFLAGS := -std=c++0x -fPIC -g -Wall `root-config --cflags`
+CXXFLAGS := -std=c++0x -fPIC -g -Wall `root-config --cflags` -I/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0_pre8/src/ -I/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/clhep/2.1.4.1-cms/include/
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=
