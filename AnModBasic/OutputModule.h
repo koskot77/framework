@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <bzlib.h>
 
-class OutputModule:public AppModule{
+class OutputModule : public AppModule{
 private:
 	AppParameter<string>  output;          // File name for writing ( no files will be created if empty )
 	AppParameter<bool>    append;          // Writing mode ( appending for default )

@@ -79,9 +79,8 @@ public:
             vector[1] = p_*sin(theta_)*cos(phi_);
             vector[2] = p_*sin(theta_)*sin(phi_);
         }
-        void setXYZ  (double x, double y, double z) {
-            d0_ = sqrt(x*x + y*y); x_ = x; y_ = y; z_ = z;
-        }
+        void setXYZ(double x, double y, double z) { x_ = x; y_ = y; z_ = z; }
+        void setD0 (double _d0){ d0_ = _d0; }
 
         const Particle*            mother   (void) const { return mother_;    }
         std::list<const Particle*> daughters(void) const { return daughters_; }
