@@ -5,7 +5,7 @@ using namespace std;
 #include "AppFramework/AppOStream.h"
 
 int main(void){
-        AppFramework fw("MyModule1->MyModule2->MyModule3->MyModule4->MyModule5");
+/*        AppFramework fw("MyModule1->MyModule2->MyModule3->MyModule4->MyModule5");
         fw.verbose("AppFramework","cout on");
         fw.verbose("AppFramework","clog on");
         fw.verbose("AppFramework","cerr on");
@@ -16,5 +16,14 @@ int main(void){
         fw.beginJob();
         fw.process(10);
         fw.endJob();
+*/
+    AppFramework fw("InputModule->BasicReader->JetReader");
+    fw.verbose("AppFramework","cout on");
+    fw.modList();
+    fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
+    fw.beginJob();
+    fw.process(10);
+    fw.endJob();
+
         return 0;
 }

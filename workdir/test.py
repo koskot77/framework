@@ -31,7 +31,7 @@ class AppFramework(object):
 
 if __name__ == '__main__':
 
-    fw = AppFramework('InputModule->JetReader')
+    fw = AppFramework('InputModule->BasicReader->MuonReader->JetReader')
     fw.verbose("AppFramework","cout on") 
     fw.modList();
     fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");

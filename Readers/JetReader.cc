@@ -20,12 +20,12 @@ AppResult JetReader::event(AppEvent& event) {
         float pz = pjet->pz();
         JetPointer jet(new Jet(energy, px, py, pz));
 //        jet->setUsedAlgorithm(usedAlgorithm);
-        jet->setMass  ( pjet->mass()     );
-        jet->setCharge( pjet->jetCharge());
+//        jet->setMass  ( pjet->mass()     );
+//        jet->setCharge( pjet->jetCharge());
         if( pjet->genJet() )
             jet->setGenJetPt(pjet->genJet()->pt());
 
-        jet->setEMF( pjet->emEnergyFraction() );
+//        jet->setEMF( pjet->emEnergyFraction() );
         jet->setN90Hits( pjet->jetID().n90Hits );
         jet->setFHPD( pjet->jetID().approximatefHPD );
 
@@ -46,7 +46,6 @@ AppResult JetReader::event(AppEvent& event) {
 //            jet->adjForRes();
 //            jet->adjForUnc();
         }
-
         jets.push_back(jet);
     }
 

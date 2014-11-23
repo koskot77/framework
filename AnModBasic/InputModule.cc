@@ -53,6 +53,8 @@ AppResult InputModule::beginJob(AppEvent& event){
 
     returnMessage<<"Total "<<inputFiles.size()<<" files to process"<<endl;
 
+    if( inputFiles.size()==0 ) return AppResult(AppResult::STOP|AppResult::LOG,"Empty input, nothing to do");
+
     gSystem->Load("libFWCoreFWLite.so");
     gROOT->ProcessLine("AutoLibraryLoader::enable()");
     gSystem->Load("libDataFormatsFWLite.so");
