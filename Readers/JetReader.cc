@@ -7,6 +7,7 @@ AppResult JetReader::beginJob(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
     bpj = Events->GetBranch("patJets_slimmedJetsAK8__PAT.obj");
+    if( !bpj ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.obj' branch found");
     bpj->SetAddress(&patJets);
     return AppResult();
 }

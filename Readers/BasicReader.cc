@@ -9,6 +9,7 @@ AppResult BasicReader::beginJob(AppEvent& event) {
 //    brho = Events->GetBranch("double_fixedGridRhoFastjetAll__RECO.obj");
 //    brho->SetAddress(&rho);
     bvtx = Events->GetBranch("recoVertexs_offlineSlimmedPrimaryVertices__PAT.obj");
+    if( !bvtx ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoVertexs_offlineSlimmedPrimaryVertices__PAT.obj' branch found");
     bvtx->SetAddress(&vertices);
     return AppResult();
 }

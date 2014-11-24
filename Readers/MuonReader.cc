@@ -8,6 +8,7 @@ AppResult MuonReader::beginJob(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
     bpm = Events->GetBranch("patMuons_slimmedMuons__PAT.obj");
+    if( !bpm ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patMuons_slimmedMuons__PAT.obj' branch found");
     bpm->SetAddress(&patMuons);
     return AppResult();
 }
