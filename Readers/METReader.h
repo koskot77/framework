@@ -1,16 +1,16 @@
-#ifndef ElectronReader_h
-#define ElectronReader_h
+#ifndef METReader_h
+#define METReader_h
 
 #include "AppFramework/AppParameter.h"
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
-#include "AnObjects/Electron.h"
+#include "AnObjects/MET.h"
 
-class ElectronReader : public AppModule {
+class METReader : public AppModule {
 private:
-	ElectronCollection electrons;
+	MET met;
 
 protected:
         AppResult beginJob(AppEvent& event);
@@ -20,10 +20,10 @@ protected:
         AppResult endJob(AppEvent& event){ return AppResult(); }
 
 public:
-	//virtual const MuonCollection& getMuons(void){ return muons; }
+	//virtual const METCollection& getMETs(void){ return muons; }
 
-        ElectronReader(const char *nm, const char *descr):AppModule(nm,descr){}
-	virtual ~ElectronReader(void){}
+        METReader(const char *nm, const char *descr):AppModule(nm,descr){}
+	virtual ~METReader(void){}
 };
 
 

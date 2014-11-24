@@ -2,7 +2,6 @@
 #define Muon_h
 #include "Lepton.h"
 #include <vector>
-#include <string>
 #include <memory>
 
 class Muon: public Lepton {

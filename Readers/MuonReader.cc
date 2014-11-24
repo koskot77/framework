@@ -14,14 +14,15 @@ AppResult MuonReader::beginJob(AppEvent& event) {
     TBranch *inputMuonsBranch = Events->GetBranch("patMuons_slimmedMuons__PAT.");
     if( !inputMuonsBranch )
         return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patMuons_slimmedMuons__PAT.' branch found");
-    inputJetsBranch->SetAddress(&__patMuons);
+    inputMuonsBranch->SetAddress(&__patMuons);
 
     return AppResult();
 }
 
 AppResult MuonReader::event(AppEvent& event) {
     muons.clear();
-    for(vector<pat::Muon>::const_iterator pmuon = __patMuons->product()->begin(); pmuon != __patMuons->product()->end(); pmuon++){
+    if( __patMuons->isPresent() )
+      for(vector<pat::Muon>::const_iterator pmuon = __patMuons->product()->begin(); pmuon != __patMuons->product()->end(); pmuon++){
         float energy = pmuon->energy();
         float px = pmuon->px();
         float py = pmuon->py();
@@ -73,7 +74,9 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations() );
 
         muons.push_back(muon);
-    }
+      }
+
+    event.put("muons",(const MuonCollection*)&muons);
 
     return AppResult();
 }

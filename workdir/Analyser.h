@@ -5,8 +5,6 @@
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
-#include "AnObjects/Jet.h"
-
 class Analyser : public AppModule{
 private:
         AppParameter<char>   mychar;
@@ -19,13 +17,7 @@ private:
         AppResult endRun  (AppEvent& event){ cout<<"run ended"<<endl; return AppResult(); }
         AppResult endJob  (AppEvent& event){ cout<<"job ended"<<endl; return AppResult(); }
 
-        AppResult event (AppEvent& event){
-                std::cout<<"Event "<<myint<<endl;
-                const JetCollection *jets;
-                if( event.get("jets",jets) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
-                std::cout<<" #jets = "<<jets->size()<<std::endl;
-                return AppResult();
-        }
+        AppResult event (AppEvent& event);
 
 public:
         string getMyString(void){ return mystring; }
