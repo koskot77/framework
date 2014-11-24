@@ -49,5 +49,7 @@ AppResult JetReader::event(AppEvent& event) {
         jets.push_back(jet);
     }
 
+    event.put("jets",(const JetCollection*)&jets);
+
     return AppResult();
 }

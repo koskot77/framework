@@ -20,7 +20,7 @@ AppResult MuonReader::event(AppEvent& event) {
         float py = pmuon->py();
         float pz = pmuon->pz();
         MuonPointer muon(new Muon(energy, px, py, pz));
-/*        muon->setXYZ   ( pmuon->vx(), pmuon->vy(), pmuon->vz() );
+        muon->setXYZ   ( pmuon->vx(), pmuon->vy(), pmuon->vz() );
         muon->setCharge( pmuon->charge()   );
 
 ///        muon->setEcalIsolation   ( pmuon->ecalIso()  );
@@ -58,7 +58,7 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setPFGammaIsolation        ( pmuon->photonIso()        );
         muon->setPFChargedHadronIsolation( pmuon->chargedHadronIso() );
         muon->setPFNeutralHadronIsolation( pmuon->neutralHadronIso() );
-
+/*
         muon->setNormalizedChi2               ( pmuon->globalTrack()->normalizedChi2()                     );
         muon->setNumberOfValidMuonHits        ( pmuon->globalTrack()->hitPattern().numberOfValidMuonHits() );
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations()                           );

@@ -1,5 +1,5 @@
 #OBJ      := MyModule1.o MyModule2.o MyModule3.o MyModule4.o MyModule5.o
-OBJ      :=
+OBJ      := Analyser.o
 
 #-----------------------------------------------------------
 OBJ      += Using.o
