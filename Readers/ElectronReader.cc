@@ -67,7 +67,7 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setPFChargedHadronIsolation( pele->chargedHadronIso() );
         electron->setPFNeutralHadronIsolation( pele->neutralHadronIso() );
 
-        electrons.push_back(electron);
+        if( electron->isLoose() ) electrons.push_back(electron);
     }
 
     event.put("electrons",(const ElectronCollection*)&electrons);

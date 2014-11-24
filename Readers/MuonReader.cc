@@ -73,7 +73,7 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setNtrackerLayersWithMeasurement( (pmuon->isTrackerMuon() ? pmuon->track()->hitPattern().trackerLayersWithMeasurement(): -1) );
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations() );
 
-        muons.push_back(muon);
+        if( muon->isLoose() ) muons.push_back(muon);
       }
 
     event.put("muons",(const MuonCollection*)&muons);

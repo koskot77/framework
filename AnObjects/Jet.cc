@@ -134,7 +134,7 @@ bool Jet::isGood() const {
     bool passesPt = pt() > 35;
     bool passesEta = fabs(eta()) < 2.4;
     bool jetID = false;
-    if( usedAlgorithm == JetAlgorithm::CA08PF || usedAlgorithm == JetAlgorithm::PF2PAT ){
+//    if( usedAlgorithm == JetAlgorithm::CA08PF || usedAlgorithm == JetAlgorithm::PF2PAT ){
         bool passNOD = NOD() > 1;
         bool passCEF = CEF() < 0.99;
         bool passNHF = NHF() < 0.99;
@@ -146,13 +146,13 @@ bool Jet::isGood() const {
             passNCH = NCH() > 0;
         }
         jetID = passNOD && passCEF && passNHF && passNEF && passCHF && passNCH;
-    } else {
+/*    } else {
         bool passesEMF = emf() > 0.01;
         bool passesN90Hits = n90Hits() > 1;
         bool passesFHPD = fHPD() < 0.98;
         jetID = passesEMF && passesN90Hits && passesFHPD;
     }
-    return passesPt && passesEta && jetID;
+*/    return passesPt && passesEta && jetID;
 }
 
 // Values taken from

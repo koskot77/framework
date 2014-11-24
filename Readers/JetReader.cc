@@ -54,7 +54,7 @@ AppResult JetReader::event(AppEvent& event) {
 //            jet->adjForRes();
 //            jet->adjForUnc();
         }
-        jets.push_back(jet);
+        if( jet->isGood() ) jets.push_back(jet);
       }
 
     event.put("jets",(const JetCollection*)&jets);
