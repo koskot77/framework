@@ -5,18 +5,11 @@
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
-
 #include "AnObjects/Jet.h"
-
-#include "TBranch.h"
-
-#include "DataFormats/PatCandidates/interface/Jet.h"
 
 class JetReader : public AppModule {
 private:
-	JetCollection      jets;
-        TBranch*           bpj;
-        pat::JetCollection patJets;
+	JetCollection jets;
 
 protected:
         AppResult beginJob(AppEvent& event);
@@ -26,7 +19,7 @@ protected:
         AppResult endJob(AppEvent& event){ return AppResult(); }
 
 public:
-	virtual const JetCollection& getJets(void){ return jets; }
+	//virtual const JetCollection& getJets(void){ return jets; }
 
         JetReader(const char *nm, const char *descr):AppModule(nm,descr){}
 	virtual ~JetReader(void){}

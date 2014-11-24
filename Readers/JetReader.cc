@@ -2,31 +2,38 @@ using namespace std;
 #include "JetReader.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
+
+edm::Wrapper<pat::JetCollection> *__patJets = new edm::Wrapper<pat::JetCollection>();
 
 AppResult JetReader::beginJob(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
-    bpj = Events->GetBranch("patJets_slimmedJetsAK8__PAT.obj");
-    if( !bpj ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.obj' branch found");
-    bpj->SetAddress(&patJets);
+
+    TBranch *inputJetsBranch = Events->GetBranch("patJets_slimmedJetsAK8__PAT.");
+    if( !inputJetsBranch )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.' branch found");
+    inputJetsBranch->SetAddress(&__patJets);
+
     return AppResult();
 }
 
 AppResult JetReader::event(AppEvent& event) {
     jets.clear();
-    for(vector<pat::Jet>::const_iterator pjet = patJets.begin(); pjet != patJets.end(); pjet++){
+    if( __patJets->isPresent() )
+      for(vector<pat::Jet>::const_iterator pjet = __patJets->product()->begin(); pjet != __patJets->product()->end(); pjet++){
         float energy = pjet->energy();
         float px = pjet->px();
         float py = pjet->py();
         float pz = pjet->pz();
         JetPointer jet(new Jet(energy, px, py, pz));
 //        jet->setUsedAlgorithm(usedAlgorithm);
-//        jet->setMass  ( pjet->mass()     );
-//        jet->setCharge( pjet->jetCharge());
+        jet->setMass  ( pjet->mass()     );
+        jet->setCharge( pjet->jetCharge());
         if( pjet->genJet() )
             jet->setGenJetPt(pjet->genJet()->pt());
 
-//        jet->setEMF( pjet->emEnergyFraction() );
+        //jet->setEMF( pjet->emEnergyFraction() ); // only for CaloJets
         jet->setN90Hits( pjet->jetID().n90Hits );
         jet->setFHPD( pjet->jetID().approximatefHPD );
 
@@ -48,7 +55,7 @@ AppResult JetReader::event(AppEvent& event) {
 //            jet->adjForUnc();
         }
         jets.push_back(jet);
-    }
+      }
 
     event.put("jets",(const JetCollection*)&jets);
 

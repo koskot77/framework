@@ -4,18 +4,24 @@ using namespace std;
 #include "TBranch.h"
 #include "MuonEffectiveArea.h"
 
+#include "DataFormats/PatCandidates/interface/Muon.h"
+edm::Wrapper<pat::MuonCollection> *__patMuons = new edm::Wrapper<pat::MuonCollection>();
+
 AppResult MuonReader::beginJob(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
-    bpm = Events->GetBranch("patMuons_slimmedMuons__PAT.obj");
-    if( !bpm ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patMuons_slimmedMuons__PAT.obj' branch found");
-    bpm->SetAddress(&patMuons);
+
+    TBranch *inputMuonsBranch = Events->GetBranch("patMuons_slimmedMuons__PAT.");
+    if( !inputMuonsBranch )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patMuons_slimmedMuons__PAT.' branch found");
+    inputJetsBranch->SetAddress(&__patMuons);
+
     return AppResult();
 }
 
 AppResult MuonReader::event(AppEvent& event) {
     muons.clear();
-    for(vector<pat::Muon>::const_iterator pmuon = patMuons.begin(); pmuon != patMuons.end(); pmuon++){
+    for(vector<pat::Muon>::const_iterator pmuon = __patMuons->product()->begin(); pmuon != __patMuons->product()->end(); pmuon++){
         float energy = pmuon->energy();
         float px = pmuon->px();
         float py = pmuon->py();
@@ -53,19 +59,19 @@ AppResult MuonReader::event(AppEvent& event) {
         if( event.get("vz",rho_event) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vx");
         math::XYZPoint vertexPosition;
         vertexPosition.SetCoordinates(vx,vy,vz);
-//        muon->setD0                      ( pmuon->innerTrack()->dxy(vertexPosition) );
-//        muon->setZDistanceToPrimaryVertex( pmuon->innerTrack()->dz (vertexPosition) );
+        muon->setD0                      ( (pmuon->isTrackerMuon() ? pmuon->innerTrack()->dxy(vertexPosition) : 99999));
+        muon->setZDistanceToPrimaryVertex( (pmuon->isTrackerMuon() ? pmuon->innerTrack()->dz (vertexPosition) : 99999));
 
         muon->setPFGammaIsolation        ( pmuon->photonIso()        );
         muon->setPFChargedHadronIsolation( pmuon->chargedHadronIso() );
         muon->setPFNeutralHadronIsolation( pmuon->neutralHadronIso() );
-/*
-        muon->setNormalizedChi2               ( pmuon->globalTrack()->normalizedChi2()                     );
-        muon->setNumberOfValidMuonHits        ( pmuon->globalTrack()->hitPattern().numberOfValidMuonHits() );
-        muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations()                           );
-        muon->setNumberOfValidPixelHits       ( pmuon->innerTrack()->hitPattern().numberOfValidPixelHits() );
-        muon->setNtrackerLayersWithMeasurement( pmuon->track()->hitPattern().trackerLayersWithMeasurement());
-*/
+
+        muon->setNormalizedChi2               ( (pmuon->isGlobalMuon()  ? pmuon->globalTrack()->normalizedChi2() : -1)                     );
+        muon->setNumberOfValidMuonHits        ( (pmuon->isGlobalMuon()  ? pmuon->globalTrack()->hitPattern().numberOfValidMuonHits() : -1) );
+        muon->setNumberOfValidPixelHits       ( (pmuon->isTrackerMuon() ? pmuon->innerTrack()->hitPattern().numberOfValidPixelHits() : -1) );
+        muon->setNtrackerLayersWithMeasurement( (pmuon->isTrackerMuon() ? pmuon->track()->hitPattern().trackerLayersWithMeasurement(): -1) );
+        muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations() );
+
         muons.push_back(muon);
     }
 

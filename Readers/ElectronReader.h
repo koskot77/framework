@@ -1,15 +1,16 @@
-#ifndef BasicReader_h
-#define BasicReader_h
+#ifndef ElectronReader_h
+#define ElectronReader_h
 
 #include "AppFramework/AppParameter.h"
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
-class BasicReader : public AppModule {
+#include "AnObjects/Electron.h"
+
+class ElectronReader : public AppModule {
 private:
-        double rho;
-        double vx, vy, vz;
+	ElectronCollection muons;
 
 protected:
         AppResult beginJob(AppEvent& event);
@@ -19,9 +20,10 @@ protected:
         AppResult endJob(AppEvent& event){ return AppResult(); }
 
 public:
+	//virtual const MuonCollection& getMuons(void){ return muons; }
 
-        BasicReader(const char *nm, const char *descr):AppModule(nm,descr){}
-	virtual ~BasicReader(void){}
+        ElectronReader(const char *nm, const char *descr):AppModule(nm,descr){}
+	virtual ~ElectronReader(void){}
 };
 
 
