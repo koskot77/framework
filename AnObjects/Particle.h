@@ -87,6 +87,7 @@ public:
 
         Particle& operator+=(const Particle& particle);
         Particle  operator+ (const Particle& particle) const { Particle tmp(*this); tmp+=particle; return tmp; }
+        bool      operator< (const Particle& particle){ return pt() > particle.pt(); } // for sorting
 
         Particle(void);
         Particle(double energy, double px, double py, double pz);

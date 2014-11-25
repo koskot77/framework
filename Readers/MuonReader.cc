@@ -76,6 +76,9 @@ AppResult MuonReader::event(AppEvent& event) {
         if( muon->isLoose() ) muons.push_back(muon);
       }
 
+    sort   (muons.begin(),muons.end());
+    reverse(muons.begin(),muons.end());
+
     event.put("muons",(const MuonCollection*)&muons);
 
     return AppResult();

@@ -35,7 +35,8 @@ if __name__ == '__main__':
     fw.verbose("AppFramework","cout on") 
     fw.modList();
     fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
+    fw.modify("Analyser::output","qwe.root");
     fw.beginJob();
-    fw.process(10);
+    fw.process(500);
     fw.endJob();
 

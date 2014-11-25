@@ -11,7 +11,8 @@ LDOPT    := -Xlinker -rpath -Xlinker `cat ../.release`/lib/
 STDINC   := -I./ -I../../ -I`cat ../.release` `root-config --cflags` -I/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0_pre8/src/ -I/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/clhep/2.1.4.1-cms/include/
 STDLIB   := -lstdc++ -L../../lib -lAnUtils -lAppFramework -lAnUtils -lAnModBasic -lReaders -lAnObjects -L`cat ../.release`/lib `root-config --glibs` -lGenVector
 
-STDLIB   += -L/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0_pre8/lib/slc6_amd64_gcc481/ -lFWCoreUtilities -lDataFormatsPatCandidates -lDataFormatsTrackReco
+STDLIB   += -L/cvmfs/cms.cern.ch/slc6_amd64_gcc481/cms/cmssw/CMSSW_7_2_0_pre8/lib/slc6_amd64_gcc481/ -lFWCoreUtilities -lDataFormatsPatCandidates -lDataFormatsTrackReco -lDataFormatsCommon -lDataFormatsMuonReco
+#-lPhysicsToolsFWLite -lFWCoreFWLite -lDataFormatsFWLite
 
 CXXFLAGS += $(STDINC)
 

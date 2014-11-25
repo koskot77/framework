@@ -184,7 +184,7 @@ bool Jet::isBJet(BtagAlgorithm::value type, BtagAlgorithm::workingPoint wp) cons
     float jet_phi  = phi();
     float jet_eta  = eta();
     bool  isTagged = isTaggedAsBJet(type,wp);
-
+/*
     //Initialize class with an unique seed
     BTagSFUtil btsfutil( int(jet_phi*100000) );
 
@@ -219,5 +219,5 @@ bool Jet::isBJet(BtagAlgorithm::value type, BtagAlgorithm::workingPoint wp) cons
     }
 
     btsfutil.modifyBTagsWithSF(isTagged, jet_flavor, BTagSF, BTageff, LightJetSF, LightJeteff);
-    return (isTagged);
+*/    return (isTagged);
 }

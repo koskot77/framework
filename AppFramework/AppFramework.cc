@@ -206,7 +206,7 @@ bool AppFramework::modify(const char *modparname, const char *parvalue){
 }
 
 long AppFramework::process(long nevent){
-        if( nevent !=0 )
+        if( nevent>0 )
                 clog<<"Process "<<nevent<<" event"<<(nevent>1?"s":"")<<endl;
         else
                 clog<<"Process all events form run"<<endl;

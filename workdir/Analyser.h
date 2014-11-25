@@ -5,27 +5,29 @@
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
+#include "TFile.h"
+#include "TTree.h"
+
 class Analyser : public AppModule{
 private:
-        AppParameter<char>   mychar;
-        AppParameter<int>    myint;
-        AppParameter<double> mydouble;
-        AppParameter<string> mystring;
+    AppParameter<string> output;
 
-        AppResult beginJob(AppEvent& event){ cout<<"job begin"<<endl; return AppResult(); }
-        AppResult beginRun(AppEvent& event){ cout<<"run begin"<<endl; return AppResult(); }
-        AppResult endRun  (AppEvent& event){ cout<<"run ended"<<endl; return AppResult(); }
-        AppResult endJob  (AppEvent& event){ cout<<"job ended"<<endl; return AppResult(); }
+    int    numberOfJets;
+    double jetPtRec[4], jetEtaRec[4], jetPhiRec[4], jetCSV[4];
+    double m3jets, met;
 
-        AppResult event (AppEvent& event);
+    TFile *outputFile;
+    TTree *microTuple;
+
+    AppResult beginJob(AppEvent& event);
+    AppResult beginRun(AppEvent& event){ return AppResult(); }
+    AppResult endRun  (AppEvent& event){ return AppResult(); }
+    AppResult endJob  (AppEvent& event);
+
+    AppResult event (AppEvent& event);
 
 public:
-        string getMyString(void){ return mystring; }
-        double getMyDouble(void){ return mydouble; }
-
-        Analyser(const char *nm, const char *descr):AppModule(nm,descr),
-                mychar  (*this,"mychar",'a'),      myint   (*this,"myint",0),
-                mydouble(*this,"mydouble",123.321),mystring(*this,"mystring","QWE") {}
+        Analyser(const char *nm, const char *descr):AppModule(nm,descr),output(*this,"output","output.root") {}
         virtual ~Analyser(void){}
 };
 

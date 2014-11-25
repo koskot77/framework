@@ -12,60 +12,65 @@ using namespace std;
 #include "DataFormats/FWLite/interface/Event.h"
 #include "DataFormats/FWLite/interface/ChainEvent.h"
 
-int main(void){
-
-gSystem->Load("libFWCoreFWLite.so");
-gROOT->ProcessLine("AutoLibraryLoader::enable()");
-gSystem->Load("libDataFormatsFWLite.so");
-gSystem->Load("libDataFormatsPatCandidates.so");
-std::vector<std::string> samplefiles(1);
-samplefiles[0] = "/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root";
-fwlite::ChainEvent *evtchain = new fwlite::ChainEvent(samplefiles);
-fwlite::Handle<pat::JetCollection> h_jets;
-h_jets.getByLabel(*evtchain, "slimmedJetsAK8", "");
-for(unsigned int index = 0; index < h_jets->size(); index++) {
-const pat::Jet *const jet = &h_jets->at(index);
-cout<<"QWE5"<<endl;
-cout<<jet->emEnergyFraction()<<endl;
+#include<stdio.h>
+#include<unistd.h>
+#include<sys/wait.h>
+#include<signal.h>
+#include<sys/shm.h>
+#include<getopt.h>
+#include<getopt.h>
+#define SIGNAL(s, handler) { \
+    sa.sa_handler = handler; \
+    if (sigaction(s, &sa, NULL) < 0) { \
+        fprintf(stderr, "Couldn't establish signal handler (%d)", s); \
+        exit(1); \
+    } \
 }
-/*
-TChain *chain = new TChain("Events");
-chain->AddFile("/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
-chain->GetEntry(0);
-TTree *Events = chain;
-TBranch *bpj = Events->GetBranch("patJets_slimmedJetsAK8__PAT.");
-edm::Wrapper<pat::JetCollection> *patJets = new edm::Wrapper<pat::JetCollection>();
-bpj->SetAddress(&patJets);
-chain->GetEntry(0);
-bpj->SetAddress(&patJets);
-chain->GetEntry(0);
-cout<<"QWE5"<<endl;
 
-    if( patJets->isPresent() )
-      for(vector<pat::Jet>::const_iterator pjet = patJets->product()->begin(); pjet != patJets->product()->end(); pjet++)
-        cout<<pjet->emEnergyFraction()<<endl;
+AppFramework fw("InputModule->BasicReader->MuonReader->ElectronReader->JetReader->METReader->Analyser");
 
-*/
-/*        AppFramework fw("MyModule1->MyModule2->MyModule3->MyModule4->MyModule5");
-        fw.verbose("AppFramework","cout on");
-        fw.verbose("AppFramework","clog on");
-        fw.verbose("AppFramework","cerr on");
-        fw.modList();
-        fw.modify("MyModule4::mystring","Simple string");
-        fw.modify("MyModule4::mydouble","999");
-        fw.modify("MyModule5::formula","( val1+ val2) *val3");
-        fw.beginJob();
-        fw.process(10);
-        fw.endJob();
-*/
-/*
-    AppFramework fw("InputModule->BasicReader->JetReader");
+static void term(int qwe){
+    printf("terminating with signal #%d\n",qwe);
+    fw.endJob();
+    exit(2);
+} 
+
+int main(void){
+    struct sigaction sa;
+    sigset_t mask;
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT); // finish the job on Ctrl-C
+    sigaddset(&mask, SIGTERM); // condor_rm
+    sa.sa_mask = mask;
+    sa.sa_flags = 0;
+    SIGNAL(SIGINT, term); // Terminate and call the cleanup function
+    SIGNAL(SIGTERM, term); // Terminate and call the cleanup function
+
     fw.verbose("AppFramework","cout on");
     fw.modList();
     fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
+    fw.modify("Analyser::output","/tmp/kkotov/qwe.root");
     fw.beginJob();
-    fw.process(10);
+    fw.process(5000);
+    cout<<"5000"<<endl;
+    fw.process(5000);
+    cout<<"10000"<<endl;
+    fw.process(5000);
+    cout<<"15000"<<endl;
+    fw.process(5000);
+    cout<<"20000"<<endl;
+    fw.process(5000);
+    cout<<"25000"<<endl;
+    fw.process(5000);
+    cout<<"30000"<<endl;
+    fw.process(5000);
+    cout<<"35000"<<endl;
+    fw.process(5000);
+    cout<<"40000"<<endl;
+    fw.process(5000);
+    cout<<"45000"<<endl;
+    fw.process(5000);
+    cout<<"50000"<<endl;
     fw.endJob();
-*/
-        return 0;
+    return 0;
 }

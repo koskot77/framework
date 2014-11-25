@@ -3,6 +3,7 @@ using namespace std;
 #include "TTree.h"
 #include "TBranch.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include <algorithm>
 
 edm::Wrapper<pat::JetCollection> *__patJets = new edm::Wrapper<pat::JetCollection>();
 
@@ -56,6 +57,9 @@ AppResult JetReader::event(AppEvent& event) {
         }
         if( jet->isGood() ) jets.push_back(jet);
       }
+
+    sort   (jets.begin(),jets.end());
+    reverse(jets.begin(),jets.end());
 
     event.put("jets",(const JetCollection*)&jets);
 

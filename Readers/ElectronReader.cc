@@ -70,6 +70,9 @@ AppResult ElectronReader::event(AppEvent& event) {
         if( electron->isLoose() ) electrons.push_back(electron);
     }
 
+    sort   (electrons.begin(),electrons.end());
+    reverse(electrons.begin(),electrons.end());
+
     event.put("electrons",(const ElectronCollection*)&electrons);
 
     return AppResult();
