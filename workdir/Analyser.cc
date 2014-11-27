@@ -38,12 +38,19 @@ AppResult Analyser::event(AppEvent& event){
     jetPtRec[2] = -1;
     jetPtRec[3] = -1;
 
+    const vector<ParticlePointer> *gen;
+    if( event.get("genParticles",gen) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
+    std::cout<<" #genParts = "<<gen->size()<<std::endl;
+    for(unsigned int p=0; p<gen->size(); p++){
+        std::cout<<" gen "<<gen->at(p)->type()<<" pT["<<p<<"] = "<<gen->at(p)->pt()<<" eta="<<gen->at(p)->eta()<<" phi="<<gen->at(p)->phi()<<std::endl;
+    }
+
     const JetCollection *jets;
     if( event.get("jets",jets) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
-//    std::cout<<" #jets = "<<jets->size()<<std::endl;
+    std::cout<<" #jets = "<<jets->size()<<std::endl;
     numberOfJets = jets->size();
     for(unsigned int j=0; j<numberOfJets && j<4; j++){
-        //std::cout<<" #pTjet["<<j<<"] = "<<jets->at(j)->pt()<<std::endl;
+        std::cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
         jetPtRec [j] = jets->at(j)->pt();
         jetEtaRec[j] = jets->at(j)->eta();
         jetPhiRec[j] = jets->at(j)->phi();
@@ -51,13 +58,13 @@ AppResult Analyser::event(AppEvent& event){
     }
     const ElectronCollection *electrons;
     if( event.get("electrons",electrons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No electrons found");
-//    std::cout<<" #electrons = "<<electrons->size()<<std::endl;
+    std::cout<<" #electrons = "<<electrons->size()<<std::endl;
 //    for(unsigned int e=0; e<electrons->size(); e++)
 //        std::cout<<" #pTele["<<e<<"] = "<<electrons->at(e)->pt()<<std::endl;
 //
     const MuonCollection *muons;
     if( event.get("muons",muons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No muons found");
-//    std::cout<<" #muons = "<<muons->size()<<std::endl;
+    std::cout<<" #muons = "<<muons->size()<<std::endl;
 //    for(unsigned int m=0; m<muons->size(); m++)
 //        std::cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<std::endl;
 

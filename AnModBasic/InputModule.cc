@@ -68,13 +68,19 @@ AppResult InputModule::beginJob(AppEvent& event){
     chainEntryNumber = 0;
     chain->GetEntry(chainEntryNumber);
 
+    chainEntryNumber = firstEntry;
+
     return AppResult(AppResult::OK|AppResult::LOG, returnMessage.str());
 }
 
 
 AppResult InputModule::event(AppEvent& event){
+
+    if( (chainEntryNumber % showProgressPeriod) == 0 )
+        clog<<"Processed "<<chainEntryNumber<<" entries"<<endl;
+
     if( chain->GetEntry(chainEntryNumber++) )
-       return AppResult();
+        return AppResult();
 
     return AppResult(AppResult::STOP|AppResult::LOG, "End of stream");
 }

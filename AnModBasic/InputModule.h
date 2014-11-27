@@ -12,7 +12,9 @@
 
 class InputModule : public AppInputModule {
 private:
-    AppParameter<string> path; // a colon-separated list of wildcards; allows recursion via $path 
+    AppParameter<string> path;               // a colon-separated list of wildcards; allows recursion via $path 
+    AppParameter<long>   showProgressPeriod; // report processed event number
+    AppParameter<long>   firstEntry;         // starting point
 
     AppResult beginJob(AppEvent& event);
     AppResult beginRun(AppEvent& event){ return AppResult(); }
@@ -28,7 +30,8 @@ private:
 
 public:
 
-    InputModule(const char *nm, const char *descr) : AppInputModule(nm,descr), path(*this,"path", ""){}
+    InputModule(const char *nm, const char *descr) : AppInputModule(nm,descr),
+          path(*this,"path", ""), showProgressPeriod(*this,"showProgressPeriod",1000),firstEntry(*this,"firstEntry",0){}
     virtual ~InputModule(void){}
 };
 

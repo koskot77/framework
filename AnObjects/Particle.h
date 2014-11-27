@@ -4,11 +4,12 @@
 #include <vector>
 #include <math.h>
 #include <string>
+#include <memory>
 
 class Particle {
 private:
         std::string name_;
-        int    type_;
+        int    type_, status_;
         double p_, pt_, eta_, theta_, phi_, mass_, charge_;
         double x_, y_, z_, d0_;
         std::vector<double> vector; // energy-momentum, duplicates the previous data members
@@ -22,6 +23,8 @@ public:
         void   setCharge(double ch)  { charge_ = ch;   }
         int       type(void)   const { return type_;   }
         void   setType(int tp)       { type_ = tp;     }
+        int     status(void)   const { return status_; }
+        void setStatus(int  s)       { status_ = s;    }
 
         double e (void) const { return vector[0]; }
         double px(void) const { return vector[1]; }
@@ -93,5 +96,8 @@ public:
         Particle(double energy, double px, double py, double pz);
         virtual ~Particle(void){}
 };
+
+typedef std::shared_ptr<Particle>    ParticlePointer;
+typedef std::vector<ParticlePointer> ParticleCollection;
 
 #endif
