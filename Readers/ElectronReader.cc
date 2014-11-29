@@ -55,9 +55,9 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setMvaTrigV0eID   ( pele->electronID("eidTight") ); //mvaTrigV0")    );
 
         double vx=0, vy=0, vz=0;
-        if( event.get("vx",rho_event) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vx");
-        if( event.get("vy",rho_event) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vx");
-        if( event.get("vz",rho_event) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vx");
+        if( event.get("vx",vx) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vx");
+        if( event.get("vy",vy) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vy");
+        if( event.get("vz",vz) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Can't find vz");
         math::XYZPoint vertexPosition;
         vertexPosition.SetCoordinates(vx,vy,vz);
         electron->setD0                      ( pele->gsfTrack()->dxy(vertexPosition) );

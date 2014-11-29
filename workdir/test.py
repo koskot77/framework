@@ -31,14 +31,16 @@ class AppFramework(object):
 
 if __name__ == '__main__':
 
-    fw = AppFramework('InputModule->BasicReader->GeneratorReader->MuonReader->ElectronReader->JetReader->METReader->Analyser')
+    fw = AppFramework('InputModule->BasicReader->GeneratorReader->MuonReader->ElectronReader->JetReader->METReader->Analyser->OutputModule')
     fw.verbose("AppFramework","cout on") 
     fw.modList();
     fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
     fw.modify("InputModule::showProgressPeriod","100");
-    fw.modify("InputModule::firstEntry","4");
+    fw.modify("InputModule::firstEntry","0");
+    fw.modify("OutputModule::output","qwe.csv");
+    fw.modify("OutputModule::leaflist","numberOfJets/I:m3jets/D:mmm/D");
     fw.modify("Analyser::output","qwe.root");
     fw.beginJob();
-    fw.process(1);
+    fw.process(10);
     fw.endJob();
 

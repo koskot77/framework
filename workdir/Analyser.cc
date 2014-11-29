@@ -84,5 +84,9 @@ AppResult Analyser::event(AppEvent& event){
 
     microTuple->Fill();
 
+    event.put("numberOfJets",(const int*)&numberOfJets);
+    event.put("m3jets",(const double*)&m3jets);
+    event.put("mmm",   (const double*)&met);
+
     return AppResult();
 }
