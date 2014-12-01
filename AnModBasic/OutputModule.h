@@ -9,7 +9,6 @@
 #include <string>
 #include <fstream>
 #include <iostream>
-#include "TFile.h"
 #include "TTree.h"
 
 class OutputModule : public AppModule{
@@ -22,7 +21,6 @@ private:
     std::vector<char>        coltypes;
     std::vector<size_t>      colarray;
 
-    TFile *outputFile;
     TTree *microTuple;
 
     ofstream csvfile;
@@ -40,7 +38,7 @@ public:
         output  (*this,"output",   "./output.csv"),
         leaflist(*this,"leaflist", ""),
 //        filter  (*this,"filter",   ""),
-        outputFile(0), microTuple(0){ }
+        microTuple(0){ }
     virtual ~OutputModule(){}
 };
 

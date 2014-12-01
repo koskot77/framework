@@ -7,27 +7,10 @@ using namespace std;
 #include "TLorentzVector.h"
 
 AppResult Analyser::beginJob(AppEvent& event){
-//    outputFile = TFile::Open(output.c_str(),"RECREATE");
-    microTuple = new TTree("micro","micro");
-
-    microTuple->Branch("numberOfJets", &numberOfJets, "numberOfJets/I");
-    microTuple->Branch("jetPtRec",      jetPtRec,     "jetPtRec[4]/D");
-    microTuple->Branch("jetEtaRec",     jetEtaRec,    "jetEtaRec[4]/D");
-    microTuple->Branch("jetPhiRec",     jetPhiRec,    "jetPhiRec[4]/D");
-    microTuple->Branch("jetCSV",        jetCSV,       "jetCSV[4]/D");
-
-    microTuple->Branch("m3jets",       &m3jets,       "m3jets/D");
-    microTuple->Branch("met",          &met,          "met/D");
-
     return AppResult();
 }
 
 AppResult Analyser::endJob(AppEvent& event){
-    outputFile = TFile::Open(output.c_str(),"RECREATE");
-    microTuple->Write();
-    outputFile->Close();
-//   if( microTuple ) delete microTuple;
-//   if( outputFile ) delete outputFile;
     return AppResult();
 }
 
@@ -50,7 +33,7 @@ AppResult Analyser::event(AppEvent& event){
     std::cout<<" #jets = "<<jets->size()<<std::endl;
     numberOfJets = jets->size();
     for(unsigned int j=0; j<numberOfJets && j<4; j++){
-        std::cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
+//        std::cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
         jetPtRec [j] = jets->at(j)->pt();
         jetEtaRec[j] = jets->at(j)->eta();
         jetPhiRec[j] = jets->at(j)->phi();
@@ -82,11 +65,10 @@ AppResult Analyser::event(AppEvent& event){
         m3jets = sum3j.M();
     }
 
-    microTuple->Fill();
-
     event.put("numberOfJets",(const int*)&numberOfJets);
-    event.put("m3jets",(const double*)&m3jets);
-    event.put("met",   (const double*)&met);
+    event.put("m3jets",      (const double*)&m3jets);
+    event.put("met",         (const double*)&met);
+    event.put("jetPtRec[4]", (const double*)jetPtRec);
 
     if( event.get("runNumber",  run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
     if( event.get("eventNumber",evt) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No eventNumber found");

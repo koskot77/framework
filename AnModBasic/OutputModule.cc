@@ -1,7 +1,7 @@
 using namespace std;
 #include "OutputModule.h"
 #include "AnUtils/Value_t.h"
-
+#include "TFile.h"
 #include <list>
 #include <sstream>
 #include <algorithm>
@@ -10,17 +10,17 @@ AppResult OutputModule::beginJob(AppEvent& event){
 // open output file
     // root
     if( ((string&)output).find(".root") != string::npos ){
-        outputFile = TFile::Open(output.c_str(),"RECREATE");
+        //outputFile = TFile::Open(output.c_str(),"RECREATE");
         microTuple = new TTree("micro","micro");
     } else // csv
     if( ((string&)output).find(".csv") != string::npos ){
-        outputFile = 0;
+        //outputFile = 0;
         microTuple = 0;
         if( !output.length() ) return AppResult();
         csvfile.open( output.c_str() ); //, ios::app );
     } // both
     else {
-        outputFile = TFile::Open(output.c_str(),"RECREATE");
+        //outputFile = TFile::Open(output.c_str(),"RECREATE");
         microTuple = new TTree("micro","micro");
         if( !output.length() ) return AppResult();
         csvfile.open( output.c_str() ); //, ios::app );
@@ -44,34 +44,42 @@ AppResult OutputModule::beginJob(AppEvent& event){
     reverse(coltypes.begin(),coltypes.end());
 
     // initilize the output
-    if( csvfile.is_open() ){
-        for(unsigned int leaf=0; leaf<colnames.size(); leaf++){
-            size_t bra = colnames[leaf].find('['), ket = colnames[leaf].find(']'), nElements = 0;
-            // an array?
-            if( bra != string::npos && ket != string::npos && ket > bra )
-                nElements = atoi( colnames[leaf].substr(bra,ket-bra).c_str() );
+    for(unsigned int leaf=0; leaf<colnames.size(); leaf++){
+        size_t bra = colnames[leaf].find('['), ket = colnames[leaf].find(']'), nElements = 0;
+        // an array?
+        if( bra != string::npos && ket != string::npos && ket > bra )
+            nElements = atoi( colnames[leaf].substr(bra+1,ket-bra-1).c_str() );
 
-            if( nElements > 0 ){
+        if( nElements > 0 ){
+            if( csvfile.is_open() ){
                 stringstream elements;
                 for(size_t i=0; i<nElements; i++){
-                    elements<<colnames[leaf].substr(bra)<<"["; 
-                    elements<<nElements<<"]";
-                    if( leaf+1 != colnames.size() ) elements<<",";
+                    elements<<colnames[leaf].substr(0,bra)<<"["; 
+                    elements<<i<<"]";
+                    if( leaf+1 != colnames.size() || i+1 != nElements ) elements<<",";
                     else elements<<endl;
                 }
-                csvfile<<elements;
-                colarray.push_back(nElements);
-            } else {
-                csvfile<<colnames[leaf];
-                colarray.push_back(1);
+                csvfile<<elements.str();
+            }
+            colarray.push_back(nElements);
+        } else {
+            csvfile<<colnames[leaf];
+            colarray.push_back(1);
+            if( csvfile.is_open() ){
                 if( leaf+1 != colnames.size() ) csvfile<<",";
                 else csvfile<<endl;
             }
         }
     }
+
     if( microTuple ){
         for(unsigned int leaf=0; leaf<colnames.size(); leaf++){
-            microTuple->Branch( colnames[leaf].c_str(), (void*)0, colnames[leaf].c_str() ); 
+            string branchname = colnames[leaf];
+            size_t bra = colnames[leaf].find('['), ket = colnames[leaf].find(']');
+            if( bra != string::npos && ket != string::npos && ket > bra )
+                branchname = colnames[leaf].substr(0,bra);
+
+            microTuple->Branch( branchname.c_str(), (void*)0, (colnames[leaf]+"/"+coltypes[leaf]).c_str() ); 
         }
     }
 
@@ -79,9 +87,14 @@ AppResult OutputModule::beginJob(AppEvent& event){
 }
 
 AppResult OutputModule::endJob  (AppEvent& event){
+    if( csvfile.is_open() ) csvfile.close();
+    if( microTuple ){
+        TFile *outputFile = TFile::Open(output.c_str(),"RECREATE");
+        microTuple->Write();
+        outputFile->Close();
+    }
 //   if( microTuple ) delete microTuple;
 //   if( outputFile ) delete outputFile;
-    if( csvfile.is_open() ) csvfile.close();
     return AppResult();
 }
 
@@ -109,6 +122,14 @@ AppResult OutputModule::event(AppEvent& event){
                 } else {
                     for(size_t i=0; i<colarray[leaf]; i++)
                         eventContent.push_back( Value_t(val[i]) );
+                    if( microTuple ){
+                        if( colarray[leaf] == 1 )
+                            microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<int*>(val));
+                        else {
+                            string branchname = colnames[leaf].substr(0,colnames[leaf].find('['));
+                            microTuple->SetBranchAddress(branchname.c_str(),const_cast<int*>(val));
+                        }
+                    }
                 }
             } break;
             case 'D' : {
@@ -121,6 +142,14 @@ AppResult OutputModule::event(AppEvent& event){
                 } else {
                     for(size_t i=0; i<colarray[leaf]; i++)
                         eventContent.push_back( Value_t(val[i]) );
+                    if( microTuple ){
+                        if( colarray[leaf] == 1 )
+                            microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<double*>(val));
+                        else {
+                            string branchname = colnames[leaf].substr(0,colnames[leaf].find('['));
+                            microTuple->SetBranchAddress(branchname.c_str(),const_cast<double*>(val));
+                        }
+                    }
                 }
             } break;
             default : break;
