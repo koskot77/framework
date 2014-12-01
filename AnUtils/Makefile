@@ -8,7 +8,7 @@ LIB_SOURCES := RegEx.cc CompiledFormula.cc Value_t.cc
 LIB_SOURCES_DIR :=
 
 # Compiller's flags
-CXXFLAGS := -std=c++11 -fPIC -Wall -frtti -fexceptions -g
+CXXFLAGS := -std=c++0x -fPIC -Wall -frtti -fexceptions -g
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=

@@ -8,7 +8,7 @@ LIB_SOURCES :=
 LIB_SOURCES_DIR := ./
 
 # Compiller's flags
-CXXFLAGS := -std=c++11 -fPIC -Wall -frtti -fexceptions -fpic -g `root-config --cflags`
+CXXFLAGS := `root-config --cflags`
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=

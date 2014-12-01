@@ -8,7 +8,7 @@ LIB_SOURCES :=
 LIB_SOURCES_DIR := ./
 
 # Compiller's flags
-CXXFLAGS := -std=c++11 -fPIC -g -Wall
+CXXFLAGS :=
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=

@@ -1,3 +1,5 @@
+include $(WORKDIR)/paths.mk
+
 # Define directories for objects, libraries, and executables
 #TmpDir      := $(WORKDIR)/tmp/
 #LibDir	     := $(WORKDIR)/lib/
@@ -19,7 +21,6 @@ else
    endif
 endif
 
-
 #  Suffixes like .cc .cxx .cpp can be set with FSUFF, CSUFF, and CCSUFF (default are *.f , *.c и *.cc)
 ifeq (,$(FSUFF))
       FSUFF  := f
@@ -32,9 +33,15 @@ ifeq (,$(CCSUFF))
 endif
 
 # Compiler and linker
-CXX          := /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g++
-F77          := /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g77
-LD           := /cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/gcc/4.8.1/bin/g++
+ifeq (,$(CXX))
+      CXX := g++
+endif
+ifeq (,$(F77))
+      F77 := g++
+endif
+ifeq (,$(LD))
+      LD  := g++
+endif
 
 # Find out the package name that is using this rules 
 ifeq (,$(PACKAGE_NAME))
