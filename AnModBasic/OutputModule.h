@@ -4,6 +4,7 @@
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
+//#include "AnUtils/CompiledFormula.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -14,11 +15,12 @@
 class OutputModule : public AppModule{
 private:
     AppParameter<string> output;          // File name for writing (no files will be created if empty)
-    AppParameter<string> leaflist;        // standard root leaflist in a form "par[n]/type:..."
-//    AppParameter<string> filter;          // 
+    AppParameter<string> leaflist;        // standard root leaflist in a form "par[n]/type:..." (1D arrays only)
+//    AppParameter<CompiledFormula> filter; // 
 
     std::vector<std::string> colnames;
     std::vector<char>        coltypes;
+    std::vector<size_t>      colarray;
 
     TFile *outputFile;
     TTree *microTuple;

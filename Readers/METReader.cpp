@@ -29,7 +29,7 @@ AppResult METReader::event(AppEvent& event) {
         met.setEPxPyPz( sqrt(pmet.px*pmet.px + pmet.py*pmet.py), pmet.px, pmet.py, 0 );
     }
 
-    event.put("met",(const MET*)&met);
+    event.put("ETmiss",(const MET*)&met);
 
     return AppResult();
 }

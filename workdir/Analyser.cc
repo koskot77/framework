@@ -69,8 +69,8 @@ AppResult Analyser::event(AppEvent& event){
 //        std::cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<std::endl;
 
     const MET *ETmiss;
-    if( event.get("met",ETmiss) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
-//    std::cout<<" met= "<<met->pt()<<std::endl;
+    if( event.get("ETmiss",ETmiss) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
+    std::cout<<" met= "<<ETmiss->pt()<<std::endl;
     met = ETmiss->pt();
 
     if( numberOfJets==3 && muons->size()==0 && electrons->size()==0 ){
@@ -86,7 +86,7 @@ AppResult Analyser::event(AppEvent& event){
 
     event.put("numberOfJets",(const int*)&numberOfJets);
     event.put("m3jets",(const double*)&m3jets);
-    event.put("mmm",   (const double*)&met);
+    event.put("met",   (const double*)&met);
 
     if( event.get("runNumber",  run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
     if( event.get("eventNumber",evt) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No eventNumber found");
