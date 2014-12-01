@@ -48,10 +48,10 @@ AppResult BasicReader::event(AppEvent& event) {
 
     const BNevent &evtstruc = __eventAux->product()->at(0);
 
-//    eventNumber = evtstruc.event;
+    eventNumber = evtstruc.evt;
     runNumber   = evtstruc.run;
 
-//    event.put("eventNumber",eventNumber);
+    event.put("eventNumber",eventNumber);
     event.put("runNumber",  runNumber  );
 
     return AppResult();
