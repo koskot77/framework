@@ -14,7 +14,8 @@
 class OutputModule : public AppModule{
 private:
     AppParameter<string> output;          // File name for writing (no files will be created if empty)
-    AppParameter<string> leaflist;        //standard root leaflist in a form "par[n]/type:..."
+    AppParameter<string> leaflist;        // standard root leaflist in a form "par[n]/type:..."
+//    AppParameter<string> filter;          // 
 
     std::vector<std::string> colnames;
     std::vector<char>        coltypes;
@@ -36,6 +37,7 @@ public:
     OutputModule(const char *nm, const char *descr):AppModule(nm,descr),
         output  (*this,"output",   "./output.csv"),
         leaflist(*this,"leaflist", ""),
+//        filter  (*this,"filter",   ""),
         outputFile(0), microTuple(0){ }
     virtual ~OutputModule(){}
 };
