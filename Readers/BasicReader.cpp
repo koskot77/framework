@@ -5,6 +5,7 @@ using namespace std;
 
 #include "ProductArea/BNcollections/interface/BNprimaryvertex.h"
 #include "ProductArea/BNcollections/interface/BNevent.h"
+#include "DataFormats/Common/interface/Wrapper.h"
 
 edm::Wrapper<BNprimaryvertexCollection> *__vertices = new edm::Wrapper<BNprimaryvertexCollection>();
 edm::Wrapper<BNeventCollection>         *__eventAux = new edm::Wrapper<BNeventCollection>();
@@ -28,7 +29,7 @@ AppResult BasicReader::event(AppEvent& event) {
 
     bool foundVertex = false;
     if( __vertices->isPresent() )
-      for(BNprimaryvertexCollection::const_iterator vtx = __vertices->product().begin(); vtx != __vertices->product().end(); vtx++){
+      for(BNprimaryvertexCollection::const_iterator vtx = __vertices->product()->begin(); vtx != __vertices->product()->end(); vtx++){
         // looks for the first good vertex
         if( vtx->ndof > 4 && fabs(vtx->z) <= 24 && fabs(vtx->rho) <= 2 ){
             vx = vtx->x;
@@ -45,12 +46,12 @@ AppResult BasicReader::event(AppEvent& event) {
     event.put("vy",vy);
     event.put("vz",vz);
 
-    const BNevent *evtstruc = __eventAux->product().at(0);
+    const BNevent &evtstruc = __eventAux->product()->at(0);
 
-    eventNumber = evtstruc->event;
-    runNumber   = evtstruc->run;
+//    eventNumber = evtstruc.event;
+    runNumber   = evtstruc.run;
 
-    event.put("eventNumber",eventNumber);
+//    event.put("eventNumber",eventNumber);
     event.put("runNumber",  runNumber  );
 
     return AppResult();
