@@ -8,6 +8,7 @@
 
 class BasicReader : public AppModule {
 private:
+        int    eventNumber, runNumber;
         double rho;
         double vx, vy, vz;
 

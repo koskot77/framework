@@ -41,9 +41,9 @@ AppResult Analyser::event(AppEvent& event){
     const vector<ParticlePointer> *gen;
     if( event.get("genParticles",gen) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
     std::cout<<" #genParts = "<<gen->size()<<std::endl;
-    for(unsigned int p=0; p<gen->size(); p++){
-        std::cout<<" gen "<<gen->at(p)->type()<<" pT["<<p<<"] = "<<gen->at(p)->pt()<<" eta="<<gen->at(p)->eta()<<" phi="<<gen->at(p)->phi()<<std::endl;
-    }
+//    for(unsigned int p=0; p<gen->size(); p++){
+//        std::cout<<" gen "<<gen->at(p)->type()<<" pT["<<p<<"] = "<<gen->at(p)->pt()<<" eta="<<gen->at(p)->eta()<<" phi="<<gen->at(p)->phi()<<std::endl;
+//    }
 
     const JetCollection *jets;
     if( event.get("jets",jets) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
@@ -87,6 +87,12 @@ AppResult Analyser::event(AppEvent& event){
     event.put("numberOfJets",(const int*)&numberOfJets);
     event.put("m3jets",(const double*)&m3jets);
     event.put("mmm",   (const double*)&met);
+
+    if( event.get("runNumber",  run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
+    if( event.get("eventNumber",evt) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No eventNumber found");
+
+    event.put("run",   (const int*)&run);
+    event.put("event", (const int*)&evt);
 
     return AppResult();
 }

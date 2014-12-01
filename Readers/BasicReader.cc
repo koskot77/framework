@@ -4,9 +4,11 @@ using namespace std;
 #include "TBranch.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
+#include "DataFormats/Provenance/interface/EventAuxiliary.h"
 
-edm::Wrapper<double> *__rho = new edm::Wrapper<double>();
+edm::Wrapper<double>                      *__rho      = new edm::Wrapper<double>();
 edm::Wrapper< std::vector<reco::Vertex> > *__vertices = new edm::Wrapper< std::vector<reco::Vertex> >();
+              edm::EventAuxiliary         *__eventAux = new edm::EventAuxiliary();
 
 AppResult BasicReader::beginJob(AppEvent& event) {
     TTree *Events;
@@ -19,6 +21,10 @@ AppResult BasicReader::beginJob(AppEvent& event) {
     TBranch *inputVtx = Events->GetBranch("recoVertexs_offlineSlimmedPrimaryVertices__PAT.");
     if( !inputVtx ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoVertexs_offlineSlimmedPrimaryVertices__PAT.' branch found");
     inputVtx->SetAddress(&__vertices);
+
+    TBranch *inputAux = Events->GetBranch("EventAuxiliary");
+    if( !inputAux ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'EventAuxiliary' branch found");
+    inputAux->SetAddress(&__eventAux);
 
     return AppResult();
 }
@@ -44,6 +50,12 @@ AppResult BasicReader::event(AppEvent& event) {
     event.put("vy",vy);
     event.put("vz",vz);
     event.put("rho_event", (__rho->isPresent() ? *(__rho->product()) : -1) );
+
+    eventNumber = __eventAux->id().event();
+    runNumber   = __eventAux->id().run();
+
+    event.put("eventNumber",eventNumber);
+    event.put("runNumber",  runNumber  );
 
     return AppResult();
 }

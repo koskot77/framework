@@ -27,6 +27,7 @@ private:
     vector<string> inputFiles;
     TChain *chain;
     int chainEntryNumber;
+//    int currentRunNumber;
 
 public:
 
