@@ -7,7 +7,7 @@ class LundCodesToNames {
 private:
         static unordered_map<int,const char*> names;
 public:
-        static const char* convert(int code);
+        static const char* name(int code);
         LundCodesToNames(void);
 };
 

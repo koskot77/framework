@@ -2,8 +2,6 @@ using namespace std;
 #include "Particle.h"
 
 Particle::Particle(void):
-   name_(""),
-   type_(-1),
    p_(0),
    pt_(0),
    eta_(0),
@@ -11,11 +9,14 @@ Particle::Particle(void):
    phi_(0),
    mass_(0),
    charge_(-10),
-   x_(0),y_(0),z_(0),
-   vector(4),
-   mother_(0){}
+   x_(0),y_(0),z_(0),d0_(0),
+   e_(0),px_(0),py_(0),pz_(0),
+   type_(-1),status_(0),
+   mcE(0),mcPx(0),mcPy(0),mcPz(0),
+   mother_(0)
+{ name_ = ""; }
 
-Particle::Particle(double energy, double px, double py, double pz) : name_(""), type_(-1),
+Particle::Particle(double energy, double px, double py, double pz) :
    p_(0),
    pt_(0),
    eta_(0),
@@ -23,14 +24,15 @@ Particle::Particle(double energy, double px, double py, double pz) : name_(""), 
    phi_(0),
    mass_(0),
    charge_(-10),
-   x_(0),y_(0),z_(0),
-   vector(4)
+   x_(0),y_(0),z_(0),d0_(0),
+   e_(energy),px_(px),py_(py),pz_(pz),
+   type_(-1),status_(0),
+   mcE(0),mcPx(0),mcPy(0),mcPz(0),
+   mother_(0)
 {
+
+        name_   = "";
         charge_ = -10;
-        vector[0] = energy;
-        vector[1] = px;
-        vector[2] = py;
-        vector[3] = pz;
         mass_     = 0;
         p_     = sqrt(px*px+py*py+pz*pz);
         pt_    = sqrt(px*px+py*py);
@@ -44,13 +46,20 @@ Particle::Particle(double energy, double px, double py, double pz) : name_(""), 
 Particle& Particle::operator+=(const Particle& particle){
         name_   = ""; mother_ =  0;
         type_   = -1; charge_ = -10;
+        status_ = 0;
         x_=0; y_=0; z_=0;
         charge_   += particle.charge_;
-        vector[0] += particle.vector[0];
-        vector[1] += particle.vector[1];
-        vector[2] += particle.vector[2];
-        vector[3] += particle.vector[3];
-        mass_ = vector[0]*vector[0]-vector[1]*vector[1]-vector[2]*vector[2]-vector[3]*vector[3];
+        e_  += particle.e_;
+        px_ += particle.px_;
+        py_ += particle.py_;
+        pz_ += particle.pz_;
+
+        mcE  += particle.mcE;
+        mcPx += particle.mcPx;
+        mcPy += particle.mcPy;
+        mcPz += particle.mcPz;
+
+        mass_ = e_*e_-px_*px_-py_*py_-pz_*pz_;
         if( mass_<0 ) mass_ = -1; else mass_ = sqrt(mass_);
         daughters_.push_back(&particle);
         return *this;

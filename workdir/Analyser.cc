@@ -32,16 +32,19 @@ AppResult Analyser::event(AppEvent& event){
     const ParticleCollection *gen;
     if( event.get("genParticles",gen) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
     cout<<" #genParts = "<<gen->size()<<std::endl;
-//    for(unsigned int p=0; p<gen->size(); p++){
-//        std::cout<<" gen "<<gen->at(p)->type()<<" pT["<<p<<"] = "<<gen->at(p)->pt()<<" eta="<<gen->at(p)->eta()<<" phi="<<gen->at(p)->phi()<<std::endl;
-//    }
+    for(unsigned int p=0; p<gen->size() /*&& p<20*/; p++){
+        const Particle *gp = gen->at(p).get();
+        const Particle *m = gp->mother();
+        const list<const Particle*> &d = gp->daughters();
+        cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<(m?m->pdgId():-1)<<" nd="<<d.size()<<std::endl;
+    }
 
     const JetCollection *jets;
     if( event.get("jets",jets) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
     cout<<" #jets = "<<jets->size()<<std::endl;
     numberOfJets = jets->size();
     for(int j=0; j<numberOfJets && j<4; j++){
-//        std::cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
+        cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
         jetPtRec [j] = jets->at(j)->pt();
         jetEtaRec[j] = jets->at(j)->eta();
         jetPhiRec[j] = jets->at(j)->phi();

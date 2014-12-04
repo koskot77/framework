@@ -8,13 +8,17 @@
 
 class Particle {
 private:
-        std::string name_;
-        int    type_, status_;
         double p_, pt_, eta_, theta_, phi_, mass_, charge_;
         double x_, y_, z_, d0_;
-        std::vector<double> vector; // energy-momentum, duplicates the previous data members
+        double e_, px_, py_, pz_; // energy-momentum, duplicates the previous data members
+
+        int    type_, status_;
+        double mcE, mcPx, mcPy, mcPz;
+
         const Particle *mother_;
         std::list<const Particle*> daughters_;
+
+        std::string name_;
 
 public:
         const char* name(void) const { return name_.c_str(); }
@@ -22,15 +26,16 @@ public:
         double    charge(void) const { return charge_; }
         void   setCharge(double ch)  { charge_ = ch;   }
         int       type(void)   const { return type_;   }
-        void   setType(int tp)       { type_ = tp;     }
+        int      pdgId(void)   const { return type_;   }
+        void  setPdgId(int tp)       { type_ = tp;     }
         int     status(void)   const { return status_; }
         void setStatus(int  s)       { status_ = s;    }
 
-        double e (void) const { return vector[0]; }
-        double px(void) const { return vector[1]; }
-        double py(void) const { return vector[2]; }
-        double pz(void) const { return vector[3]; }
-        double pt(void) const { return sqrt(vector[1]*vector[1]+vector[2]*vector[2]); }
+        double e (void) const { return e_;  }
+        double px(void) const { return px_; }
+        double py(void) const { return py_; }
+        double pz(void) const { return pz_; }
+        double pt(void) const { return sqrt(px_*px_+py_*py_); }
 
         double mass (void) const { return mass_;  }
         double p    (void) const { return p_;     }
@@ -43,13 +48,21 @@ public:
         double d0   (void) const { return d0_;    }
         double dz   (void) const { return z_;     }
 
-        std::vector<double> fourVector(void) const { return vector; }
+        void setMCtruth(double _e, double _px, double _py, double _pz, int _pdgId, int _status){
+            mcE = _e; mcPx = _px; mcPy = _py; mcPz = _pz; type_ = _pdgId; status_ = _status;
+        }
+
+        Particle mcTruth(void){ return Particle(mcE,mcPx,mcPy,mcPz); }
+
+        double dR(double eta, double phi){ return sqrt( (eta-eta_)*(eta-eta_) + (phi-phi_)*(phi-phi_) ); }
+
+        //std::vector<double> fourVector(void) const { return vector; }
 
         void setEPxPyPz(double e, double px, double py, double pz) {
-            vector[0] = e;
-            vector[1] = px;
-            vector[2] = py;
-            vector[3] = pz;
+            e_  = e;
+            px_ = px;
+            py_ = py;
+            pz_ = pz;
             p_     = sqrt( px*px + py*py + pz*pz );
             pt_    = sqrt( px*px + py*py );
             theta_ = atan2( pt_, pz );
@@ -60,33 +73,35 @@ public:
         }
         void setMass (double m) { // preserves total momentum and direction
             mass_  = m;
-            vector[0] = sqrt( p_*p_ + m*m );
+            e_ = sqrt( p_*p_ + m*m );
         }
         void setP    (double r) { // preserves direction only
-            p_     = r;
-            vector[3] = p_*cos(theta_);
-            vector[1] = p_*sin(theta_)*cos(phi_);
-            vector[2] = p_*sin(theta_)*sin(phi_);
-            if(vector[0]>=p_) mass_ = sqrt( vector[0]*vector[0] - p_*p_ );
-            else              mass_ = -1;
+            p_  = r;
+            pz_ = p_*cos(theta_);
+            px_ = p_*sin(theta_)*cos(phi_);
+            py_ = p_*sin(theta_)*sin(phi_);
+            if(e_>=p_) mass_ = sqrt( e_*e_ - p_*p_ );
+            else       mass_ = -1;
         }
         void setTheta(double t) { // preserves total momentum
             theta_ = t;
             eta_   = -log( tan( theta_/2. ) );
-            vector[3] = p_*cos(t);
-            vector[1] = p_*sin(t)*cos(phi_);
-            vector[2] = p_*sin(t)*sin(phi_);
+            pz_ = p_*cos(t);
+            px_ = p_*sin(t)*cos(phi_);
+            py_ = p_*sin(t)*sin(phi_);
         }
         void setPhi  (double f) {  // preserves total momentum
             phi_ = f;
-            vector[1] = p_*sin(theta_)*cos(phi_);
-            vector[2] = p_*sin(theta_)*sin(phi_);
+            px_  = p_*sin(theta_)*cos(phi_);
+            py_  = p_*sin(theta_)*sin(phi_);
         }
         void setXYZ(double x, double y, double z) { x_ = x; y_ = y; z_ = z; }
         void setD0 (double _d0){ d0_ = _d0; }
 
         const Particle*            mother   (void) const { return mother_;    }
         std::list<const Particle*> daughters(void) const { return daughters_; }
+        void setMother  (const Particle *m){ mother_ = m; }
+        void addDaughter(const Particle *d){ daughters_.push_back(d); }
 
         Particle& operator+=(const Particle& particle);
         Particle  operator+ (const Particle& particle) const { Particle tmp(*this); tmp+=particle; return tmp; }

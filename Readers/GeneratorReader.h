@@ -9,7 +9,7 @@
 
 class GeneratorReader : public AppModule {
 private:
-        ParticleCollection genParticles;
+        ParticleCollection genParticles, principalPartons;
 
 protected:
         AppResult beginJob(AppEvent& event);

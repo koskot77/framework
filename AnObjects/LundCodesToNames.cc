@@ -1,7 +1,8 @@
 using namespace std;
 #include "LundCodesToNames.h"
 
-LundCodesToNames __makeInitialization__;
+unordered_map<int,const char*> LundCodesToNames::names;
+LundCodesToNames __initializeLundCodesToNames;
 
 LundCodesToNames::LundCodesToNames(void){
 	names[0] = "unknown";
@@ -19,7 +20,7 @@ LundCodesToNames::LundCodesToNames(void){
 	names[-13] = "mu+";    names[ 13] = "mu-";
 	names[-14] = "numu+";  names[ 14] = "numu-";
 	names[-15] = "tau+";   names[ 15] = "tau-";
-	names[-16] = "nutay+"; names[ 16] = "nutau-";
+	names[-16] = "nutau+"; names[ 16] = "nutau-";
 
 	names[-211] = "pi-";   names[211] = "pi+";
 	names[-321] = "K-";    names[321] = "K+";
@@ -66,7 +67,7 @@ LundCodesToNames::LundCodesToNames(void){
 	names[441] = "etaC"; names[443] = "JPsi";
 }
 
-const char* LundCodesToNames::convert(int code) {
+const char* LundCodesToNames::name(int code) {
 	unordered_map<int,const char*>::const_iterator name = names.find(code);
 	if( name != names.end() ) return name->second;
 	else return "";
