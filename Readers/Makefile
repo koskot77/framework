@@ -10,7 +10,7 @@ LIB_SOURCES_DIR := ./
 CCSUFF := cc
 
 # Compiller's flags
-CXXFLAGS  = `root-config --cflags` $(CLHEPFLAGS)
+CXXFLAGS  = `root-config --cflags` $(CLHEPFLAGS) $(BOOSTFLAGS)
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=
