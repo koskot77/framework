@@ -12,9 +12,8 @@ private:
         double x_, y_, z_, d0_;
         double e_, px_, py_, pz_; // energy-momentum, duplicates the previous data members
 
-        int    type_, status_;
-        double mcE, mcPx, mcPy, mcPz;
-
+        // pure MC truth information
+        int    type_, status_, motherType_, daughter1Type_, daughter2Type_;
         const Particle *mother_;
         std::list<const Particle*> daughters_;
 
@@ -35,7 +34,7 @@ public:
         double px(void) const { return px_; }
         double py(void) const { return py_; }
         double pz(void) const { return pz_; }
-        double pt(void) const { return sqrt(px_*px_+py_*py_); }
+        double pt(void) const { return pt_; }
 
         double mass (void) const { return mass_;  }
         double p    (void) const { return p_;     }
@@ -48,15 +47,15 @@ public:
         double d0   (void) const { return d0_;    }
         double dz   (void) const { return z_;     }
 
-        void setMCtruth(double _e, double _px, double _py, double _pz, int _pdgId, int _status){
-            mcE = _e; mcPx = _px; mcPy = _py; mcPz = _pz; type_ = _pdgId; status_ = _status;
-        }
+        int  motherPdgId(void) const { return motherType_; }
+        void setMotherPdgId(int id)  { motherType_  =  id; }
 
-        Particle mcTruth(void){ return Particle(mcE,mcPx,mcPy,mcPz); }
+        int  daughter1PdgId(void) const { return daughter1Type_; }
+        void setDaughter1PdgId(int id)  { daughter1Type_  =  id; }
+        int  daughter2PdgId(void) const { return daughter2Type_; }
+        void setDaughter2PdgId(int id)  { daughter2Type_  =  id; }
 
         double dR(double eta, double phi){ return sqrt( (eta-eta_)*(eta-eta_) + (phi-phi_)*(phi-phi_) ); }
-
-        //std::vector<double> fourVector(void) const { return vector; }
 
         void setEPxPyPz(double e, double px, double py, double pz) {
             e_  = e;
@@ -70,6 +69,17 @@ public:
             phi_   = atan2( py, px );
             if( e>=p_ ) mass_ = sqrt( e*e - p_*p_ );
             else        mass_ = -1;
+        }
+        void setPtEtaPhi(double pt, double eta, double phi){
+            pt_  = pt;
+            eta_ = eta;
+            phi_ = phi;
+            theta_ = 2 * atan(exp(-eta));
+            p_   = pt_ / sin(theta_);
+            px_  = p_*sin(theta_)*cos(phi_);
+            py_  = p_*sin(theta_)*sin(phi_);
+            pz_  = p_*cos(theta_);
+            e_   = p_;
         }
         void setMass (double m) { // preserves total momentum and direction
             mass_  = m;

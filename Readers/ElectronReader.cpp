@@ -53,6 +53,18 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setPFChargedHadronIsolation( pele->chargedHadronIso );
         electron->setPFNeutralHadronIsolation( pele->neutralHadronIso );
 
+        if( pele->genId ){
+            Particle mc; //, mother; //, daughter1, daughter2;
+            mc.setPdgId   ( pele->genId );
+            mc.setPtEtaPhi( pele->genPT, pele->genEta, pele->genPhi );
+            mc.setCharge  ( pele->genCharge );
+            mc.setMotherPdgId( pele->genMotherId );
+//            mother.setPdgId   (pele->genMotherId);
+//            mother.setPtEtaPhi(pele->genMotherPT,pele->genMotherEta,pele->genMotherPhi);
+//            mother.setCharge  (pele->genMotherCharge);
+            electron->setGenLepton(mc);
+        }
+
         if( electron->isLoose() ) electrons.push_back(electron);
     }
 

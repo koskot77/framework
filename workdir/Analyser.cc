@@ -76,14 +76,14 @@ AppResult Analyser::event(AppEvent& event){
     if( event.get("electrons",electrons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No electrons found");
     cout<<" #electrons = "<<electrons->size()<<std::endl;
     for(unsigned int e=0; e<electrons->size(); e++){
-        cout<<" #pTele["<<e<<"] = "<<electrons->at(e)->pt()<<std::endl;
+        cout<<" #pTele["<<e<<"] = "<<electrons->at(e)->pt()<<" gen="<<electrons->at(e)->genLepton().pt()<<std::endl;
     }
 
     const MuonCollection *muons;
     if( event.get("muons",muons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No muons found");
     cout<<" #muons = "<<muons->size()<<std::endl;
     for(unsigned int m=0; m<muons->size(); m++){
-        cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<std::endl;
+        cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<" gen="<<muons->at(m)->genLepton().pt()<<std::endl;
         muPtRec [ numberOfRecMuons ] = muons->at(m)->pt();
         muEtaRec[ numberOfRecMuons ] = muons->at(m)->eta();
         muPhiRec[ numberOfRecMuons ] = muons->at(m)->phi();

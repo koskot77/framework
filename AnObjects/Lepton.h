@@ -13,6 +13,8 @@ protected:
     float PFGamma_Isolation, PFChargedHadron_Isolation, PFNeutralHadron_Isolation;
     float PFrho, PFsumPUPt;  
 
+    Particle mcTruth;
+
 public:
     float XyDistanceToPrimaryVertex(void) const { return xyDistanceToPrimaryVertex; }
     float ZDistanceToPrimaryVertex (void) const { return zDistanceToPrimaryVertex;  }
@@ -21,6 +23,9 @@ public:
     float PFNeutralHadronIsolation (void) const { return PFNeutralHadron_Isolation; }
     float PFChargedPUinIsoCone     (void) const { return PFsumPUPt; }
     float PFEventEnergyDensity     (void) const { return PFrho; }
+
+    const Particle& genLepton      (void) const { return mcTruth; }
+    void setGenLepton       (const Particle &p) { mcTruth = p; }
 
     void setXyDistanceToPrimaryVertex(float dist){ xyDistanceToPrimaryVertex = dist; }
     void setZDistanceToPrimaryVertex (float dist){  zDistanceToPrimaryVertex = dist; }

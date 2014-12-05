@@ -2,6 +2,7 @@ using namespace std;
 #include "GeneratorReader.h"
 #include "TTree.h"
 #include "TBranch.h"
+#include "AnObjects/LundCodesToNames.h"
 
 #include "ProductArea/BNcollections/interface/BNmcparticle.h"
 #include "DataFormats/Common/interface/Wrapper.h"
@@ -25,19 +26,15 @@ AppResult GeneratorReader::event(AppEvent& event) {
 
     for(size_t i=0; i<__genParticles->product()->size(); i++){
         const BNmcparticle &p = (*__genParticles->product())[i];
-//        int st = p.status();  
-//        const Candidate * mom = p.mother();
-//        int n = p.numberOfDaughters();
-//        for(size_t j = 0; j < n; ++ j) {
-//            const Candidate * d = p.daughter( j );
-//            int dauId = d->pdgId();
-//        }
         ParticlePointer particle( new Particle(p.energy, p.px, p.py, p.pz) );
         particle->setXYZ   ( p.vx, p.vy, p.vz );
-        particle->setName  ( "qwe" );
+        particle->setName  ( LundCodesToNames::name(p.id) );
         particle->setCharge( p.charge );
         particle->setPdgId ( p.id  );
         particle->setStatus( p.status );
+        particle->setMotherPdgId( p.motherId );
+        particle->setDaughter1PdgId( p.daughter0Id );
+        particle->setDaughter2PdgId( p.daughter1Id );
         genParticles.push_back(particle);
     }
 

@@ -73,6 +73,28 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setNtrackerLayersWithMeasurement( (pmuon->isTrackerMuon() ? pmuon->track()->hitPattern().trackerLayersWithMeasurement(): -1) );
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations() );
 
+        if( pmuon->genLepton() ){
+            Particle mc;
+            mc.setPdgId   ( pmuon->genLepton()->pdgId() );
+            mc.setPtEtaPhi( pmuon->genLepton()->pt(), pmuon->genLepton()->eta(), pmuon->genLepton()->phi() );
+            mc.setCharge  ( pmuon->genLepton()->charge() );
+            if( pmuon->genLepton()->numberOfMothers()>0 ){
+                const reco::Candidate *mother = pmuon->genLepton()->mother();
+
+                bool staytrapped = true;
+                while( (mother->pdgId()==mc.pdgId() && staytrapped) ){
+                    if( mother->numberOfMothers()>=1 ) mother = mother->mother();
+                    else staytrapped = false;
+                }
+
+                mc.setMotherPdgId( mother->pdgId() );
+//            .setPdgId   (mother->genMotherId);
+//            .setPtEtaPhi(mother->pt(),mother->eta(),mother->phi());
+//            .setCharge  (mother->charge());
+            }
+            muon->setGenLepton(mc);
+        }
+
         if( muon->isLoose() ) muons.push_back(muon);
       }
 

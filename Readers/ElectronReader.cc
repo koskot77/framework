@@ -67,6 +67,28 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setPFChargedHadronIsolation( pele->chargedHadronIso() );
         electron->setPFNeutralHadronIsolation( pele->neutralHadronIso() );
 
+        if( pele->genLepton() ){
+            Particle mc;
+            mc.setPdgId   ( pele->genLepton()->pdgId() );
+            mc.setPtEtaPhi( pele->genLepton()->pt(), pele->genLepton()->eta(), pele->genLepton()->phi() );
+            mc.setCharge  ( pele->genLepton()->charge() );
+            if( pele->genLepton()->numberOfMothers()>0 ){
+                const reco::Candidate *mother = pele->genLepton()->mother();
+
+                bool staytrapped = true;
+                while( (mother->pdgId()==mc.pdgId() && staytrapped) ){
+                    if( mother->numberOfMothers()>=1 ) mother = mother->mother();
+                    else staytrapped = false;
+                }
+
+                mc.setMotherPdgId( mother->pdgId() );
+//            .setPdgId   (mother->genMotherId);
+//            .setPtEtaPhi(mother->pt(),mother->eta(),mother->phi());
+//            .setCharge  (mother->charge());
+            }
+            electron->setGenLepton(mc);
+        }
+
         if( electron->isLoose() ) electrons.push_back(electron);
     }
 

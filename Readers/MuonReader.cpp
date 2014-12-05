@@ -60,6 +60,18 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setNtrackerLayersWithMeasurement( pmuon->numberOfLayersWithMeasurement );
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations );
 
+        if( pmuon->genId ){
+            Particle mc; //, mother; //, daughter1, daughter2;
+            mc.setPdgId   ( pmuon->genId );
+            mc.setPtEtaPhi( pmuon->genPT, pmuon->genEta, pmuon->genPhi );
+            mc.setCharge  ( pmuon->genCharge );
+            mc.setMotherPdgId( pmuon->genMotherId );
+//            mother.setPdgId   (pmuon->genMotherId);
+//            mother.setPtEtaPhi(pmuon->genMotherPT,pele->genMotherEta,pele->genMotherPhi);
+//            mother.setCharge  (pmuon->genMotherCharge);
+            muon->setGenLepton(mc);
+        }
+
         if( muon->isLoose() ) muons.push_back(muon);
       }
 
