@@ -211,7 +211,7 @@ long AppFramework::process(long nevent){
         else
                 clog<<"Process all events form run"<<endl;
 
-        for(int curevent=0; nevent==0 || curevent<nevent; curevent++){
+        for(int curevent=0; nevent<=0 || curevent<nevent; curevent++){
                 app_event.clear();
                 list< pair<AppModule*,bool> >::iterator seqiter = sequence.begin();
                 while( seqiter != sequence.end() ){

@@ -120,16 +120,18 @@ AppResult OutputModule::event(AppEvent& event){
                     errorMsg.append("/I found");
                     return AppResult(AppResult::STOP|AppResult::ERROR,errorMsg);
                 } else {
-                    for(size_t i=0; i<colarray[leaf]; i++)
-                        eventContent.push_back( Value_t(val[i]) );
-                    if( microTuple ){
-                        if( colarray[leaf] == 1 )
-                            microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<int*>(val));
-                        else {
+                        if( colarray[leaf] == 1 ){
+                            if( microTuple ) microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<int*>(val));
+                            eventContent.push_back( Value_t( colnames[leaf], val[0] ) );
+                        } else {
                             string branchname = colnames[leaf].substr(0,colnames[leaf].find('['));
-                            microTuple->SetBranchAddress(branchname.c_str(),const_cast<int*>(val));
+                            if( microTuple ) microTuple->SetBranchAddress(branchname.c_str(),const_cast<int*>(val));
+                            char buff[ colarray[leaf] ];
+                            for(size_t i=0; i<colarray[leaf]; i++){
+                                sprintf(buff,"%s[%ld]",branchname.c_str(),i);
+                                eventContent.push_back( Value_t( buff, val[i] ) );
+                            }
                         }
-                    }
                 }
             } break;
             case 'D' : {
@@ -140,30 +142,40 @@ AppResult OutputModule::event(AppEvent& event){
                     errorMsg.append("/I found");
                     return AppResult(AppResult::STOP|AppResult::ERROR,errorMsg);
                 } else {
-                    for(size_t i=0; i<colarray[leaf]; i++)
-                        eventContent.push_back( Value_t(val[i]) );
-                    if( microTuple ){
-                        if( colarray[leaf] == 1 )
-                            microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<double*>(val));
-                        else {
+                        if( colarray[leaf] == 1 ){
+                            if( microTuple ) microTuple->SetBranchAddress(colnames[leaf].c_str(),const_cast<double*>(val));
+                            eventContent.push_back( Value_t( colnames[leaf], val[0] ) );
+                        } else {
                             string branchname = colnames[leaf].substr(0,colnames[leaf].find('['));
-                            microTuple->SetBranchAddress(branchname.c_str(),const_cast<double*>(val));
+                            if( microTuple ) microTuple->SetBranchAddress(branchname.c_str(),const_cast<double*>(val));
+                            char buff[ colarray[leaf] ];
+                            for(size_t i=0; i<colarray[leaf]; i++){
+                                sprintf(buff,"%s[%ld]",branchname.c_str(),i);
+                                eventContent.push_back( Value_t( buff, val[i] ) );
+                            }
                         }
-                    }
                 }
             } break;
             default : break;
         }
     }
 
-    size_t n = eventContent.size();
-    for(list<Value_t>::const_iterator item = eventContent.begin(); item != eventContent.end(); item++){
-        csvfile<<*item;
-        if( --n ) csvfile<<",";
-        else      csvfile<<endl;
-    }
+    CompiledFormula &f = filter;
 
-    if( microTuple ) microTuple->Fill();
+    if( strlen(f.formula()) )
+        for(list<Value_t>::const_iterator item = eventContent.begin(); item != eventContent.end(); item++){
+            f[ item->getName() ] = *item;
+        }
+
+    if( strlen(f.formula())==0 || f.eval() == true ){
+        size_t n = eventContent.size();
+        for(list<Value_t>::const_iterator item = eventContent.begin(); item != eventContent.end(); item++){
+            csvfile<<*item;
+            if( --n ) csvfile<<",";
+            else      csvfile<<endl;
+        }
+        if( microTuple ) microTuple->Fill();
+    }
 
     return AppResult();
 }

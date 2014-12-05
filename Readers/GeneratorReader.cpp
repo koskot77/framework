@@ -36,7 +36,7 @@ AppResult GeneratorReader::event(AppEvent& event) {
         particle->setXYZ   ( p.vx, p.vy, p.vz );
         particle->setName  ( "qwe" );
         particle->setCharge( p.charge );
-        particle->setType  ( p.id  );
+        particle->setPdgId ( p.id  );
         particle->setStatus( p.status );
         genParticles.push_back(particle);
     }

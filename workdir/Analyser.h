@@ -8,8 +8,10 @@
 class Analyser : public AppModule{
 private:
     int    run, evt;
-    int    numberOfJets;
+    int    numberOfJets, numberOfRecMuons, numberOfGenMuons;
     double jetPtRec[4], jetEtaRec[4], jetPhiRec[4], jetCSV[4];
+    double muPtRec [4], muEtaRec [4], muPhiRec [4];
+    double muPtGen [4], muEtaGen [4], muPhiGen [4];
     double m3jets, met;
 
     AppResult beginJob(AppEvent& event);

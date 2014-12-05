@@ -4,7 +4,7 @@
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
-//#include "AnUtils/CompiledFormula.h"
+#include "AnUtils/CompiledFormula.h"
 #include <vector>
 #include <string>
 #include <fstream>
@@ -15,7 +15,7 @@ class OutputModule : public AppModule{
 private:
     AppParameter<string> output;          // File name for writing (no files will be created if empty)
     AppParameter<string> leaflist;        // standard root leaflist in a form "par[n]/type:..." (1D arrays only)
-//    AppParameter<CompiledFormula> filter; // 
+    AppParameter<CompiledFormula> filter; // 
 
     std::vector<std::string> colnames;
     std::vector<char>        coltypes;
@@ -37,7 +37,7 @@ public:
     OutputModule(const char *nm, const char *descr):AppModule(nm,descr),
         output  (*this,"output",   "./output.csv"),
         leaflist(*this,"leaflist", ""),
-//        filter  (*this,"filter",   ""),
+        filter  (*this,"filter"),
         microTuple(0){ }
     virtual ~OutputModule(){}
 };
