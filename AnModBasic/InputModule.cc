@@ -73,12 +73,12 @@ AppResult InputModule::beginJob(AppEvent& event){
     return AppResult(AppResult::OK|AppResult::LOG, returnMessage.str());
 }
 
-
+#include<TFile.h>
 AppResult InputModule::event(AppEvent& event){
 
-    if( (chainEntryNumber % showProgressPeriod) == 0 )
-        clog<<"Processed "<<chainEntryNumber<<" entries"<<endl;
-
+    if( (chainEntryNumber % showProgressPeriod) == 0 ){
+        clog<<"Processed "<<chainEntryNumber<<" entries (running on "<<chain->GetFile()->GetName()<<")"<<endl;
+    }
     if( chain->GetEntry(chainEntryNumber++) )
         return AppResult();
 

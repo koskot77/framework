@@ -23,7 +23,7 @@ AppResult OutputModule::beginJob(AppEvent& event){
         //outputFile = TFile::Open(output.c_str(),"RECREATE");
         microTuple = new TTree("micro","micro");
         if( !output.length() ) return AppResult();
-        csvfile.open( output.c_str() ); //, ios::app );
+        csvfile.open( (((string&)output)+".csv").c_str() ); //, ios::app );
     }
 
     colnames.clear();
@@ -89,6 +89,8 @@ AppResult OutputModule::beginJob(AppEvent& event){
 AppResult OutputModule::endJob  (AppEvent& event){
     if( csvfile.is_open() ) csvfile.close();
     if( microTuple ){
+        if( ((string&)output).find(".root") == string::npos )
+            ((string&)output).append(".root");
         TFile *outputFile = TFile::Open(output.c_str(),"RECREATE");
         microTuple->Write();
         outputFile->Close();
@@ -114,7 +116,7 @@ AppResult OutputModule::event(AppEvent& event){
         switch( coltypes[leaf] ){
             case 'I' : {
                 const int *val = 0;
-                if( event.get(colnames[leaf].c_str(),val) ){
+                if( event.get(colnames[leaf].c_str(),val) || !val ){
                     string errorMsg = "No ";
                     errorMsg.append(colnames[leaf].c_str());
                     errorMsg.append("/I found");
@@ -136,7 +138,7 @@ AppResult OutputModule::event(AppEvent& event){
             } break;
             case 'D' : {
                 const double *val = 0;
-                if( event.get(colnames[leaf].c_str(),val) ){
+                if( event.get(colnames[leaf].c_str(),val) || !val ){
                     string errorMsg = "No ";
                     errorMsg.append(colnames[leaf].c_str());
                     errorMsg.append("/I found");
