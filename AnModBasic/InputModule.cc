@@ -77,10 +77,16 @@ AppResult InputModule::beginJob(AppEvent& event){
 AppResult InputModule::event(AppEvent& event){
 
     if( (chainEntryNumber % showProgressPeriod) == 0 ){
-        clog<<"Processed "<<chainEntryNumber<<" entries (running on "<<chain->GetFile()->GetName()<<")"<<endl;
+        const char *path = chain->GetFile()->GetName();
+        const char *file = rindex(path,'/');
+        clog<<"Processed "<<chainEntryNumber<<" entries ("<<(file!=NULL?file+1:path)<<")"<<endl;
     }
-    if( chain->GetEntry(chainEntryNumber++) )
+
+    if( chain->GetEntry(chainEntryNumber) ){
+        event.put("chainEntryNumber", chainEntryNumber);
+        chainEntryNumber++;
         return AppResult();
+    }
 
     return AppResult(AppResult::STOP|AppResult::LOG, "End of stream");
 }

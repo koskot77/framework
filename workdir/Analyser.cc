@@ -17,6 +17,9 @@ AppResult Analyser::endJob(AppEvent& event){
 //match(const double *source, double *destination){}
 
 AppResult Analyser::event(AppEvent& event){
+    ZpT = 0;
+    diMuPtRec = 0;
+    diMuPtGen = 0;
 
     numberOfJets = 0;
     jetPtRec[0] = -1;
@@ -38,9 +41,11 @@ AppResult Analyser::event(AppEvent& event){
 
     if( event.get("runNumber",  run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
     if( event.get("eventNumber",evt) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No eventNumber found");
+    if( event.get("chainEntryNumber",etr) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No chainEntryNumber found");
 
     event.put("run",   (const int*)&run);
     event.put("event", (const int*)&evt);
+    event.put("entry", (const int*)&etr);
 
     cout<<"Event #"<<evt<<endl;
 
@@ -58,6 +63,14 @@ AppResult Analyser::event(AppEvent& event){
             muPhiGen[ numberOfGenMuons ] = gp->phi();
             numberOfGenMuons++;
         }
+        if( gp->pdgId() == 23 ) ZpT = gp->pt();
+    }
+    if( numberOfGenMuons == 2 ){
+      TLorentzVector lepton1, lepton2;
+      lepton1.SetPtEtaPhiM(muPtGen[0], muEtaGen[0], muPhiGen[0], 0.113);
+      lepton2.SetPtEtaPhiM(muPtGen[1], muEtaGen[1], muPhiGen[1], 0.113);
+      TLorentzVector sum( lepton1 + lepton2 );
+      diMuPtGen = sum.Pt();
     }
 
     const JetCollection *jets;
@@ -90,6 +103,14 @@ AppResult Analyser::event(AppEvent& event){
         numberOfRecMuons++;
     }
 
+    if( numberOfRecMuons == 2 ){
+      TLorentzVector lepton1, lepton2;
+      lepton1.SetPtEtaPhiM(muPtRec[0], muEtaRec[0], muPhiRec[0], 0.113);
+      lepton2.SetPtEtaPhiM(muPtRec[1], muEtaRec[1], muPhiRec[1], 0.113);
+      TLorentzVector sum( lepton1 + lepton2 );
+      diMuPtRec = sum.Pt();
+    }
+
     const MET *ETmiss;
     if( event.get("ETmiss",ETmiss) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
     cout<<" met= "<<ETmiss->pt()<<std::endl;
@@ -118,6 +139,10 @@ AppResult Analyser::event(AppEvent& event){
     event.put("muPtGen[4]",  (const double*)muPtGen);
     event.put("muEtaGen[4]", (const double*)muEtaGen);
     event.put("muPhiGen[4]", (const double*)muPhiGen);
+
+    event.put("diMuPtRec", (const double*)&diMuPtRec);
+    event.put("diMuPtGen", (const double*)&diMuPtGen);
+    event.put("ZpT",       (const double*)&ZpT);
 
     return AppResult();
 }
