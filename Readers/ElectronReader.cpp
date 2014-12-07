@@ -8,7 +8,7 @@ using namespace std;
 
 edm::Wrapper<BNelectronCollection> *__bnElectrons = new edm::Wrapper<BNelectronCollection>();
 
-AppResult ElectronReader::beginJob(AppEvent& event) {
+AppResult ElectronReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

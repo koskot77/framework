@@ -17,7 +17,7 @@ private:
     AppParameter<long>   firstEntry;         // starting point
 
     AppResult beginJob(AppEvent& event);
-    AppResult beginRun(AppEvent& event){ return AppResult(); }
+    AppResult beginRun(AppEvent& event);
     AppResult event   (AppEvent& event);
     AppResult endRun  (AppEvent& event){ return AppResult(); }
     AppResult endJob  (AppEvent& event){ return AppResult(); }
@@ -27,7 +27,7 @@ private:
     vector<string> inputFiles;
     TChain *chain;
     int chainEntryNumber;
-//    int currentRunNumber;
+    const char* currentFile;
 
 public:
 

@@ -8,7 +8,7 @@ using namespace std;
 
 edm::Wrapper<BNmetCollection> *__bnMETs = new edm::Wrapper<BNmetCollection>();
 
-AppResult METReader::beginJob(AppEvent& event) {
+AppResult METReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

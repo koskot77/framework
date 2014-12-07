@@ -6,7 +6,7 @@ using namespace std;
 #include "DataFormats/PatCandidates/interface/MET.h"
 edm::Wrapper<pat::METCollection> *__patMETs = new edm::Wrapper<pat::METCollection>();
 
-AppResult METReader::beginJob(AppEvent& event) {
+AppResult METReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

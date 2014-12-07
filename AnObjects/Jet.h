@@ -53,6 +53,8 @@ private:
     std::vector<double> diffVec;
     std::vector<double> btag_discriminators;
 
+    std::vector<Particle> matchedMC;
+
 public:
     bool isGood() const;
     bool isBJet(BtagAlgorithm::value      type = BtagAlgorithm::CombinedSecondaryVertexBTag,
@@ -92,6 +94,9 @@ public:
     void setCHF(float chf){ chargedHadronEnergyFraction = chf; }
     void setNCH(float nch){ chargedMultiplicity         = nch; }
     void setJECUnc(double jecUnc){ jecUncertainty = jecUnc; }
+
+    const std::vector<Particle>& matchedPartons(void) const { return matchedMC; }
+    void addMatch(const Particle &p) { matchedMC.push_back(p); }
 
     static JetCorrDirection::value correctDirection;
     static JetBtagVariation::value bTagVariation;

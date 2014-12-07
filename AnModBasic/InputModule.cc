@@ -23,6 +23,7 @@ void InputModule::setParameter(const char* parname, const char* value){
 AppResult InputModule::beginJob(AppEvent& event){
     stringstream returnMessage;
     inputFiles.clear();
+    currentFile = 0;
 
     size_t begin = 0, end = string::npos;
     while( true ){
@@ -65,25 +66,45 @@ AppResult InputModule::beginJob(AppEvent& event){
         chain->AddFile( file->c_str() );
 
     event.put("Events",(TTree*)chain);
-    chainEntryNumber = 0;
-    chain->GetEntry(chainEntryNumber);
-
     chainEntryNumber = firstEntry;
 
     return AppResult(AppResult::OK|AppResult::LOG, returnMessage.str());
 }
 
+AppResult InputModule::beginRun(AppEvent& event){
+    if( chain->GetEntry(chainEntryNumber) ){
+        return AppResult();
+    }
+}
+
 #include<TFile.h>
 AppResult InputModule::event(AppEvent& event){
 
+    const char *path = chain->GetFile()->GetName();
+
+    if( currentFile != path ){
+        chain->GetEntry(chainEntryNumber);
+
+        AppEvent tmpEvent;
+        if( endRunNotify(tmpEvent) )
+            return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
+
+        AppEvent initEvent;
+        initEvent.put("Events",(TTree*)chain);
+        if( beginRunNotify(initEvent) )
+            return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
+
+        currentFile = path;
+    }
+
     if( (chainEntryNumber % showProgressPeriod) == 0 ){
-        const char *path = chain->GetFile()->GetName();
         const char *file = rindex(path,'/');
         clog<<"Processed "<<chainEntryNumber<<" entries ("<<(file!=NULL?file+1:path)<<")"<<endl;
     }
 
     if( chain->GetEntry(chainEntryNumber) ){
         event.put("chainEntryNumber", chainEntryNumber);
+        event.put("inputFileName",    path);
         chainEntryNumber++;
         return AppResult();
     }

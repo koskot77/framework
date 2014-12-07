@@ -7,7 +7,7 @@ using namespace std;
 #include "DataFormats/PatCandidates/interface/Muon.h"
 edm::Wrapper<pat::MuonCollection> *__patMuons = new edm::Wrapper<pat::MuonCollection>();
 
-AppResult MuonReader::beginJob(AppEvent& event) {
+AppResult MuonReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

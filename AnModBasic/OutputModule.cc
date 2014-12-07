@@ -101,6 +101,8 @@ AppResult OutputModule::endJob  (AppEvent& event){
 }
 
 AppResult OutputModule::beginRun(AppEvent& event){
+std::cout<<"Moving on the the next run"<<endl;
+
     return AppResult();
 }
 

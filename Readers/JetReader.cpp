@@ -8,7 +8,7 @@ using namespace std;
 
 edm::Wrapper<BNjetCollection> *__bnJets = new edm::Wrapper<BNjetCollection>();
 
-AppResult JetReader::beginJob(AppEvent& event) {
+AppResult JetReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

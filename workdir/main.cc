@@ -157,17 +157,17 @@ int main(int argc, char **argv) {
         else
             outputFileName.append(sampleName.substr(startPos+1));
     }
-    outputFileName.append(".csv");
+//    outputFileName.append(".csv");
 
     fw.verbose("AppFramework","cout on");
-//    fw.verbose("Analyser","cout off");
+    fw.verbose("Analyser","cout off");
     fw.modList();
     fw.modify("InputModule::path",inputFiles.c_str());
-    fw.modify("InputModule::showProgressPeriod","1000");
+    fw.modify("InputModule::showProgressPeriod","10000");
     fw.modify("InputModule::firstEntry","0");
-    fw.modify("OutputModule::filter","numberOfJets==3 && ZpT>300");
+    fw.modify("OutputModule::filter","numberOfJets==3 && diMuPtRec>300");
     fw.modify("OutputModule::output",outputFileName.c_str());
-    fw.modify("OutputModule::leaflist","event/I:entry/I:numberOfJets/I:m3jets/D:met/D:jetPtRec[4]/D:ZpT/D:numberOfRecMuons/I:diMuPtRec/D:numberOfGenMuons/I:diMuPtGen/D");
+    fw.modify("OutputModule::leaflist","event/I:entry/I");
     fw.beginJob();
     fw.process(-1);
     fw.endJob();

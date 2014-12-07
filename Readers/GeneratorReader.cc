@@ -9,7 +9,7 @@ using namespace std;
 
 edm::Wrapper< std::vector<reco::GenParticle> > *__genParticles = new edm::Wrapper< std::vector<reco::GenParticle> >();
 
-AppResult GeneratorReader::beginJob(AppEvent& event) {
+AppResult GeneratorReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

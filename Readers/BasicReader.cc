@@ -10,7 +10,7 @@ edm::Wrapper<double>                      *__rho      = new edm::Wrapper<double>
 edm::Wrapper< std::vector<reco::Vertex> > *__vertices = new edm::Wrapper< std::vector<reco::Vertex> >();
               edm::EventAuxiliary         *__eventAux = new edm::EventAuxiliary();
 
-AppResult BasicReader::beginJob(AppEvent& event) {
+AppResult BasicReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

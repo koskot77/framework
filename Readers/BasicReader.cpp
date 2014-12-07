@@ -10,7 +10,7 @@ using namespace std;
 edm::Wrapper<BNprimaryvertexCollection> *__vertices = new edm::Wrapper<BNprimaryvertexCollection>();
 edm::Wrapper<BNeventCollection>         *__eventAux = new edm::Wrapper<BNeventCollection>();
 
-AppResult BasicReader::beginJob(AppEvent& event) {
+AppResult BasicReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

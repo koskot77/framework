@@ -7,7 +7,7 @@ using namespace std;
 
 edm::Wrapper<pat::JetCollection> *__patJets = new edm::Wrapper<pat::JetCollection>();
 
-AppResult JetReader::beginJob(AppEvent& event) {
+AppResult JetReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

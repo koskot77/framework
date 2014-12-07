@@ -41,9 +41,9 @@ public:
         AppParameter<T>& operator= (const char *str){ value = str; return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                strstream str; str<<value<<ends; string retval(str.str()); delete str.str(); return retval;
+                strstream str; str<<value; string retval(str.str()); delete str.str(); return retval;
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -76,9 +76,9 @@ public:
         AppParameter<bool>& operator= (const char *str) { if(!strcmp(str,"true"))value = true; else value = (bool)atoi(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[10]; strstream str(buf,10); str<<value<<ends; return str.str();
+                char buf[10]; strstream str(buf,10); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -112,9 +112,9 @@ public:
         AppParameter<char>& operator= (const char *str) { value = str[0]; return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[10]; strstream str(buf,10); str<<value<<ends; return str.str();
+                char buf[10]; strstream str(buf,10); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -148,9 +148,9 @@ public:
         AppParameter<short>& operator= (const char *str) { value = atoi(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[100]; strstream str(buf,100); str<<value<<ends; return str.str();
+                char buf[100]; strstream str(buf,100); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -184,9 +184,9 @@ public:
         AppParameter<int>& operator= (const char *str) { value = atoi(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[100]; strstream str(buf,100); str<<value<<ends; return str.str();
+                char buf[100]; strstream str(buf,100); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -220,9 +220,9 @@ public:
         AppParameter<long>& operator= (const char *str) { value = atol(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[100]; strstream str(buf,100); str<<value<<ends; return str.str();
+                char buf[100]; strstream str(buf,100); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -256,9 +256,9 @@ public:
         AppParameter<float>& operator= (const char *str) { value = atof(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[100]; strstream str(buf,100); str<<value<<ends; return str.str();
+                char buf[100]; strstream str(buf,100); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 
@@ -292,9 +292,9 @@ public:
         AppParameter<double>& operator= (const char *str)   { value = atof(str); return *this; }
         string toString(void) const {
 #if (__GNUC__==2)
-                char buf[100]; strstream str(buf,100); str<<value<<ends; return str.str();
+                char buf[100]; strstream str(buf,100); str<<value; return str.str();
 #else
-                stringstream str; str<<value<<ends; return str.str();
+                stringstream str; str<<value; return str.str();
 #endif
         }
 

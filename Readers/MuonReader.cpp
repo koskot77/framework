@@ -8,7 +8,7 @@ using namespace std;
 
 edm::Wrapper<BNmuonCollection> *__bnMuons = new edm::Wrapper<BNmuonCollection>();
 
-AppResult MuonReader::beginJob(AppEvent& event) {
+AppResult MuonReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 
@@ -72,7 +72,8 @@ AppResult MuonReader::event(AppEvent& event) {
             muon->setGenLepton(mc);
         }
 
-        if( muon->isLoose() ) muons.push_back(muon);
+///        if( muon->isLoose() ) muons.push_back(muon);
+        if( muon->isTight() ) muons.push_back(muon);
       }
 
     sort   (muons.begin(),muons.end());

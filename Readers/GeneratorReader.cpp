@@ -9,7 +9,7 @@ using namespace std;
 
 edm::Wrapper<BNmcparticleCollection> *__genParticles = new edm::Wrapper<BNmcparticleCollection>();
 
-AppResult GeneratorReader::beginJob(AppEvent& event) {
+AppResult GeneratorReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 

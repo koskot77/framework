@@ -7,7 +7,7 @@ using namespace std;
 #include "DataFormats/PatCandidates/interface/Electron.h"
 edm::Wrapper<pat::ElectronCollection> *__patElectrons = new edm::Wrapper<pat::ElectronCollection>();
 
-AppResult ElectronReader::beginJob(AppEvent& event) {
+AppResult ElectronReader::beginRun(AppEvent& event) {
     TTree *Events;
     event.get("Events",Events);
 
