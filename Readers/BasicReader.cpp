@@ -27,6 +27,9 @@ AppResult BasicReader::beginRun(AppEvent& event) {
 
 AppResult BasicReader::event(AppEvent& event) {
 
+    //const char *path = 0;
+    //if( event.get("inputFileName",  path) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No inputFileName found");
+
     bool foundVertex = false;
     if( __vertices->isPresent() )
       for(BNprimaryvertexCollection::const_iterator vtx = __vertices->product()->begin(); vtx != __vertices->product()->end(); vtx++){

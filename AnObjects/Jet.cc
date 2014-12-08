@@ -4,6 +4,8 @@
 #include <iostream>
 using namespace std;
 
+bool operator<(JetPointer i, JetPointer j) { return ((bool)i && (bool)j ? (*i)<(*j) : false); }
+
 JetCorrDirection::value Jet::correctDirection = JetCorrDirection::NONE;
 JetBtagVariation::value Jet::bTagVariation    = JetBtagVariation::NONE;
 JetResVariation::value  Jet::resVariation     = JetResVariation::NONE;

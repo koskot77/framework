@@ -101,8 +101,6 @@ AppResult OutputModule::endJob  (AppEvent& event){
 }
 
 AppResult OutputModule::beginRun(AppEvent& event){
-std::cout<<"Moving on the the next run"<<endl;
-
     return AppResult();
 }
 
@@ -143,7 +141,7 @@ AppResult OutputModule::event(AppEvent& event){
                 if( event.get(colnames[leaf].c_str(),val) || !val ){
                     string errorMsg = "No ";
                     errorMsg.append(colnames[leaf].c_str());
-                    errorMsg.append("/I found");
+                    errorMsg.append("/D found");
                     return AppResult(AppResult::STOP|AppResult::ERROR,errorMsg);
                 } else {
                         if( colarray[leaf] == 1 ){

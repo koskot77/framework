@@ -62,5 +62,6 @@ public:
 
 typedef std::shared_ptr<Muon>    MuonPointer;
 typedef std::vector<MuonPointer> MuonCollection;
+bool operator<(MuonPointer i, MuonPointer j);
 
 #endif

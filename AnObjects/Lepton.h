@@ -48,5 +48,6 @@ public:
 
 typedef std::shared_ptr<Lepton>    LeptonPointer;
 typedef std::vector<LeptonPointer> LeptonCollection;
+bool operator<(LeptonPointer i, LeptonPointer j);
 
 #endif /* Lepton_h */

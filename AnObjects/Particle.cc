@@ -1,6 +1,8 @@
 using namespace std;
 #include "Particle.h"
 
+bool operator<(ParticlePointer i, ParticlePointer j) { return ((bool)i && (bool)j ? (*i)<(*j) : false); }
+
 Particle::Particle(void):
    p_(0),
    pt_(0),

@@ -63,5 +63,5 @@ public:
 
 typedef std::shared_ptr<Electron>    ElectronPointer;
 typedef std::vector<ElectronPointer> ElectronCollection;
-
+bool operator<(ElectronPointer i, ElectronPointer j);
 #endif

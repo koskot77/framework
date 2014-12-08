@@ -113,5 +113,6 @@ public:
 
 typedef std::shared_ptr<Jet>    JetPointer;
 typedef std::vector<JetPointer> JetCollection;
+bool operator<(JetPointer i, JetPointer j);
 
 #endif

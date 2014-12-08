@@ -4,7 +4,6 @@
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
-#include <set>
 
 class Analyser : public AppModule{
 private:
@@ -22,8 +21,6 @@ private:
     AppResult endJob  (AppEvent& event);
 
     AppResult event (AppEvent& event);
-
-    std::set<int> ev;
 
 public:
     Analyser(const char *nm, const char *descr):AppModule(nm,descr){}

@@ -165,9 +165,9 @@ int main(int argc, char **argv) {
     fw.modify("InputModule::path",inputFiles.c_str());
     fw.modify("InputModule::showProgressPeriod","10000");
     fw.modify("InputModule::firstEntry","0");
-    fw.modify("OutputModule::filter","numberOfJets==3 && diMuPtRec>300");
+    fw.modify("OutputModule::filter","numberOfJets==3 && diMuPtRec>300 && numberOfRecMuons==2"); // && muEtaRec[0]<2.1 && muEtaRec[0]>-2.1 && muPtRec[0]>40 && muEtaRec[1]<2.1 && muEtaRec[1]>-2.1 && muPtRec[1]>40
     fw.modify("OutputModule::output",outputFileName.c_str());
-    fw.modify("OutputModule::leaflist","event/I:entry/I");
+    fw.modify("OutputModule::leaflist","event/I:entry/I:numberOfJets/I:m3jets/D:met/D:jetPtRec[4]/D:ZpT/D:numberOfRecMuons/I:diMuPtRec/D:muPtRec[4]/D:muPfIso[4]/D:numberOfGenMuons/I:diMuPtGen/D");
     fw.beginJob();
     fw.process(-1);
     fw.endJob();

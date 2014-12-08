@@ -1,4 +1,5 @@
 #include "Muon.h"
+bool operator<(MuonPointer i, MuonPointer j) { return ((bool)i && (bool)j ? (*i)<(*j) : false); }
 
 using namespace std;
 
