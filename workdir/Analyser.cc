@@ -39,6 +39,11 @@ AppResult Analyser::event(AppEvent& event){
     muPtGen[2] = -1;
     muPtGen[3] = -1;
 
+    muPfIso[0] = -1;
+    muPfIso[1] = -1;
+    muPfIso[2] = -1;
+    muPfIso[3] = -1;
+
     const char *path = 0;
 
     if( event.get("runNumber",       run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
@@ -55,12 +60,14 @@ AppResult Analyser::event(AppEvent& event){
     const ParticleCollection *gen;
     if( event.get("genParticles",gen) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
     cout<<" #genParts = "<<gen->size()<<std::endl;
+    bool diMuonZdecay = false;
     for(unsigned int p=0; p<gen->size() /*&& p<20*/; p++){
         const Particle *gp = gen->at(p).get();
         const Particle *m  = gp->mother();
         const list<const Particle*> &d = gp->daughters();
         cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<(m?m->pdgId():-1)<<" nd="<<d.size()<<std::endl;
-        if( abs(gp->pdgId())==11 && gp->status() == 1 && numberOfGenMuons<4 ){
+        if( abs(gp->pdgId())==13 && abs(gp->motherPdgId())==23 ) diMuonZdecay = true;
+        if( abs(gp->pdgId())==13 && gp->status() == 1 && diMuonZdecay && numberOfGenMuons<4 ){
             muPtGen [ numberOfGenMuons ] = gp->pt();
             muEtaGen[ numberOfGenMuons ] = gp->eta();
             muPhiGen[ numberOfGenMuons ] = gp->phi();
@@ -68,7 +75,7 @@ AppResult Analyser::event(AppEvent& event){
         }
         if( gp->pdgId() == 23 ) ZpT = gp->pt();
     }
-    if( numberOfGenMuons == 2 ){
+    if( numberOfGenMuons >= 2 ){
       TLorentzVector lepton1, lepton2;
       lepton1.SetPtEtaPhiM(muPtGen[0], muEtaGen[0], muPhiGen[0], 0.113);
       lepton2.SetPtEtaPhiM(muPtGen[1], muEtaGen[1], muPhiGen[1], 0.113);

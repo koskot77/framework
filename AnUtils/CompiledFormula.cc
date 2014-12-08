@@ -58,7 +58,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                         // move backward
                         while( index1 ){
                                 index1--;
-                                if(!br_open && ispunct(arg[index1]) && arg[index1]!=')' && arg[index1]!='.' && arg[index1]!=',' && arg[index1]!='_'){ index1++; break; }
+                                if(!br_open && ispunct(arg[index1]) && arg[index1]!=')' && arg[index1]!='.' && arg[index1]!=',' && arg[index1]!='_' && arg[index1]!='[' && arg[index1]!=']' ){ index1++; break; }
                                 if(arg[index1] == ')')br_open++;
                                 if(arg[index1] == '(')br_open--;
                         }
@@ -66,7 +66,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
 
                         // move forward
                         while( index2++ < arg.length()-1 ){
-                                if(!br_open && ispunct(arg[index2]) && arg[index2]!='(' && arg[index2]!='.' && arg[index2]!=',' && arg[index2]!='_')break;
+                                if(!br_open && ispunct(arg[index2]) && arg[index2]!='(' && arg[index2]!='.' && arg[index2]!=',' && arg[index2]!='_' && arg[index2]!='[' && arg[index2]!=']' )break;
                                 if(arg[index2] == '(')br_open++;
                                 if(arg[index2] == ')')br_open--;
                         }
@@ -99,7 +99,7 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
                         } else pos = start;
                 }
                 if( isalpha(arg[pos]) ){
-                        while( isalnum(arg[++pos]) );
+                        while( isalnum(arg[pos]) || arg[pos] == '[' || arg[pos] == ']' ) pos++;
                         if( pos == ket ) {
                                 arg.erase(bra,1);
                                 arg.erase(ket-1,1);
@@ -123,9 +123,9 @@ CompiledFormula& CompiledFormula::operator=(const string& formula) throw(Compile
 //  Build the chain of operations using brackets container
         list<string>::const_iterator expression = brackets.begin();
         while(expression != brackets.end()){
-                const char *match   = "(-?\\+?\\w+\\.?|-?\\+?\\w+?\\.\\w*|-?\\+?\\w+\\.?e\\+?-?\\w+|-?\\+?\\w+?\\.\\w*e\\+?-?\\w+|\\$\\w+)"  // left operand
-                                                          " *(\\*|\\/|\\%|\\+|-|<<|>>|<|<=|>|>=|==|!=|&|\\^|\\||&&|\\|\\|) *"                                    // operator
-                                                          "(-?\\+?\\w+\\.?|-?\\+?\\w+?\\.\\w*|-?\\+?\\w+\\.?e\\+?-?\\w+|-?\\+?\\w+?\\.\\w*e\\+?-?\\w+|\\$\\w+)"; // right operand
+                const char *match   = "(-?\\+?\\w+\\.?|-?\\+?\\w+\\[\\w+\\]\\.?|-?\\+?\\w+?\\.\\w*|-?\\+?\\w+\\.?e\\+?-?\\w+|-?\\+?\\w+?\\.\\w*e\\+?-?\\w+|\\$\\w+)"  // left operand
+                                                          " *(\\*|\\/|\\%|\\+|-|<<|>>|<|<=|>|>=|==|!=|&|\\^|\\||&&|\\|\\|) *"                                         // operator
+                                      "(-?\\+?\\w+\\.?|-?\\+?\\w+\\[\\w+\\]\\.?|-?\\+?\\w+?\\.\\w*|-?\\+?\\w+\\.?e\\+?-?\\w+|-?\\+?\\w+?\\.\\w*e\\+?-?\\w+|\\$\\w+)"; // right operand
                 map< string, vector<string> > result = RegExSearch(match, expression->c_str());
 
                 if(result.size() != 1)
