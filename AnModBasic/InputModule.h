@@ -25,7 +25,7 @@ private:
     void setParameter(const char* parname, const char* value);
 
     vector<string> inputFiles;
-    TChain *chain;
+    TChain *chain, *psets;
     int chainEntryNumber;
     const char* currentFile;
 

@@ -95,6 +95,7 @@ AppResult OutputModule::endJob  (AppEvent& event){
         microTuple->Write();
         outputFile->Close();
     }
+//gROOT->GetListOfFiles()->Last()
 //   if( microTuple ) delete microTuple;
 //   if( outputFile ) delete outputFile;
     return AppResult();

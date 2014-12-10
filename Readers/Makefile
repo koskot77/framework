@@ -7,7 +7,7 @@ LIB_SOURCES :=
 # Compile everything from current directory
 LIB_SOURCES_DIR := ./
 
-CCSUFF := cpp
+CCSUFF := cc
 
 # Compiller's flags
 CXXFLAGS  = `root-config --cflags` $(CLHEPFLAGS) $(BOOSTFLAGS)

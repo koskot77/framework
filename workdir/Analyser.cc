@@ -4,6 +4,7 @@ using namespace std;
 #include "AnObjects/Muon.h"
 #include "AnObjects/Electron.h"
 #include "AnObjects/MET.h"
+#include "AnObjects/Trigger.h"
 #include "TLorentzVector.h"
 
 AppResult Analyser::beginJob(AppEvent& event){
@@ -33,6 +34,12 @@ AppResult Analyser::event(AppEvent& event){
     muPtRec[2] = -1;
     muPtRec[3] = -1;
 
+    numberOfRecElectrons = 0;
+     ePtRec[0] = -1;
+     ePtRec[1] = -1;
+     ePtRec[2] = -1;
+     ePtRec[3] = -1;
+
     numberOfGenMuons = 0;
     muPtGen[0] = -1;
     muPtGen[1] = -1;
@@ -43,6 +50,11 @@ AppResult Analyser::event(AppEvent& event){
     muPfIso[1] = -1;
     muPfIso[2] = -1;
     muPfIso[3] = -1;
+
+     ePfIso[0] = -1;
+     ePfIso[1] = -1;
+     ePfIso[2] = -1;
+     ePfIso[3] = -1;
 
     const char *path = 0;
 
@@ -57,8 +69,13 @@ AppResult Analyser::event(AppEvent& event){
 
     cout<<"Event #"<<evt<<endl;
 
+    const Trigger *result;
+    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
+    if( result->accept(97) ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
+    event.put("pfmet170", (const int*)&pfmet170);
+
     const ParticleCollection *gen;
-    if( event.get("genParticles",gen) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
+    if( event.get("genParticles",gen) || !gen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
     cout<<" #genParts = "<<gen->size()<<std::endl;
     bool diMuonZdecay = false;
     for(unsigned int p=0; p<gen->size() /*&& p<20*/; p++){
@@ -84,7 +101,7 @@ AppResult Analyser::event(AppEvent& event){
     }
 
     const JetCollection *jets;
-    if( event.get("jets",jets) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
+    if( event.get("jets",jets) || !jets ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
     cout<<" #jets = "<<jets->size()<<std::endl;
     numberOfJets = jets->size();
     for(int j=0; j<numberOfJets && j<4; j++){
@@ -96,14 +113,16 @@ AppResult Analyser::event(AppEvent& event){
     }
 
     const ElectronCollection *electrons;
-    if( event.get("electrons",electrons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No electrons found");
+    if( event.get("electrons",electrons) || !electrons ) return AppResult(AppResult::STOP|AppResult::ERROR,"No electrons found");
     cout<<" #electrons = "<<electrons->size()<<std::endl;
+    numberOfRecElectrons  = electrons->size();
     for(unsigned int e=0; e<electrons->size(); e++){
         cout<<" #pTele["<<e<<"] = "<<electrons->at(e)->pt()<<" gen="<<electrons->at(e)->genLepton().pt()<<std::endl;
+        ePtRec[e] = electrons->at(e)->pt();
     }
 
     const MuonCollection *muons;
-    if( event.get("muons",muons) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No muons found");
+    if( event.get("muons",muons) || !muons ) return AppResult(AppResult::STOP|AppResult::ERROR,"No muons found");
     cout<<" #muons = "<<muons->size()<<std::endl;
     for(unsigned int m=0; m<muons->size(); m++){
         cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<" gen="<<muons->at(m)->genLepton().pt()<<std::endl;
@@ -123,7 +142,7 @@ AppResult Analyser::event(AppEvent& event){
     }
 
     const MET *ETmiss;
-    if( event.get("ETmiss",ETmiss) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
+    if( event.get("ETmiss",ETmiss) || !ETmiss) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
     cout<<" met= "<<ETmiss->pt()<<std::endl;
     met = ETmiss->pt();
 
@@ -155,6 +174,9 @@ AppResult Analyser::event(AppEvent& event){
     event.put("diMuPtRec", (const double*)&diMuPtRec);
     event.put("diMuPtGen", (const double*)&diMuPtGen);
     event.put("ZpT",       (const double*)&ZpT);
+
+    event.put("numberOfRecElectrons", (const int*)&numberOfRecElectrons);
+    event.put("ePtRec[4]",  (const double*)ePtRec);
 
     return AppResult();
 }

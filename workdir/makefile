@@ -14,6 +14,7 @@ STDLIB   := -lstdc++ -L../../lib -lAppFramework -lAnModBasic -lAnUtils -lReaders
 
 STDLIB   += -L$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/lib/$(ARCH)/ -lFWCoreUtilities -lDataFormatsPatCandidates -lDataFormatsTrackReco -lDataFormatsCommon -lDataFormatsMuonReco -L../../../lib/$(ARCH)/
 
+STDLIB   += -lDataFormatsProvenance -lDataFormatsHepMCCandidate -lFWCoreParameterSet
 # -lProductAreaBNcollections -lDataFormatsCommon
 
 CXXFLAGS += $(STDINC)
@@ -23,8 +24,8 @@ all:	makefile $(OBJ)
 	@echo "done"
 
 bin:	makefile $(OBJ)
-	$(CXX) -o main.o -c $(CXXFLAGS) main.cc
-	$(CXX) $(LDOPT) -o test $(OBJ) main.o $(STDLIB)
+	$(CXX) -o qwe.o -c $(CXXFLAGS) qwe.cc
+	$(CXX) $(LDOPT) -o test $(OBJ) qwe.o $(STDLIB)
 	@echo "done"
 
 $(OBJ):		%.o: %.cc %.h

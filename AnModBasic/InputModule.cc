@@ -74,7 +74,8 @@ AppResult InputModule::beginJob(AppEvent& event){
 AppResult InputModule::beginRun(AppEvent& event){
     if( chain->GetEntry(chainEntryNumber) ){
         return AppResult();
-    }
+    } else 
+        return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
 }
 
 #include<TFile.h>
@@ -84,6 +85,7 @@ AppResult InputModule::event(AppEvent& event){
 
     if( currentFile != path ){
         chain->GetEntry(chainEntryNumber);
+        psets = (TChain*)chain->GetFile()->Get("ParameterSets");
 
         AppEvent tmpEvent;
         if( endRunNotify(tmpEvent) )
@@ -91,6 +93,7 @@ AppResult InputModule::event(AppEvent& event){
 
         AppEvent initEvent;
         initEvent.put("Events",(TTree*)chain);
+        initEvent.put("PSets", (TTree*)psets);
         if( beginRunNotify(initEvent) )
             return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
 

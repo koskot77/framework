@@ -2,6 +2,7 @@
 #include "AnModBasic/InputModule.h"
 #include "AnModBasic/OutputModule.h"
 #include "Readers/BasicReader.h"
+#include "Readers/TriggerReader.h"
 #include "Readers/MuonReader.h"
 #include "Readers/ElectronReader.h"
 #include "Readers/METReader.h"
@@ -13,6 +14,7 @@ AppFramework::AppFramework(const char* sequence){
         addModule( new InputModule("InputModule", "InputModule" ) );
         addModule( new GeneratorReader("GeneratorReader", "GeneratorReader" ) );
         addModule( new BasicReader("BasicReader", "BasicReader" ) );
+        addModule( new TriggerReader("TriggerReader", "TriggerReader" ) );
         addModule( new MuonReader ("MuonReader",  "MuonReader"  ) );
         addModule( new ElectronReader ("ElectronReader",  "ElectronReader"  ) );
         addModule( new METReader  ("METReader",   "METReader"   ) );
