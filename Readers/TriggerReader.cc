@@ -16,9 +16,11 @@ pair<edm::ParameterSetID,edm::ParameterSetBlob>  *__psets    = new pair<edm::Par
 map <edm::ParameterSetID,edm::ParameterSetBlob> psetMap;
 
 AppResult TriggerReader::beginRun(AppEvent& event) {
-    TTree *Events, *PSets;
-    event.get("Events",Events);
-    event.get("PSets", PSets);
+    TTree *Events = 0, *PSets = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
+    if( event.get("PSets", PSets)  || !PSets )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'PSets' tree found");
 
     TBranch *inputPSetBranch = PSets->GetBranch("IdToParameterSetsBlobs");
     if( !inputPSetBranch )

@@ -56,6 +56,8 @@ AppResult Analyser::event(AppEvent& event){
      ePfIso[2] = -1;
      ePfIso[3] = -1;
 
+    wPtGen = -1; tPtGen = -1;
+
     const char *path = 0;
 
     if( event.get("runNumber",       run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
@@ -69,28 +71,28 @@ AppResult Analyser::event(AppEvent& event){
 
     cout<<"Event #"<<evt<<endl;
 
-    const Trigger *result;
-    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
-    if( result->accept(97) ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
-    event.put("pfmet170", (const int*)&pfmet170);
-
     const ParticleCollection *gen;
     if( event.get("genParticles",gen) || !gen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
     cout<<" #genParts = "<<gen->size()<<std::endl;
-    bool diMuonZdecay = false;
-    for(unsigned int p=0; p<gen->size() /*&& p<20*/; p++){
+    bool hadronicWdecay = false;
+    unsigned int indexW = 0, indexT = 0;
+    for(unsigned int p=0; p<gen->size() && p<20; p++){
         const Particle *gp = gen->at(p).get();
         const Particle *m  = gp->mother();
         const list<const Particle*> &d = gp->daughters();
         cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<(m?m->pdgId():-1)<<" nd="<<d.size()<<std::endl;
-        if( abs(gp->pdgId())==13 && abs(gp->motherPdgId())==23 ) diMuonZdecay = true;
-        if( abs(gp->pdgId())==13 && gp->status() == 1 && diMuonZdecay && numberOfGenMuons<4 ){
-            muPtGen [ numberOfGenMuons ] = gp->pt();
-            muEtaGen[ numberOfGenMuons ] = gp->eta();
-            muPhiGen[ numberOfGenMuons ] = gp->phi();
-            numberOfGenMuons++;
-        }
-        if( gp->pdgId() == 23 ) ZpT = gp->pt();
+        if( abs(gp->pdgId())<5 && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
+        if( abs(gp->pdgId())==24 ) indexW = p;
+        if( abs(gp->pdgId())==6  ) indexT = p;
+    }
+
+    if( hadronicWdecay ){
+        wPtGen  = gen->at(indexW)->pt();
+        wEtaGen = gen->at(indexW)->eta();
+        wPhiGen = gen->at(indexW)->phi();
+        tPtGen  = gen->at(indexT)->pt();
+        tEtaGen = gen->at(indexT)->eta();
+        tPhiGen = gen->at(indexT)->phi();
     }
     if( numberOfGenMuons >= 2 ){
       TLorentzVector lepton1, lepton2;
@@ -99,6 +101,11 @@ AppResult Analyser::event(AppEvent& event){
       TLorentzVector sum( lepton1 + lepton2 );
       diMuPtGen = sum.Pt();
     }
+
+    const Trigger *result;
+    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
+    if( result->accept(97) ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
+    event.put("pfmet170", (const int*)&pfmet170);
 
     const JetCollection *jets;
     if( event.get("jets",jets) || !jets ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
@@ -146,6 +153,7 @@ AppResult Analyser::event(AppEvent& event){
     cout<<" met= "<<ETmiss->pt()<<std::endl;
     met = ETmiss->pt();
 
+    m3jets = 0; m2jets = 0;
     if( numberOfJets==3 && muons->size()==0 && electrons->size()==0 ){
         TLorentzVector jet1, jet2, jet3;
         jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], 0);
@@ -154,11 +162,21 @@ AppResult Analyser::event(AppEvent& event){
         TLorentzVector sum3j( jet1 + jet2 + jet3 );
         m3jets = sum3j.M();
     }
+    if( numberOfJets==2 && muons->size()==0 && electrons->size()==0 ){
+        TLorentzVector jet1, jet2;
+        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], 0);
+        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], 0);
+        TLorentzVector sum2j( jet1 + jet2 );
+        m2jets = sum2j.M();
+    }
 
     event.put("numberOfJets",(const int*)&numberOfJets);
     event.put("m3jets",      (const double*)&m3jets);
+    event.put("m2jets",      (const double*)&m2jets);
     event.put("met",         (const double*)&met);
     event.put("jetPtRec[4]", (const double*)jetPtRec);
+    event.put("jetEtaRec[4]",(const double*)jetEtaRec);
+    event.put("jetPhiRec[4]",(const double*)jetPhiRec);
 
     event.put("numberOfRecMuons", (const int*)&numberOfRecMuons);
     event.put("muPtRec[4]",  (const double*)muPtRec);
@@ -177,6 +195,12 @@ AppResult Analyser::event(AppEvent& event){
 
     event.put("numberOfRecElectrons", (const int*)&numberOfRecElectrons);
     event.put("ePtRec[4]",  (const double*)ePtRec);
+    event.put("wPtGen",     (const double*)&wPtGen);
+    event.put("wEtaGen",    (const double*)&wEtaGen);
+    event.put("wPhiGen",    (const double*)&wPhiGen);
+    event.put("tPtGen",     (const double*)&tPtGen);
+    event.put("tEtaGen",    (const double*)&tEtaGen);
+    event.put("tPhiGen",    (const double*)&tPhiGen);
 
     return AppResult();
 }

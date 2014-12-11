@@ -9,8 +9,9 @@ using namespace std;
 edm::Wrapper<BNelectronCollection> *__bnElectrons = new edm::Wrapper<BNelectronCollection>();
 
 AppResult ElectronReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputElectronsBranch = Events->GetBranch("BNelectrons_BNproducer_selectedPatElectronsLoosePFlow_BEANs.");
     if( !inputElectronsBranch )

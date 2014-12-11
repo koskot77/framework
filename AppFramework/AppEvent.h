@@ -336,7 +336,8 @@ public:
 //#endif
 //                ptr->read(istr); dictionary[name] = ptr; obj = *ptr;
                 ///if( writer ) storesequence.push_back(ptr);
-                return false;
+///                return false;
+                return true;
         }
 
         template<class T> bool get(const char *name, T& obj, void (*reader)(T&,istream&), size_t (*writer)(const T&,ostream&)) const {
@@ -358,7 +359,8 @@ public:
 //#endif
 //                ptr->read(istr); dictionary[name] = ptr; obj = *ptr;
                 ///if( writer ) storesequence.push_back(ptr);
-                return false;
+///                return false;
+                return true;
         }
 
         template<class T> bool get(const char *name, T& obj) const {
@@ -386,7 +388,8 @@ public:
 //#endif
                 //ptr->read(istr); dictionary[name] = ptr; obj = *ptr;
                 ///storesequence.push_back(ptr);
-                return false;
+///                return false;
+                return true;
         }
 
         void print(ostream &ostr);     // Info about content

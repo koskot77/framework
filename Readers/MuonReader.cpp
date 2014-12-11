@@ -9,8 +9,9 @@ using namespace std;
 edm::Wrapper<BNmuonCollection> *__bnMuons = new edm::Wrapper<BNmuonCollection>();
 
 AppResult MuonReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputMuonsBranch = Events->GetBranch("BNmuons_BNproducer_selectedPatMuonsLoosePFlow_BEANs.");
     if( !inputMuonsBranch )

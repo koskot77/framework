@@ -15,11 +15,11 @@ public:
         public:
                 int count;
                 list<string> dataList(void) const { list<string> retval; retval.push_back("counter3"); return retval; };
-                bool set  (const char *name, const int &c){ std::cout<<"Setting  "<<name<<" to "<<c<<endl; count=c;   return false; }
-                bool fetch(const char *name,       int &c){ std::cout<<"Fetching "<<name<<endl;            c=count++; return false; }
+                bool set  (const char *name, const int &c){ cout<<"Setting  "<<name<<" to "<<c<<endl; count=c;   return false; }
+                bool fetch(const char *name,       int &c){ cout<<"Fetching "<<name<<endl;            c=count++; return false; }
 
-                bool set  (const char *name, const long &c){ std::cout<<"Setting  "<<name<<" to "<<c<<endl; count=c;   return false; }
-                bool fetch(const char *name,       long &c){ std::cout<<"Fetching "<<name<<endl;            c=count++; return false; }
+                bool set  (const char *name, const long &c){ cout<<"Setting  "<<name<<" to "<<c<<endl; count=c;   return false; }
+                bool fetch(const char *name,       long &c){ cout<<"Fetching "<<name<<endl;            c=count++; return false; }
 
                 AppResult beginRun(const AppEvent& ev){ return AppResult(); }
                 AppResult beginJob(void){ return AppResult(); }

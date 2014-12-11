@@ -11,8 +11,9 @@ edm::Wrapper<BNprimaryvertexCollection> *__vertices = new edm::Wrapper<BNprimary
 edm::Wrapper<BNeventCollection>         *__eventAux = new edm::Wrapper<BNeventCollection>();
 
 AppResult BasicReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputVtx = Events->GetBranch("BNprimaryvertexs_BNproducer_offlinePrimaryVertices_BEANs.");
     if( !inputVtx ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'BNprimaryvertexs_BNproducer_offlinePrimaryVertices_BEANs.' branch found");

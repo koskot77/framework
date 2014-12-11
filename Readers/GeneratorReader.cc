@@ -10,8 +10,9 @@ using namespace std;
 edm::Wrapper< std::vector<reco::GenParticle> > *__genParticles = new edm::Wrapper< std::vector<reco::GenParticle> >();
 
 AppResult GeneratorReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputGen = Events->GetBranch("recoGenParticles_prunedGenParticles__PAT.");
     if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_prunedGenParticles__PAT.' branch found");

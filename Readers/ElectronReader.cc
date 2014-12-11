@@ -8,8 +8,9 @@ using namespace std;
 edm::Wrapper<pat::ElectronCollection> *__patElectrons = new edm::Wrapper<pat::ElectronCollection>();
 
 AppResult ElectronReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputElectronsBranch = Events->GetBranch("patElectrons_slimmedElectrons__PAT.");
     if( !inputElectronsBranch )
@@ -66,7 +67,7 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setPFGammaIsolation        ( pele->photonIso()        );
         electron->setPFChargedHadronIsolation( pele->chargedHadronIso() );
         electron->setPFNeutralHadronIsolation( pele->neutralHadronIso() );
-
+/*
         if( pele->genLepton() ){
             Particle mc;
             mc.setPdgId   ( pele->genLepton()->pdgId() );
@@ -88,7 +89,7 @@ AppResult ElectronReader::event(AppEvent& event) {
             }
             electron->setGenLepton(mc);
         }
-
+*/
         if( electron->isLoose() ) electrons.push_back(electron);
     }
 

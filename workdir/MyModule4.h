@@ -18,13 +18,13 @@ private:
         AppResult endJob  (AppEvent& event){ cout<<"job ended"<<endl; return AppResult(); }
 
         AppResult event (AppEvent& event){
-                std::cout<<"Event "<<myint<<endl;
-                switch( myint++ ){
-                       case 3 : mydouble = 321.123; return AppResult();
-                       case 5 : return AppResult(AppResult::SKIP|AppResult::WARNING,"skipped");
-                       case 7 : return AppResult(AppResult::STOP|AppResult::ERROR,"stopped");
-                       default : cout<<"mydouble: "<<mydouble<<endl; break;
-                }
+//                std::cout<<"Event "<<myint<<endl;
+//                switch( myint++ ){
+//                       case 3 : mydouble = 321.123; return AppResult();
+//                       case 5 : return AppResult(AppResult::SKIP|AppResult::WARNING,"skipped");
+//                       case 7 : return AppResult(AppResult::STOP|AppResult::ERROR,"stopped");
+//                       default : cout<<"mydouble: "<<mydouble<<endl; break;
+//                }
                 return AppResult();
         }
 

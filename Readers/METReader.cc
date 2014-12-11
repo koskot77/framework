@@ -7,8 +7,9 @@ using namespace std;
 edm::Wrapper<pat::METCollection> *__patMETs = new edm::Wrapper<pat::METCollection>();
 
 AppResult METReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputMetBranch = Events->GetBranch("patMETs_slimmedMETs__PAT.");
     if( !inputMetBranch )

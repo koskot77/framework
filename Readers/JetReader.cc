@@ -8,8 +8,9 @@ using namespace std;
 edm::Wrapper<pat::JetCollection> *__patJets = new edm::Wrapper<pat::JetCollection>();
 
 AppResult JetReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputJetsBranch = Events->GetBranch("patJets_slimmedJetsAK8__PAT.");
     if( !inputJetsBranch )

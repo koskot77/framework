@@ -9,8 +9,9 @@ using namespace std;
 edm::Wrapper<BNjetCollection> *__bnJets = new edm::Wrapper<BNjetCollection>();
 
 AppResult JetReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputJetsBranch = Events->GetBranch("BNjets_BNproducer_selectedPatJetsPFlow_BEANs.");
     if( !inputJetsBranch )

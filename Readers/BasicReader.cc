@@ -11,8 +11,9 @@ edm::Wrapper< std::vector<reco::Vertex> > *__vertices = new edm::Wrapper< std::v
               edm::EventAuxiliary         *__eventAux = new edm::EventAuxiliary();
 
 AppResult BasicReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputRho = Events->GetBranch("double_fixedGridRhoFastjetAll__RECO.");
     if( !inputRho ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoVertexs_offlineSlimmedPrimaryVertices__PAT.' branch found");

@@ -9,8 +9,9 @@ using namespace std;
 edm::Wrapper<BNmetCollection> *__bnMETs = new edm::Wrapper<BNmetCollection>();
 
 AppResult METReader::beginRun(AppEvent& event) {
-    TTree *Events;
-    event.get("Events",Events);
+    TTree *Events = 0;
+    if( event.get("Events",Events) || !Events )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
     TBranch *inputMetBranch = Events->GetBranch("BNmets_BNproducer_pfType1CorrectedMetBN_BEANs.");
     if( !inputMetBranch )
