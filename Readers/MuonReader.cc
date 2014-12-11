@@ -73,7 +73,7 @@ AppResult MuonReader::event(AppEvent& event) {
         muon->setNumberOfValidPixelHits       ( (pmuon->isTrackerMuon() ? pmuon->innerTrack()->hitPattern().numberOfValidPixelHits() : -1) );
         muon->setNtrackerLayersWithMeasurement( (pmuon->isTrackerMuon() ? pmuon->track()->hitPattern().trackerLayersWithMeasurement(): -1) );
         muon->setNumberOfMatchedStations      ( pmuon->numberOfMatchedStations() );
-/*
+
         if( pmuon->genLepton() ){
             Particle mc;
             mc.setPdgId   ( pmuon->genLepton()->pdgId() );
@@ -95,7 +95,7 @@ AppResult MuonReader::event(AppEvent& event) {
             }
             muon->setGenLepton(mc);
         }
-*/
+
         if( muon->isLoose() ) muons.push_back(muon);
       }
 

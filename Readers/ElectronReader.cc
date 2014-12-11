@@ -67,7 +67,7 @@ AppResult ElectronReader::event(AppEvent& event) {
         electron->setPFGammaIsolation        ( pele->photonIso()        );
         electron->setPFChargedHadronIsolation( pele->chargedHadronIso() );
         electron->setPFNeutralHadronIsolation( pele->neutralHadronIso() );
-/*
+
         if( pele->genLepton() ){
             Particle mc;
             mc.setPdgId   ( pele->genLepton()->pdgId() );
@@ -89,7 +89,7 @@ AppResult ElectronReader::event(AppEvent& event) {
             }
             electron->setGenLepton(mc);
         }
-*/
+
         if( electron->isLoose() ) electrons.push_back(electron);
     }
 

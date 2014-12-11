@@ -11,5 +11,5 @@ fw.modify("OutputModule::filter","numberOfRecMuons==0 && numberOfRecElectrons==0
 fw.modify("OutputModule::output","qwe");
 fw.modify("OutputModule::leaflist","event/I:entry/I:pfmet170/I:numberOfJets/I:m3jets/D:m2jets/D:met/D:jetPtRec[4]/D:jetEtaRec[4]/D:jetPhiRec[4]/D:numberOfRecMuons/I:numberOfRecElectrons/I:wPtGen/D:wEtaGen/D:wPhiGen/D:tPtGen/D:tEtaGen/D:tPhiGen/D");
 fw.beginJob();
-fw.process(10000);
+fw.process(0);
 fw.endJob();

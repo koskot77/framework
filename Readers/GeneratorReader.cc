@@ -9,8 +9,9 @@ using namespace std;
 
 edm::Wrapper< std::vector<reco::GenParticle> > *__genParticles = new edm::Wrapper< std::vector<reco::GenParticle> >();
 
-AppResult GeneratorReader::beginRun(AppEvent& event) {
     TTree *Events = 0;
+
+AppResult GeneratorReader::beginRun(AppEvent& event) {
     if( event.get("Events",Events) || !Events )
         return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
@@ -24,6 +25,12 @@ AppResult GeneratorReader::beginRun(AppEvent& event) {
 //pair< string, pair<string,string> > GeneratorReader::split(string decay){ "2[9000001,6[5,24[..]]]"; }
 
 AppResult GeneratorReader::event(AppEvent& event) {
+
+    // have to reattache the branch every time :0(
+    TBranch *inputGen = Events->GetBranch("recoGenParticles_prunedGenParticles__PAT.");
+    if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_prunedGenParticles__PAT.' branch found");
+    inputGen->SetAddress(&__genParticles);
+
 
     genParticles.clear();
 
