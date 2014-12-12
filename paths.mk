@@ -1,12 +1,13 @@
-CMSSW        := CMSSW_7_2_0_pre8
-ARCH         := slc6_amd64_gcc481
+CMSSW        := $(CMSSW_VERSION)
+ARCH         := $(SCRAM_ARCH)
 ROOT         := /cvmfs/cms.cern.ch/
-CLHEP        := 2.1.4.1-cms
-BOOST        := 1.51.0-cms
+#CLHEP        := $(lastword $(subst /, ,$(CLHEP_PARAM_PATH)))
+CLHEP        := $(firstword $(subst /, ,$(lastword $(subst clhep/, ,$(CMSSW_FWLITE_INCLUDE_PATH))) ) )
+BOOST        := $(firstword $(subst /, ,$(lastword $(subst boost/, ,$(CMSSW_FWLITE_INCLUDE_PATH))) ) )
 
-CXX          := $(ROOT)/$(ARCH)/external/gcc/4.8.1/bin/g++
-F77          := $(ROOT)/$(ARCH)/external/gcc/4.8.1/bin/g++
-LD           := $(ROOT)/$(ARCH)/external/gcc/4.8.1/bin/g++
+CXX          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+F77          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+LD           := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
 
 CXXFLAGS     += -std=c++0x -fPIC -Wall -frtti -fexceptions -fpic -g \
                 -I$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/src/ \
