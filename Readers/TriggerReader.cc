@@ -14,6 +14,7 @@ edm::Wrapper<edm::TriggerResults>                *__patTrigs = new edm::Wrapper<
 //edm::Wrapper<pat::PackedTriggerPrescales>        *__patPresc = new edm::Wrapper<pat::PackedTriggerPrescales>();
 pair<edm::ParameterSetID,edm::ParameterSetBlob>  *__psets    = new pair<edm::ParameterSetID,edm::ParameterSetBlob>();
 map <edm::ParameterSetID,edm::ParameterSetBlob> psetMap;
+edm::ParameterSetID                             currentTriggerId, previousTriggerId;
 
 AppResult TriggerReader::beginRun(AppEvent& event) {
     TTree *Events = 0, *PSets = 0;
@@ -53,15 +54,29 @@ AppResult TriggerReader::event(AppEvent& event) {
     if( __patTrigs->isPresent() ){
         const edm::TriggerResults *trgRes = __patTrigs->product();
         if( !trgRes ) AppResult(AppResult::STOP|AppResult::ERROR,"Problem with getting the trigger results");
+        if(  trgRes->size() < result.maxSize )
+            AppResult(AppResult::STOP|AppResult::ERROR,"Too many trigges");
 
-        map<edm::ParameterSetID,edm::ParameterSetBlob>::const_iterator trigPSet = psetMap.find( trgRes->parameterSetID() );
-        if( trigPSet == psetMap.end() )
-            AppResult(AppResult::STOP|AppResult::ERROR,"Problem with getting the trigger names");
+        if( currentTriggerId != trgRes->parameterSetID() ){
 
-        edm::ParameterSet pset(trigPSet->second.pset());
-        pset.setID(trigPSet->first);
-        vector<string> triggerNames = pset.getParameter< vector<string> >("@trigger_paths");
-        result.setNames( triggerNames );
+            previousTriggerId = currentTriggerId;
+            currentTriggerId  = trgRes->parameterSetID();
+
+            map<edm::ParameterSetID,edm::ParameterSetBlob>::const_iterator trigPSet = psetMap.find( currentTriggerId );
+            if( trigPSet == psetMap.end() )
+                AppResult(AppResult::STOP|AppResult::ERROR,"Problem with getting the trigger names");
+
+            edm::ParameterSet pset(trigPSet->second.pset());
+            pset.setID(trigPSet->first);
+
+            vector<string> triggerNames = pset.getParameter< vector<string> >("@trigger_paths");
+            if( triggerNames.size() < result.maxSize )
+                result.setNames( triggerNames );
+            else
+                AppResult(AppResult::STOP|AppResult::ERROR,"Too many trigger names");
+
+        } else
+            result.resetNamesChanged();
 
         for(unsigned int triggerIndex=0; triggerIndex<trgRes->size(); triggerIndex++){
             result.setWasRun(triggerIndex, trgRes->wasrun(triggerIndex) );
