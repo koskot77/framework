@@ -17,9 +17,9 @@ private:
     AppParameter<string> leaflist;        // standard root leaflist in a form "par[n]/type:..." (1D arrays only)
     AppParameter<CompiledFormula> filter; // 
 
-    std::vector<std::string> colnames;
-    std::vector<char>        coltypes;
-    std::vector<size_t>      colarray;
+    vector<string>  colnames;
+    vector<char>    coltypes;
+    vector<size_t>  colarray;
 
     TTree *microTuple;
 
