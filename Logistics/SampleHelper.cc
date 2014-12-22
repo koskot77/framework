@@ -28,6 +28,7 @@ SampleHelper::SampleHelper(const char* name, const char *descr):AppAgentWrapper(
 
      allFiles["TT"].push_back("/store/user/wulsin/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/BEANs-v4/0ff8045eb3a4a7ce9562dd332df0072c/ttH_pat2bean_53x_*.root");
 
+     allFiles["S3m600"].push_back("/tmp/kkotov//MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
 }
 
 AppResult SampleHelper::beginJob(void){

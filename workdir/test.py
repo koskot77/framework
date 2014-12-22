@@ -4,8 +4,8 @@ fw = AppFramework('InputModule->BasicReader->TriggerReader->GeneratorReader->Ele
 fw.verbose("AppFramework","cout on") 
 fw.verbose("Analyser","cout off");
 fw.modList();
-fw.modify("SampleHelper::sample","METD");
-fw.modify("SampleHelper::sampleSection","1of30");
+fw.modify("SampleHelper::sample","S3m600");
+fw.modify("SampleHelper::sampleSection","1of1");
 #fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
 fw.modify("InputModule::showProgressPeriod","1000");
 fw.modify("InputModule::firstEntry","0");
