@@ -1,5 +1,5 @@
-#ifndef SamplerHelper_h
-#define SamplerHelper_h
+#ifndef SampleHelper_h
+#define SampleHelper_h
 #include "AppFramework/AppParameter.h"
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
