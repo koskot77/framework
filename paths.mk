@@ -4,10 +4,14 @@ ROOT         := /cvmfs/cms.cern.ch/
 #CLHEP        := $(lastword $(subst /, ,$(CLHEP_PARAM_PATH)))
 CLHEP        := $(firstword $(subst /, ,$(lastword $(subst clhep/, ,$(CMSSW_FWLITE_INCLUDE_PATH))) ) )
 BOOST        := $(firstword $(subst /, ,$(lastword $(subst boost/, ,$(CMSSW_FWLITE_INCLUDE_PATH))) ) )
+GCCVER       := $(firstword $(subst /, ,$(lastword $(subst external/gcc/, ,$(SRT_PATH_SCRAMRT))) ) )
 
-CXX          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
-F77          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
-LD           := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+#CXX          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+#F77          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+#LD           := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
+CXX          := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+F77          := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+LD           := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
 
 CXXFLAGS     += -std=c++0x -fPIC -Wall -frtti -fexceptions -fpic -g \
                 -I$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/src/ \

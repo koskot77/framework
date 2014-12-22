@@ -1,4 +1,5 @@
 #include "AppFramework/AppFramework.h"
+#include "Logistics/SampleHelper.h"
 #include "AnModBasic/InputModule.h"
 #include "AnModBasic/OutputModule.h"
 #include "Readers/BasicReader.h"
@@ -11,6 +12,7 @@
 #include "Analyser.h"
 
 AppFramework::AppFramework(const char* sequence){
+        addAgent ( new SampleHelper("SampleHelper", "SampleHelper" ) );
         addModule( new InputModule("InputModule", "InputModule" ) );
         addModule( new GeneratorReader("GeneratorReader", "GeneratorReader" ) );
         addModule( new BasicReader("BasicReader", "BasicReader" ) );

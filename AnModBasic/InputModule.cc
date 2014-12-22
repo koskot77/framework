@@ -25,6 +25,7 @@ AppResult InputModule::beginJob(AppEvent& event){
     inputFiles.clear();
     currentFile = 0;
 
+if( path.length() ){
     size_t begin = 0, end = string::npos;
     while( true ){
         end = ((string&)path).find(":",begin);
@@ -51,7 +52,11 @@ AppResult InputModule::beginJob(AppEvent& event){
         if( end == string::npos ) break;
         else begin = end+1;
     }
-
+} else {
+    vector<string> path;
+    if( event.get("path", path) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No found");
+    inputFiles = path;
+}
     returnMessage<<"Total "<<inputFiles.size()<<" files to process"<<endl;
 
     if( inputFiles.size()==0 ) return AppResult(AppResult::STOP|AppResult::LOG,"Empty input, nothing to do");

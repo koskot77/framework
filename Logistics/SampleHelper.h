@@ -5,14 +5,14 @@
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 #include <string>
-#include <list>
+#include <vector>
 #include <map>
 
-class SampleHelper : public AppAgent< list<string> >, public AppAgent<string>{
+class SampleHelper : public AppAgent< vector<string> >, public AppAgent<string>{
 private:
     AppParameter<string> sample;
     AppParameter<string> sampleSection;
-    list<string>         filesToProcess;
+    vector<string>       filesToProcess;
     map<string,list<string> > allFiles;
 
 public:
@@ -23,8 +23,8 @@ public:
         return retval;
     }
 
-    bool set  (const char *name, const list<string> &c){ return true; } // no one is allowed to request a change of any of the data members
-    bool fetch(const char *name,       list<string> &c);
+    bool set  (const char *name, const vector<string> &c){ return true; } // no one is allowed to request a change of any of the data members
+    bool fetch(const char *name,       vector<string> &c);
 
     bool set  (const char *name, const string &c){ return true; }  // no one is allowed to request a change of any of the data members
     bool fetch(const char *name,       string &c);
@@ -33,7 +33,7 @@ public:
     AppResult beginJob(void);
     AppResult endJob  (void){ return AppResult(); }
 
-    SampleHelper(void);// : AppAgentWrapper("sampleHelper","simple object-counter"),AppAgent< list<string> >(),AppAgent<string>(),
+    SampleHelper(const char* name, const char *descr);// : AppAgentWrapper("sampleHelper","simple object-counter"),AppAgent< list<string> >(),AppAgent<string>(),
 //         sample(*this,"sample", ""), sampleSection(*this,"sampleSection", "1of1"){}
 };
 

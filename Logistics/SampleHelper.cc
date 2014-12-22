@@ -6,7 +6,7 @@ using namespace std;
 #include <fnmatch.h>
 #include <libgen.h>
 
-SampleHelper::SampleHelper(void):AppAgentWrapper("sampleHelper","simple object-counter"),AppAgent< list<string> >(),AppAgent<string>(),
+SampleHelper::SampleHelper(const char* name, const char *descr):AppAgentWrapper(name,descr),AppAgent< vector<string> >(),AppAgent<string>(),
          sample(*this,"sample", ""), sampleSection(*this,"sampleSection", "1of1"){
 
      allFiles["SingleMuA"].push_back("/mnt/hadoop/se/store/user/abrinke1/SingleMu/SingleMu_Run2012A-13Jul2012-v1_BEAN_53xOn53x_V02_CV01/de3c20242948dd0d39f546037f2fbda9/ttH_pat2bean_53x_*_*_*.root");
@@ -79,13 +79,14 @@ AppResult SampleHelper::beginJob(void){
 
     int numberOfFilesPerSection = int(sampleFiles.size()/float(total) + 0.5);
 
+    filesToProcess.clear();
     for(int i = (part-1) * numberOfFilesPerSection; i < part * numberOfFilesPerSection && i<int(sampleFiles.size()); i++)
         filesToProcess.push_back(sampleFiles[i]);
 
     return AppResult();
 }
 
-bool SampleHelper::fetch(const char *name, list<string> &c){
+bool SampleHelper::fetch(const char *name, vector<string> &c){
     if( strcmp(name,"path") == 0 ){
         c = filesToProcess;
         return false;

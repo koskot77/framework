@@ -14,7 +14,7 @@ private:
     bool changedNames_;
 
 public:
-    const unsigned int maxSize = 200;
+    unsigned int maxSize;
 
     const char* name(unsigned int triggerBit) const {
         return ( triggerBit<maxSize ? names_[triggerBit].c_str() : "" );
@@ -39,7 +39,7 @@ public:
     void setError (unsigned int triggerBit, bool state=true) { if( triggerBit<maxSize ) error_ [triggerBit] = state; }
 
     //Trigger(void):wasRun_(maxSize), accept_(maxSize), error_(maxSize), prescales_(maxSize), names_(maxSize){}
-    Trigger(void):wasRun_(200), accept_(200), error_(200), prescales_(200), names_(200){ changedNames_ = false; }
+    Trigger(void):wasRun_(200), accept_(200), error_(200), prescales_(200), names_(200){ changedNames_ = false; maxSize = 200; }
     virtual ~Trigger(void){}
 };
 

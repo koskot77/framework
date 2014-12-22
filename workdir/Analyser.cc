@@ -104,7 +104,7 @@ AppResult Analyser::event(AppEvent& event){
 
     const Trigger *result;
     if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
-    if( result->accept(97) && !result->changedTriggerNames() ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
+    if( result->accept(97) && !result->namesChanged() ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
     event.put("pfmet170", (const int*)&pfmet170);
 
     const JetCollection *jets;
