@@ -23,8 +23,8 @@ all:	makefile $(OBJ)
 	@echo "done"
 
 bin:	makefile $(OBJ)
-	$(CXX) -o qwe.o -c $(CXXFLAGS) qwe.cc
-	$(CXX) $(LDOPT) -o test $(OBJ) qwe.o $(STDLIB)
+	$(CXX) -o main.o -c $(CXXFLAGS) main.cc
+	$(CXX) $(LDOPT) -o test $(OBJ) main.o $(STDLIB)
 	@echo "done"
 
 $(OBJ):		%.o: %.cc %.h
