@@ -2,7 +2,7 @@ using namespace std;
 #include "ElectronReader.h"
 #include "TTree.h"
 #include "TBranch.h"
-#include "ElectronEffectiveArea.h"
+#include "Logistics/ElectronEffectiveArea.h"
 
 #include "DataFormats/PatCandidates/interface/Electron.h"
 edm::Wrapper<pat::ElectronCollection> *__patElectrons = new edm::Wrapper<pat::ElectronCollection>();

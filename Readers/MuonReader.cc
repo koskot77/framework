@@ -2,7 +2,7 @@ using namespace std;
 #include "MuonReader.h"
 #include "TTree.h"
 #include "TBranch.h"
-#include "MuonEffectiveArea.h"
+#include "Logistics/MuonEffectiveArea.h"
 
 #include "DataFormats/PatCandidates/interface/Muon.h"
 edm::Wrapper<pat::MuonCollection> *__patMuons = new edm::Wrapper<pat::MuonCollection>();

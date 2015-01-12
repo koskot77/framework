@@ -1,5 +1,5 @@
 # Dependencies 
-USING := AppFramework
+USING := AppFramework Logistics
 
 # No specific files to compile 
 LIB_SOURCES :=

@@ -1,5 +1,5 @@
 # Dependencies 
-USING :=
+USING := AnObjects
 
 # Specific files to compile 
 LIB_SOURCES := RegEx.cc CompiledFormula.cc Value_t.cc

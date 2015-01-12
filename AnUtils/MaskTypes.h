@@ -2,7 +2,7 @@
 #define MaskTypes_h
 #include <list>
 #include <stdexcept>
-#include "Particle.h"
+#include "AnObjects/Particle.h"
 
 class MaskTypes{
 public:

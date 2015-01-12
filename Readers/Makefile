@@ -1,5 +1,5 @@
 # Dependencies 
-USING := AppFramework AnObjects
+USING := AppFramework AnObjects Logistics
 
 # No specific files to compile 
 LIB_SOURCES :=
