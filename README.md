@@ -7,12 +7,13 @@ This project combines data manipulation modules
 
 2. AnModBasic --- specific input and output modules
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;InputModule --- module that reads _Events_ and _ParameterSets_ branches from a ROOT tree of a typical CMS EDM file
+InputModule --- module that reads _Events_ and _ParameterSets_ branches from a ROOT tree of a typical CMS EDM file
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;OutputModule --- module that write selected variables (integers and doubles) into CSV files and flat ROOT trees
+OutputModule --- module that write selected variables (integers and doubles) into CSV files and flat ROOT trees
 
 3. Logistics --- the database of samples, reweighting schemes, scaling factors, etc.
-&nbsp;&nbsp;&nbsp;&nbsp;SampleHelper --- dictionary (AppAgent, not an AppModule) that associate of sample name with physical location of files for InputModule
+<br>
+SampleHelper --- dictionary (AppAgent, not an AppModule) that associate of sample name with physical location of files for InputModule
 
 4. AnObjects --- analysis objects comprising an event (leptons, jets, triggers...)
 
