@@ -1,6 +1,5 @@
 include ../paths.mk
 
-#OBJ      := MyModule1.o MyModule2.o MyModule3.o MyModule4.o MyModule5.o
 OBJ      := Analyser.o
 
 #-----------------------------------------------------------

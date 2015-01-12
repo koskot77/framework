@@ -57,7 +57,7 @@ int main(int argc, char **argv) {
     map<int, vector<const char*> > sMuon;//[NUMBER_OF_TYPES+1];
     map<int, vector<const char*> > sElectron;//[NUMBER_OF_TYPES+1];
     map<int, vector<const char*> > MC;//[NUMBER_OF_TYPES+1];
-    #include "BEANs2012.h"
+    #include "Logistics/BEANs2012.h"
     map<int, vector<const char*> > *BEANtuples = &MC;
 
     int dataType=NONE;

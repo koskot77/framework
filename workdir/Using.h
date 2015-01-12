@@ -1,17 +1,28 @@
 #include "AppFramework/AppFramework.h"
-#include "MyModule1.h"
-#include "MyModule2.h"
-#include "MyModule3.h"
-#include "MyModule4.h"
-#include "MyModule5.h"
+#include "Logistics/SampleHelper.h"
+#include "AnModBasic/InputModule.h"
+#include "AnModBasic/OutputModule.h"
+#include "Readers/BasicReader.h"
+#include "Readers/TriggerReader.h"
+#include "Readers/MuonReader.h"
+#include "Readers/ElectronReader.h"
+#include "Readers/METReader.h"
+#include "Readers/JetReader.h"
+#include "Readers/GeneratorReader.h"
+#include "Analyser.h"
 
 AppFramework::AppFramework(const char* sequence){
-//	addAgent ( new SomeAgent1("SomeAgent1","performing of some operatioms") );
-	addModule( new MyModule1("MyModule1", "First example"  ) );
-	addModule( new MyModule2("MyModule2", "Second example" ) );
-	addModule( new MyModule3("MyModule3", "Third example"  ) );
-	addModule( new MyModule4("MyModule4", "Fourth example" ) );
-	addModule( new MyModule5("MyModule5", "Fifth example"  ) );
+        addAgent ( new SampleHelper("SampleHelper", "SampleHelper" ) );
+        addModule( new InputModule("InputModule", "InputModule" ) );
+        addModule( new GeneratorReader("GeneratorReader", "GeneratorReader" ) );
+        addModule( new BasicReader("BasicReader", "BasicReader" ) );
+        addModule( new TriggerReader("TriggerReader", "TriggerReader" ) );
+        addModule( new MuonReader ("MuonReader",  "MuonReader"  ) );
+        addModule( new ElectronReader ("ElectronReader",  "ElectronReader"  ) );
+        addModule( new METReader  ("METReader",   "METReader"   ) );
+        addModule( new JetReader  ("JetReader",   "JetReader"   ) );
+        addModule( new Analyser   ("Analyser",    "Analyser"    ) );
+        addModule( new OutputModule("OutputModule", "OutputModule" ) );
 	reorder(sequence);
 }
 
