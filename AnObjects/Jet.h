@@ -50,6 +50,10 @@ private:
     float  chargedHadronEnergyFraction, chargedMultiplicity;
     double jecUncertainty;
     int    partonFlavr;
+
+    double taggedMass;
+    int    nTaggedSubJets;
+
     std::vector<double> diffVec;
     std::vector<double> btag_discriminators;
 
@@ -73,7 +77,9 @@ public:
     float CHF() const { return chargedHadronEnergyFraction; }
     float NCH() const { return chargedMultiplicity;         }
     int partonFlavor() const { return partonFlavr; }
-    double JECUnc() const { return jecUncertainty; }
+    double JECUnc()    const { return jecUncertainty; }
+    double tagMass()   const { return taggedMass; }
+    int    nSubJets()  const { return nTaggedSubJets; }
 //    const FourVector &DiffVec;
 
     void setUsedAlgorithm(JetAlgorithm::value algo)   { usedAlgorithm = algo; }
@@ -86,6 +92,8 @@ public:
     void setFHPD(float fHPD)                          { fractionOfEnergyIntheHottestHPDReadout = fHPD; }
     void setDiscriminatorForBtagType(float discriminator, BtagAlgorithm::value type){ btag_discriminators[type] = discriminator; }
     float getDiscriminatorForBtagType(BtagAlgorithm::value type) const { return btag_discriminators[type]; }
+    void setTagMass(double tMass) { taggedMass = tMass; }
+    void setNSubJets(int nsj)     { nTaggedSubJets = nsj; }
 
     void setNOD(int   nod){ numberOfDaughters           = nod; }
     void setCEF(float cef){ chargedEmEnergyFraction     = cef; }

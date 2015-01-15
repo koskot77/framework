@@ -3,9 +3,11 @@ using namespace std;
 #include "TTree.h"
 #include "TBranch.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/JetReco/interface/CATopJetTagInfo.h"
 #include <algorithm>
 
-edm::Wrapper<pat::JetCollection> *__patJets = new edm::Wrapper<pat::JetCollection>();
+edm::Wrapper<pat::JetCollection>             *__patJets = new edm::Wrapper<pat::JetCollection>();
+edm::Wrapper<vector<reco::CATopJetTagInfo> > *__tagInfo = new edm::Wrapper<vector<reco::CATopJetTagInfo> >();
 
 AppResult JetReader::beginRun(AppEvent& event) {
     TTree *Events = 0;
@@ -16,6 +18,11 @@ AppResult JetReader::beginRun(AppEvent& event) {
     if( !inputJetsBranch )
         return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.' branch found");
     inputJetsBranch->SetAddress(&__patJets);
+
+    TBranch *inputTagsBranch = Events->GetBranch("recoCATopJetTagInfos_caTopTagInfos__PAT.");
+    if( !inputTagsBranch )
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoCATopJetTagInfos_caTopTagInfos__PAT.' branch found");
+    inputTagsBranch->SetAddress(&__tagInfo);
 
     return AppResult();
 }
@@ -58,6 +65,18 @@ AppResult JetReader::event(AppEvent& event) {
         }
         if( jet->isGood() ) jets.push_back(jet);
       }
+
+
+    if( __tagInfo->isPresent() ){
+      int jetIndex = 0;
+      for(vector<reco::CATopJetTagInfo>::const_iterator ptag = __tagInfo->product()->begin(); ptag != __tagInfo->product()->end(); ptag++, jetIndex++){
+        if( jetIndex < jets.size() ){
+          // ptag->jet(); doesn't work in miniAOD
+          jets[jetIndex]->setTagMass ( ptag->properties().topMass  );
+          jets[jetIndex]->setNSubJets( ptag->properties().nSubJets );
+        }
+      }
+    }
 
     sort   (jets.begin(),jets.end());
     reverse(jets.begin(),jets.end());

@@ -117,6 +117,8 @@ AppResult Analyser::event(AppEvent& event){
         jetEtaRec[j] = jets->at(j)->eta();
         jetPhiRec[j] = jets->at(j)->phi();
         jetCSV   [j] = jets->at(j)->isBJet();
+        jetMass  [j] = jets->at(j)->mass(); // tagMass
+        nSubJets [j] = jets->at(j)->nSubJets(); // tagMass
     }
 
     const ElectronCollection *electrons;
@@ -153,30 +155,36 @@ AppResult Analyser::event(AppEvent& event){
     cout<<" met= "<<ETmiss->pt()<<std::endl;
     met = ETmiss->pt();
 
-    m3jets = 0; m2jets = 0;
+    m3jets = 0; m2jets = 0; m1jet = 0;
     if( numberOfJets==3 && muons->size()==0 && electrons->size()==0 ){
         TLorentzVector jet1, jet2, jet3;
-        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], 0);
-        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], 0);
-        jet3.SetPtEtaPhiM(jetPtRec[2], jetEtaRec[2], jetPhiRec[2], 0);
+        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], jetMass[0]);
+        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], jetMass[1]);
+        jet3.SetPtEtaPhiM(jetPtRec[2], jetEtaRec[2], jetPhiRec[2], jetMass[2]);
         TLorentzVector sum3j( jet1 + jet2 + jet3 );
         m3jets = sum3j.M();
     }
     if( numberOfJets==2 && muons->size()==0 && electrons->size()==0 ){
         TLorentzVector jet1, jet2;
-        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], 0);
-        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], 0);
+        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], jetMass[0]);
+        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], jetMass[1]);
         TLorentzVector sum2j( jet1 + jet2 );
         m2jets = sum2j.M();
+    }
+    if( numberOfJets==1 && muons->size()==0 && electrons->size()==0 ){
+        m1jet = jetMass[0];
     }
 
     event.put("numberOfJets",(const int*)&numberOfJets);
     event.put("m3jets",      (const double*)&m3jets);
     event.put("m2jets",      (const double*)&m2jets);
+    event.put("m1jet",       (const double*)&m1jet);
     event.put("met",         (const double*)&met);
     event.put("jetPtRec[4]", (const double*)jetPtRec);
     event.put("jetEtaRec[4]",(const double*)jetEtaRec);
     event.put("jetPhiRec[4]",(const double*)jetPhiRec);
+    event.put("jetMass[4]",  (const double*)jetMass);
+    event.put("nSubJets[4]", (const int*)nSubJets);
 
     event.put("numberOfRecMuons", (const int*)&numberOfRecMuons);
     event.put("muPtRec[4]",  (const double*)muPtRec);
