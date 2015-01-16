@@ -8,6 +8,9 @@ using namespace std;
 
 AppResult OutputModule::beginJob(AppEvent& event){
 // open output file
+    if( output.length()==0 ){
+        if( event.get("identifier", output) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Specify 'output' parameter explicitly or add the 'SampleHelper'");
+    }
     // root
     if( ((string&)output).find(".root") != string::npos ){
         //outputFile = TFile::Open(output.c_str(),"RECREATE");

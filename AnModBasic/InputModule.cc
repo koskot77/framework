@@ -54,7 +54,7 @@ AppResult InputModule::beginJob(AppEvent& event){
         }
     } else {
         vector<string> path;
-        if( event.get("path", path) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Specify 'path' parameter eplicitly or add the 'SampleHelper'");
+        if( event.get("path", path) ) return AppResult(AppResult::STOP|AppResult::ERROR,"Specify 'path' parameter explicitly or add the 'SampleHelper'");
         inputFiles = path;
     }
 
