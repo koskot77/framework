@@ -40,7 +40,9 @@ AppResult Analyser::event(AppEvent& event){
      ePtRec[2] = -1;
      ePtRec[3] = -1;
 
-    numberOfGenMuons = 0;
+    numberOfGenMuons     = 0;
+    numberOfGenElectrons = 0;
+    numberOfGenTaus      = 0;
     muPtGen[0] = -1;
     muPtGen[1] = -1;
     muPtGen[2] = -1;
@@ -81,7 +83,10 @@ AppResult Analyser::event(AppEvent& event){
         const Particle *m  = gp->mother();
         const list<const Particle*> &d = gp->daughters();
         cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<(m?m->pdgId():-1)<<" nd="<<d.size()<<std::endl;
-        if( abs(gp->pdgId())<5 && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
+        if( abs(gp->pdgId())<5   && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
+        if( abs(gp->pdgId())==11 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenElectrons++;
+        if( abs(gp->pdgId())==13 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenMuons++;
+        if( abs(gp->pdgId())==15 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenTaus++;
         if( abs(gp->pdgId())==24 ) indexW = p;
         if( abs(gp->pdgId())==6  ) indexT = p;
     }
@@ -192,7 +197,9 @@ AppResult Analyser::event(AppEvent& event){
     event.put("muPhiRec[4]", (const double*)muPhiRec);
     event.put("muPfIso[4]",  (const double*)muPfIso);
 
-    event.put("numberOfGenMuons", (const int*)&numberOfGenMuons);
+    event.put("numberOfGenElectrons", (const int*)&numberOfGenElectrons);
+    event.put("numberOfGenMuons",     (const int*)&numberOfGenMuons);
+    event.put("numberOfGenTaus",      (const int*)&numberOfGenTaus);
     event.put("muPtGen[4]",  (const double*)muPtGen);
     event.put("muEtaGen[4]", (const double*)muEtaGen);
     event.put("muPhiGen[4]", (const double*)muPhiGen);

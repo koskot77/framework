@@ -35,7 +35,7 @@ private:
 public:
 
     OutputModule(const char *nm, const char *descr):AppModule(nm,descr),
-        output  (*this,"output",   "./output.csv"),
+        output  (*this,"output",   ""),
         leaflist(*this,"leaflist", ""),
         filter  (*this,"filter"),
         microTuple(0){ }

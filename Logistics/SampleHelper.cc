@@ -101,7 +101,9 @@ bool SampleHelper::fetch(const char *name, string &c){
     if( strcmp(name,"identifier") == 0 ) {
         map<string,list<string> >::const_iterator s = allFiles.find((string&)sample);
         if( s == allFiles.end() ) return true;
-        c = string(s->first) + string("_") + string(sampleSection);
+        c = string(s->first);
+        if( sampleSection != "1of1" )
+            c += string("_") + string(sampleSection);
         return false;
     }
     return true;
