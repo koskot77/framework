@@ -14,10 +14,16 @@ AppResult JetReader::beginRun(AppEvent& event) {
     if( event.get("Events",Events) || !Events )
         return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
-    TBranch *inputJetsBranch = Events->GetBranch("patJets_slimmedJetsAK8__PAT.");
+//    TBranch *inputJetsBranch = Events->GetBranch("patJets_slimmedJetsAK8__PAT.");
+//    if( !inputJetsBranch )
+//        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.' branch found");
+//    inputJetsBranch->SetAddress(&__patJets);
+
+    TBranch *inputJetsBranch = Events->GetBranch("patJets_slimmedJets__PAT.");
     if( !inputJetsBranch )
-        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJetsAK8__PAT.' branch found");
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'patJets_slimmedJets__PAT.' branch found");
     inputJetsBranch->SetAddress(&__patJets);
+
 
     TBranch *inputTagsBranch = Events->GetBranch("recoCATopJetTagInfos_caTopTagInfos__PAT.");
     if( !inputTagsBranch )
