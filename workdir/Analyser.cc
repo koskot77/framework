@@ -18,7 +18,9 @@ AppResult Analyser::endJob(AppEvent& event){
 //match(const double *source, double *destination){}
 
 AppResult Analyser::event(AppEvent& event){
-    ZpT = 0;
+    ZpT = -1;
+    met = -1;
+    metNoMu   = -1;
     diMuPtRec = 0;
     diMuPtGen = 0;
 
@@ -80,15 +82,14 @@ AppResult Analyser::event(AppEvent& event){
     unsigned int indexW = 0, indexT = 0;
     for(unsigned int p=0; p<gen->size() && p<20; p++){
         const Particle *gp = gen->at(p).get();
-        const Particle *m  = gp->mother();
-        const list<const Particle*> &d = gp->daughters();
-        cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<(m?m->pdgId():-1)<<" nd="<<d.size()<<std::endl;
-        if( abs(gp->pdgId())<5   && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
+        cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<gp->motherPdgId()<<std::endl;
+        if( abs(gp->pdgId())<=5  && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
         if( abs(gp->pdgId())==11 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenElectrons++;
         if( abs(gp->pdgId())==13 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenMuons++;
         if( abs(gp->pdgId())==15 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenTaus++;
         if( abs(gp->pdgId())==24 ) indexW = p;
         if( abs(gp->pdgId())==6  ) indexT = p;
+        if( abs(gp->pdgId())==23 ) ZpT = gp->pt();
     }
 
     if( hadronicWdecay ){
@@ -108,8 +109,8 @@ AppResult Analyser::event(AppEvent& event){
     }
 
     const Trigger *result;
-    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
-    if( result->accept(97) && !result->namesChanged() ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
+//    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
+//    if( result->accept(97) && !result->namesChanged() ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
     event.put("pfmet170", (const int*)&pfmet170);
 
     const JetCollection *jets;
@@ -159,6 +160,10 @@ AppResult Analyser::event(AppEvent& event){
     if( event.get("ETmiss",ETmiss) || !ETmiss) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
     cout<<" met= "<<ETmiss->pt()<<std::endl;
     met = ETmiss->pt();
+    metNoMu = sqrt( (ETmiss->px() + muPtRec[0]*cos(muPhiRec[0]) + muPtRec[1]*cos(muPhiRec[1]))*
+                    (ETmiss->px() + muPtRec[0]*cos(muPhiRec[0]) + muPtRec[1]*cos(muPhiRec[1])) +
+                    (ETmiss->py() + muPtRec[0]*sin(muPhiRec[0]) + muPtRec[1]*sin(muPhiRec[1]))*
+                    (ETmiss->py() + muPtRec[0]*sin(muPhiRec[0]) + muPtRec[1]*sin(muPhiRec[1])) );
 
     m3jets = 0; m2jets = 0; m1jet = 0;
     if( numberOfJets==3 && muons->size()==0 && electrons->size()==0 ){
@@ -185,6 +190,7 @@ AppResult Analyser::event(AppEvent& event){
     event.put("m2jets",      (const double*)&m2jets);
     event.put("m1jet",       (const double*)&m1jet);
     event.put("met",         (const double*)&met);
+    event.put("metNoMu",     (const double*)&metNoMu);
     event.put("jetPtRec[4]", (const double*)jetPtRec);
     event.put("jetEtaRec[4]",(const double*)jetEtaRec);
     event.put("jetPhiRec[4]",(const double*)jetPhiRec);
