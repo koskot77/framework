@@ -28,9 +28,18 @@ SampleHelper::SampleHelper(const char* name, const char *descr):AppAgentWrapper(
 
      allFiles["TT"].push_back("/store/user/wulsin/TTJets_MassiveBinDECAY_TuneZ2star_8TeV-madgraph-tauola/BEANs-v4/0ff8045eb3a4a7ce9562dd332df0072c/ttH_pat2bean_53x_*.root");
 
-     allFiles["S3m600"].push_back("/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
-     allFiles["S3m300"].push_back("/tmp/kkotov/MonotopToHad_S3_MSM-300_Tune4C_13TeV-madgraph-tauola.root");
+     allFiles["S3m600"].push_back("/data/users/kkotov/s3m600/*.root");
+     allFiles["S3m300"].push_back("/data/users/kkotov/s3m300/*.root");
      allFiles["S4m1200"].push_back("/tmp/kkotov/MonotopToHad_S4_MVM-1200_Tune4C_13TeV-madgraph-tauola.root");
+
+//     allFiles["ZN"].push_back("/store/user/ahart/BN_ZJetsToNuNu_50_HT_100_TuneZ2Star_8TeV_madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+//     allFiles["ZN"].push_back("/store/user/ahart/BN_ZJetsToNuNu_100_HT_200_TuneZ2Star_8TeV_madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+     allFiles["ZN"].push_back("/store/user/ahart/BN_ZJetsToNuNu_200_HT_400_TuneZ2Star_8TeV_madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+     allFiles["ZN"].push_back("/store/user/ahart/BN_ZJetsToNuNu_400_HT_inf_TuneZ2Star_8TeV_madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+     allFiles["ZJ"].push_back("/store/user/ahart/BN_DYJetsToLL_M-50_TuneZ2Star_8TeV-madgraph-tarball_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+
+     allFiles["W3J"].push_back("/store/user/ahart/BN_W3JetsToLNu_TuneZ2Star_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
+     allFiles["W4J"].push_back("/store/user/ahart/BN_W4JetsToLNu_TuneZ2Star_8TeV-madgraph_Summer12_DR53X-PU_S10_START53_V7A-v1_AODSIM_0/*_AODSIM_*_*_*.root");
 }
 
 AppResult SampleHelper::beginJob(void){

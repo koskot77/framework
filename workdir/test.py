@@ -8,12 +8,12 @@ parser.add_option("-o", "--output", dest="output", help="/data/users/kkotov/")
 options, arguments = parser.parse_args()
 
 #fw = AppFramework('InputModule->BasicReader->TriggerReader->GeneratorReader->ElectronReader->MuonReader->JetReader->METReader->Analyser->OutputModule')
-fw = AppFramework('InputModule->BasicReader->GeneratorReader->ElectronReader->MuonReader->JetReader->METReader->Analyser->OutputModule')
+fw = AppFramework('InputModule->BasicReader->TriggerReader->ElectronReader->MuonReader->JetReader->METReader->GeneratorReader->Analyser->OutputModule')
 fw.verbose("AppFramework","cout on") 
 fw.verbose("Analyser","cout off");
 fw.modList();
-fw.modify("SampleHelper::sample",options.input);
-fw.modify("SampleHelper::sampleSection",options.sampleSection);
+fw.modify("SampleHelper::sample",options.input); #"S3m300");
+fw.modify("SampleHelper::sampleSection",options.sampleSection); #"1of1");
 #fw.modify("InputModule::path","/tmp/kkotov/MonotopToHad_S3_MSM-600_Tune4C_13TeV-madgraph-tauola.root");
 fw.modify("InputModule::showProgressPeriod","1000");
 fw.modify("InputModule::firstEntry","0");
