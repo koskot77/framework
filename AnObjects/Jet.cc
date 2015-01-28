@@ -25,6 +25,8 @@ Jet::Jet(void) : Particle(),
   chargedMultiplicity(0),
   jecUncertainty(0),
   partonFlavr(0),
+  taggedMass(0),
+  nTaggedSubJets(0),
   diffVec(4),
   btag_discriminators(BtagAlgorithm::NUMBER_OF_BTAGALGORITHMS){
   for(unsigned int btag = 0; btag < btag_discriminators.size(); btag++)
@@ -46,6 +48,8 @@ Jet::Jet(float energy, float px, float py, float pz) : Particle(energy, px, py, 
   chargedMultiplicity(0),
   jecUncertainty(0),
   partonFlavr(0),
+  taggedMass(0),
+  nTaggedSubJets(0),
   diffVec(4),
   btag_discriminators(BtagAlgorithm::NUMBER_OF_BTAGALGORITHMS){
   for(unsigned int btag = 0; btag < btag_discriminators.size(); btag++)
