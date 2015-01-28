@@ -17,7 +17,7 @@ private:
     double  wPtGen    ,  wEtaGen    ,  wPhiGen    ;
     double  tPtGen    ,  tEtaGen    ,  tPhiGen    ;
     double  ePtRec [4],  eEtaRec [4],  ePhiRec [4],  ePfIso[4];
-    double m3jets, m2jets, m1jet, met;
+    double m3jets, m2jets, m1jet, met, metNoMu;
     double ZpT, diMuPtRec, diMuPtGen;
 
     AppResult beginJob(AppEvent& event);
