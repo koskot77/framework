@@ -13,7 +13,7 @@ Particle::Particle(void):
    charge_(-10),
    x_(0),y_(0),z_(0),d0_(0),
    e_(0),px_(0),py_(0),pz_(0),
-   type_(-1),status_(0),
+   type_(0),status_(0),
    motherType_(0), daughter1Type_(0), daughter2Type_(0),
    mother_(0)
 { name_ = ""; }
@@ -28,7 +28,7 @@ Particle::Particle(double energy, double px, double py, double pz) :
    charge_(-10),
    x_(0),y_(0),z_(0),d0_(0),
    e_(energy),px_(px),py_(py),pz_(pz),
-   type_(-1),status_(0),
+   type_(0),status_(0),
    motherType_(0), daughter1Type_(0), daughter2Type_(0),
    mother_(0)
 {
@@ -47,7 +47,7 @@ Particle::Particle(double energy, double px, double py, double pz) :
 
 Particle& Particle::operator+=(const Particle& particle){
         name_   = ""; mother_ =  0;
-        type_   = -1; charge_ = -10;
+        type_   = 0;  charge_ = -10;
         status_ = 0;
         x_=0; y_=0; z_=0;
         charge_   += particle.charge_;
