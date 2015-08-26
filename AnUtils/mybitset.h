@@ -3,6 +3,14 @@
 #include <string>   // std::string
 #include <string.h> // bzero, strlen, strcpy
 
+// The main purpose of this container is to serve a machinery to iterate over all
+// of the combinations with M out of N bits set. One practical example is the problem
+// when we want to select M objects from the list of N objects in all possible distinct
+// ways (N_choose_M combinations total). This can be done by constructing an instance of
+// the container for N bits (or resizing it by setSize(N) call), initializing the starting
+// point with setNBits(M) call, and looping until moveForward() call returns false.
+// Every moveForward() call costs only O(N*N) operations.
+
 class mybitset{
 private:
         unsigned char *array;
@@ -22,7 +30,7 @@ public:
 
         int  getLast(int n_bits=-1){ int last = ((n_bits > 0) ? (n_bits) : (size)); while(--last>=0 && !array[last]); return last; }
         int  getNumberOfBits(int n_bits=-1){ int count=0, last = ((n_bits > 0) ? (n_bits) : (size)); for(int i=0; i<last; i++)if(getBit(i))count++; return count; }
-        std::string getBinary(void){ char tmp[size+1]; for(int i=0; i<size; i++)if(getBit(i))tmp[i] = '1'; else tmp[i] = '0'; tmp[size] = '\0'; string tmp_ = tmp; return tmp_; }
+        std::string getBinary(void){ char tmp[size+1]; for(int i=0; i<size; i++)if(getBit(i))tmp[i] = '1'; else tmp[i] = '0'; tmp[size] = '\0'; std::string tmp_ = tmp; return tmp_; }
 
         int  nextBit(int counter_ = -1){
                 if(counter_ >= size)return -1;

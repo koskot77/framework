@@ -5,11 +5,12 @@
 #include "mybitset.h"
 
 // The function below returns a list of all unique combinations of M objects T from the
-// 'input'. If a column-separated pattern is provided with the 'match' argument, these
+// 'input'. If a column-separated pattern is provided with the 'mask' argument, these
 // objects are required to match pattern. For example, if T is a particle, then all
 // possible combinations of oppositely charged muon pairs would have to be requested
 // as "-13:+13" (PDG codes are used), or "13:13" for any di-muon pair, while "0:0"
-// select all di-jets. The template type T should implement operator==(const char*) 
+// selects all di-jets. In this later case the template type T should implement
+// bool T::operator==(const char*) that checks the match
 
 namespace NchooseM {
 
@@ -18,7 +19,7 @@ namespace NchooseM {
         std::vector< std::vector<T> > result;
 
         mybitset flagarray(input.size());
-        flagarray.setNBits(M);
+        if( !flagarray.setNBits(M) ) return result;
 
         do{
             std::vector<T> noname;
@@ -47,7 +48,7 @@ namespace NchooseM {
         if(nelements > input.size())return result;
         name = tmp_;
 
-//        // For fast comparison convert strings to hash numbers based in their PDG codes
+//        // For fast comparison convert strings to hash numbers
 //        int item_type[nelements], *item = item_type;
 //        while(item_type + nelements > item){
 //            *item++ = atoi(name);
@@ -57,9 +58,10 @@ namespace NchooseM {
         // The algorithm: for each name/code element in the mask loop over the current choise of the
         // selected objects and look for the matching type. If no match is found - leave the loop.
         // If match is found, remove the element from next iterations and start over. Once every element
-        // is removed store the choise of elements and move over to a new choise of elements (moveForward)
+        // is removed store the choise of elements and move over to the next choise of elements (moveForward)
         mybitset flagarray(input.size());
-        flagarray.setNBits(nelements);                   // Define the first subarray
+        if( !flagarray.setNBits(nelements) )   // Define the first subarray
+            return result;
 
         do{
             mybitset tmp = flagarray;                    // Auxiliary subarray

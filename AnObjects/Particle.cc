@@ -59,6 +59,11 @@ Particle& Particle::operator+=(const Particle& particle){
         mass_ = e_*e_-px_*px_-py_*py_-pz_*pz_;
         if( mass_<0 ) mass_ = -1; else mass_ = sqrt(mass_);
 
+        pt_    = sqrt(px_*px_+py_*py_);
+        theta_ = atan2( pt_, pz_ );
+        eta_   = -log( tan( theta_/2. ) );
+        phi_   = atan2(py_,px_);
+
         daughters_.push_back(&particle);
         if( !daughter1Type_ ) daughter1Type_ = particle.pdgId();
         else
