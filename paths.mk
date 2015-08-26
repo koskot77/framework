@@ -9,9 +9,16 @@ GCCVER       := $(firstword $(subst /, ,$(lastword $(subst external/gcc/, ,$(SRT
 #CXX          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
 #F77          := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
 #LD           := $(COMPILER_RUNTIME_OBJECTS)/bin/g++
-CXX          := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
-F77          := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
-LD           := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+
+ifneq (,$(ARCH))
+    CXX      := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+    F77      := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+    LD       := $(ROOT)/$(ARCH)/external/gcc/$(GCCVER)/bin/g++
+else
+    CXX      := g++
+    F77      := g++
+    LD       := g++
+endif
 
 CXXFLAGS     += -std=c++0x -fPIC -Wall -frtti -fexceptions -fpic -g \
                 -I$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/src/ \

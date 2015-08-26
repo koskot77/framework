@@ -150,12 +150,14 @@ $(BIN_NAMES):	$(BIN_OBJS) #Makefile
 
 # Link libraries
 $(STATIC_LIB_NAME):	Makefile $(LIB_OBJS)
+		@if ! test -d $(dir $@); then mkdir -p $(dir $@); fi
 		$(AR) rulc $(LINKER_OPTS) $(STATIC_LIB_NAME) $(LIB_OBJS)
 		$(shell echo "$(DEPEND)" > .depend )
 		$(shell echo "$(EXTERNAL_LIBS)" > .extlibs )
 		@echo "$(STATIC_LIB_NAME) done"
 
 $(DYNAMIC_LIB_NAME):	Makefile $(LIB_OBJS)
+		@if ! test -d $(dir $@); then mkdir -p $(dir $@); fi
 		$(LD) -shared $(LINKER_OPTS) $(LIB_OBJS) $(INTERNAL_LIBS) $(EXTERNAL_LIBS) $(INTERNAL_LIBS) $(EXTERNAL_LIBS) -o $(DYNAMIC_LIB_NAME)
 		$(shell echo "$(DEPEND)" > .depend )
 		$(shell echo "$(EXTERNAL_LIBS)" > .extlibs )
