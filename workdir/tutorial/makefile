@@ -9,7 +9,7 @@ CXXFLAGS +=
 LDOPT    := -Xlinker -rpath -Xlinker `cat ../../.release`/../lib/
 
 STDINC   := -std=c++11 -fPIC $(CXXFLAGS) -I./ -I../../ -I`cat ../../.release` `root-config --cflags` $(BOOSTFLAGS) $(CLHEPFLAGS)
-STDLIB   := -lstdc++ -L../../lib -lAppFramework -lAnModBasic -lAnUtils -lReaders -lAnObjects -lLogistics -L`cat ../../.release`/lib `root-config --glibs` -lGenVector
+STDLIB   := -lstdc++ -L../../lib -lAppFramework -lAnModBasic -lAnUtils -lAnObjects -lLogistics -L`cat ../../.release`/lib `root-config --glibs` -lGenVector
 
 CXXFLAGS += $(STDINC)
 
