@@ -18,11 +18,11 @@ all:	makefile $(OBJ)
 	@echo "done"
 
 bin:	makefile $(OBJ)
-	$(CXX) -o qwe.o -c $(CXXFLAGS) qwe.cc
-	$(CXX) $(LDOPT) -o test $(OBJ) qwe.o $(STDLIB)
+	$(CXX) -o test.o -c $(CXXFLAGS) test.cc
+	$(CXX) $(LDOPT) -o test $(OBJ) test.o $(STDLIB)
 	@echo "done"
 
 $(OBJ):		%.o: %.cc %.h
 		$(CXX) -o $@ -c $(CXXFLAGS) $<
 clean:
-		@rm -f *.o Makefile Makefile.old
+		@rm -f *.o test AppFramework.so init.pyc
