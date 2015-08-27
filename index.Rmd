@@ -71,12 +71,12 @@ Framework behavior:
 Flag              | Action
 ------------------|----------------------------------------------
 AppResult::OK     | keep calm and carry on
-AppResult::SKIP   | move on the the next event (= continue) 
+AppResult::SKIP   | ignore the rest of pipeline and move on the the next event (= continue) 
 AppResult::STOP   | stop processing (= break)
 
 <br>
 
-Payload message:
+Payload message will appear in the following streams depending on the severity flag:
 
 Flag               | Stream
 -------------------|---------------
@@ -119,7 +119,7 @@ sequence.process(10)
 </pre>
 
 The [MyModule3](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h) consumer shows how to [pull out the two
-objects](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L19-L20) (note the `const` qualifier!)
+objects](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L19-L20) (note the [`const` qualifier](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L18)!)
 
 The [`counter3`](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L21) object is an example
 of the "on demand" data owned by a [separate piece of code](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L14-L29)
@@ -134,7 +134,7 @@ Request of the "on demand" data from [AppEvent](https://github.com/koskot77/fram
 
 ## Toolbox
 
-[MyModule5](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h) shows how to build a mathematical expression:
+[MyModule5](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h) shows how to build a simple mathematical expression:
 
 <pre>
 sequence = AppFramework('MyModule5')
@@ -142,7 +142,7 @@ sequence.modify("MyModule5::formula","( val1+ val2) *val3");
 sequence.process(10)
 </pre>
 
-In this example the [CompiledFormula](https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h) container is populated
+In this example the [formula](https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h) container is populated
 with several random variables and the given formula is evaluated
 
 The [RegEx](https://github.com/koskot77/framework/blob/master/AnUtils/RegEx.h) utility assists using regular expressions
@@ -160,22 +160,24 @@ sequence.verbose("MyModule5","cout off")
 </pre>
 
 The first module can also inherit the [AppInputModule](https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h) class
-and be able to call `beginRun` and `endRun` methods of all of the modules using `beginRunNotify` and `endRunNotify` calls
+to be able to call `beginRun` and `endRun` methods of all of the modules using `beginRunNotify` and `endRunNotify` calls
 
 Persistence of the [AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container is also supported,
-but requires serializer/deserializer functions to be provided for every storable data
+but requires serializer/deserializer functions to be provided for every storable data (rarely needed, not explained here)
+
+All modules are named and registered in [Using.h](https://github.com/koskot77/framework/tree/master/workdir/tutorial/Using.h) file
+
+It is often practical to register the "on demand" data directly in
+[Using.h](https://github.com/koskot77/framework/tree/master/workdir/tutorial/Using.h#L9)
+rather than nesting them in some module as it was shown in the examples above
 
 --- .class #id
 
 ## List of CMS specific packages and modules
 
-<br>
-
 Framework's code was written around year 2000 and used for analyses with detector [KEDR](http://kedr.inp.nsk.su/~kotov/work.php3)
 
-It was also worked with the [CMS](http://cms.cern.ch) detector using the following data processing code:
-
-<br>
+It was also worked well with the [CMS](http://cms.cern.ch) detector using the following data processing code:
 
  * [AnModBasic/InputModule](https://github.com/koskot77/framework/blob/master/AnModBasic/InputModule.h) - module that reads _Events_ and _ParameterSets_ branches from a ROOT tree of a typical CMS EDM file
  * [AnModBasic/OutputModule](https://github.com/koskot77/framework/blob/master/AnModBasic/OutputModule.h) - module that write selected variables (integers and doubles) into CSV files and flat ROOT trees

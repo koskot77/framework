@@ -146,7 +146,7 @@ implements an exception mechanism:</p>
 </tr>
 <tr>
 <td>AppResult::SKIP</td>
-<td>move on the the next event (= continue)</td>
+<td>ignore the rest of pipeline and move on the the next event (= continue)</td>
 </tr>
 <tr>
 <td>AppResult::STOP</td>
@@ -156,7 +156,7 @@ implements an exception mechanism:</p>
 
 <p><br></p>
 
-<p>Payload message:</p>
+<p>Payload message will appear in the following streams depending on the severity flag:</p>
 
 <table><thead>
 <tr>
@@ -224,7 +224,7 @@ sequence.process(10)
 </pre>
 
 <p>The <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h">MyModule3</a> consumer shows how to <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L19-L20">pull out the two
-objects</a> (note the <code>const</code> qualifier!)</p>
+objects</a> (note the <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L18"><code>const</code> qualifier</a>!)</p>
 
 <p>The <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L21"><code>counter3</code></a> object is an example
 of the &quot;on demand&quot; data owned by a <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L14-L29">separate piece of code</a>
@@ -244,7 +244,7 @@ that is <a href="https://github.com/koskot77/framework/blob/master/workdir/tutor
     <h2>Toolbox</h2>
   </hgroup>
   <article data-timings="">
-    <p><a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h">MyModule5</a> shows how to build a mathematical expression:</p>
+    <p><a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h">MyModule5</a> shows how to build a simple mathematical expression:</p>
 
 <pre>
 sequence = AppFramework('MyModule5')
@@ -252,7 +252,7 @@ sequence.modify("MyModule5::formula","( val1+ val2) *val3");
 sequence.process(10)
 </pre>
 
-<p>In this example the <a href="https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h">CompiledFormula</a> container is populated
+<p>In this example the <a href="https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h">formula</a> container is populated
 with several random variables and the given formula is evaluated</p>
 
 <p>The <a href="https://github.com/koskot77/framework/blob/master/AnUtils/RegEx.h">RegEx</a> utility assists using regular expressions</p>
@@ -276,10 +276,16 @@ sequence.verbose("MyModule5","cout off")
 </pre>
 
 <p>The first module can also inherit the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h">AppInputModule</a> class
-and be able to call <code>beginRun</code> and <code>endRun</code> methods of all of the modules using <code>beginRunNotify</code> and <code>endRunNotify</code> calls</p>
+to be able to call <code>beginRun</code> and <code>endRun</code> methods of all of the modules using <code>beginRunNotify</code> and <code>endRunNotify</code> calls</p>
 
 <p>Persistence of the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h">AppEvent</a> container is also supported,
-but requires serializer/deserializer functions to be provided for every storable data</p>
+but requires serializer/deserializer functions to be provided for every storable data (rarely needed, not explained here)</p>
+
+<p>All modules are named and registered in <a href="https://github.com/koskot77/framework/tree/master/workdir/tutorial/Using.h">Using.h</a> file</p>
+
+<p>It is often practical to register the &quot;on demand&quot; data directly in
+<a href="https://github.com/koskot77/framework/tree/master/workdir/tutorial/Using.h#L9">Using.h</a>
+rather than nesting them in some module as it was shown in the examples above</p>
 
   </article>
   <!-- Presenter Notes -->
@@ -290,13 +296,9 @@ but requires serializer/deserializer functions to be provided for every storable
     <h2>List of CMS specific packages and modules</h2>
   </hgroup>
   <article data-timings="">
-    <p><br></p>
+    <p>Framework&#39;s code was written around year 2000 and used for analyses with detector <a href="http://kedr.inp.nsk.su/%7Ekotov/work.php3">KEDR</a></p>
 
-<p>Framework&#39;s code was written around year 2000 and used for analyses with detector <a href="http://kedr.inp.nsk.su/%7Ekotov/work.php3">KEDR</a></p>
-
-<p>It was also worked with the <a href="http://cms.cern.ch">CMS</a> detector using the following data processing code:</p>
-
-<p><br></p>
+<p>It was also worked well with the <a href="http://cms.cern.ch">CMS</a> detector using the following data processing code:</p>
 
 <ul>
 <li><a href="https://github.com/koskot77/framework/blob/master/AnModBasic/InputModule.h">AnModBasic/InputModule</a> - module that reads <em>Events</em> and <em>ParameterSets</em> branches from a ROOT tree of a typical CMS EDM file</li>
