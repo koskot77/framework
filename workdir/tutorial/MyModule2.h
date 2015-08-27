@@ -35,9 +35,9 @@ private:
         AppResult endJob  (AppEvent& event){ cout<<"job ended"<<endl; return AppResult(); }
 
         AppResult event(AppEvent& event){
+                counter++; obj.counter--;
                 event.put("counter1",counter);
                 event.put("counter2",(const MyType*)&obj);
-                counter++; obj.counter--;
                 return AppResult();
         }
 
