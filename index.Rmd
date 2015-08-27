@@ -1,0 +1,186 @@
+---
+title       : "Event Analysis Framework"
+subtitle    : 
+author      : Khristian Kotov
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+github:
+  user: koskot77 
+  repo: framework
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Introduction
+
+The project provides an environment for building an analysis pipeline of event type data
+
+It consists of the core package managing the pipeline and packages with processing modules:
+
+Package             | Functionality
+--------------------|---------------------------
+AppFramework (core) | initialization, scheduling, and messaging between the processing modules
+AnUtils             | generic algorithms, regexp, interactive formulae interpretation
+AnModBasic          | input and output modules
+Logistics           | database of samples, reweighting schemes, scaling factors, etc.
+AnObjects           | analysis objects comprising an event
+Readers             | collection of modules reading the EDM ([CMS](http://cms.cern.ch) specific) objects
+workdir             | working directory with a short tutorial
+
+The code can be installed with `git clone http://github.com/koskot77/framework.git`
+
+It can be tested with `make && cd workdir/tutorial && make && python test.py`
+
+--- .class #id
+
+## Analysis concept
+
+A typical pipeline can be specified in a python [test.py](https://github.com/koskot77/framework/blob/master/workdir/tutorial/test.py)
+or a C++ [test.cc](https://github.com/koskot77/framework/blob/master/workdir/tutorial/test.cc) program
+
+A simplest example shows a pipeline built with just one example module [MyModule1](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h):
+
+<pre>
+sequence = AppFramework('MyModule1')
+sequence.beginJob()
+sequence.process(10)
+sequence.endJob()
+</pre>
+
+The initialization is done with the `beginJob` and "harvesting" is associated with the `endJob`
+
+Both calls map trivially to the [MyModule1::beginJob](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L9) and [MyModule1::endJob](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L12) methods
+
+Processing of events (just 10 here) lead to a series of calls to [MyModule1::event](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L14) method
+
+[MyModule1](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h) inherits the [AppModule](https://github.com/koskot77/framework/blob/master/AppFramework/AppModule.h) class and implements `beginJob`, `beginRun`, `event`, `endRun`, and `endJob` methods
+
+<!--Any of the calls can be skipped if needed, but the five methods have to be defined-->
+
+--- .class #id
+
+## Execution flow
+
+The return type of the five methods, [AppResults](https://github.com/koskot77/framework/blob/master/AppFramework/AppResult.h),
+implements an exception mechanism:
+
+Framework behavior:
+
+Flag              | Action
+------------------|----------------------------------------------
+AppResult::OK     | keep calm and carry on
+AppResult::SKIP   | move on the the next event (= continue) 
+AppResult::STOP   | stop processing (= break)
+
+<br>
+
+Payload message:
+
+Flag               | Stream
+-------------------|---------------
+AppResult::LOG     | clog
+AppResult::WARNING | cout
+AppResult::ERROR   | cerr
+
+--- .class #id
+
+## Parameters
+
+Module can define a named parameter of any type; those can be modified as follows:
+<pre>
+sequence = AppFramework('MyModule4')
+sequence.modify("MyModule4::mystring","Simple string")
+sequence.modify("MyModule4::mydouble","999")
+sequence.beginJob()
+</pre>
+
+The `mystring` and `mydouble` objects in [MyModule4](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule4.h) are defined
+using [AppParameter\<T\>](https://github.com/koskot77/framework/blob/master/AppFramework/AppParameter.h) wrapper that
+behaves itself as an object of type `T` and provides an additional `toString()` method along with possibility to be initialized from a string 
+
+--- .class #id
+
+## Data flow
+
+Two types of data are supported: (1) "by event" and (2) "on demand"
+
+In the following example, [counter](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L10)
+and [obj](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L12) data members
+are modified in [MyModule2::event](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L37-L42)
+and passed over to downstream consumers under `counter1` and `counter2` labels via
+[AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container:
+
+<pre>
+sequence = AppFramework('MyModule2->MyModule3')
+sequence.beginJob()
+sequence.process(10)
+</pre>
+
+The [MyModule3](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h) consumer shows how to [pull out the two
+objects](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L19-L20) (note the `const` qualifier!)
+
+The [`counter3`](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L21) object is an example
+of the "on demand" data owned by a [separate piece of code](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L14-L29)
+that is [registered at the initialization time](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L32)
+
+The type of "on demand" data is declared as a template argument of the [AppAgent<T>](https://github.com/koskot77/framework/blob/master/AppFramework/AppAgent.h) base class
+
+Request of the "on demand" data from [AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container triggers 
+`fetch` or `set` methods
+
+--- .class #id
+
+## Toolbox
+
+[MyModule5](https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h) shows how to build a mathematical expression:
+
+<pre>
+sequence = AppFramework('MyModule5')
+sequence.modify("MyModule5::formula","( val1+ val2) *val3");
+sequence.process(10)
+</pre>
+
+In this example the [CompiledFormula](https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h) container is populated
+with several random variables and the given formula is evaluated
+
+The [RegEx](https://github.com/koskot77/framework/blob/master/AnUtils/RegEx.h) utility assists using regular expressions
+
+The [NchooseM](https://github.com/koskot77/framework/blob/master/AnUtils/NchooseM.h) functions helps to avoid many nested loops
+
+--- .class #id
+
+## Few more details
+
+Verbosity: one can switch off and on `cout`, `clog` and `cerr` streams; for example:
+<pre>
+sequence.verbose("AppFramework","cout off")
+sequence.verbose("MyModule5","cout off")
+</pre>
+
+The first module can also inherit the [AppInputModule](https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h) class
+and be able to call `beginRun` and `endRun` methods of all of the modules using `beginRunNotify` and `endRunNotify` calls
+
+Persistence of the [AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container is also supported,
+but requires serializer/deserializer functions to be provided for every storable data
+
+--- .class #id
+
+## List of CMS specific packages and modules
+
+<br>
+
+Framework's code was written around year 2000 and used for analyses with detector [KEDR](http://kedr.inp.nsk.su/~kotov/work.php3)
+
+It was also worked with the [CMS](http://cms.cern.ch) detector using the following data processing code:
+
+<br>
+
+ * [AnModBasic/InputModule](https://github.com/koskot77/framework/blob/master/AnModBasic/InputModule.h) - module that reads _Events_ and _ParameterSets_ branches from a ROOT tree of a typical CMS EDM file
+ * [AnModBasic/OutputModule](https://github.com/koskot77/framework/blob/master/AnModBasic/OutputModule.h) - module that write selected variables (integers and doubles) into CSV files and flat ROOT trees
+ * [Logistics/SampleHelper](https://github.com/koskot77/framework/blob/master/Logistics/SampleHelper.h) - dictionary that associate of sample name with physical location of files for the InputModule
+ * [AnObjects](https://github.com/koskot77/framework/tree/master/AnObjects) - analysis objects comprising a particle physics event (leptons, jets, triggers...)
+ * [Readers](https://github.com/koskot77/framework/tree/master/Readers) - collection of modules that reads CMS specific physics objects 
+
+A real world example is available in [workdir](https://github.com/koskot77/framework/tree/master/workdir)
