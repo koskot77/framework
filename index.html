@@ -17,7 +17,7 @@
   
   <!-- Grab CDN jQuery, fall back to local if offline -->
   <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
-  <script>window.jQuery || document.write('<script src="../DevDataProducts/libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
   <script data-main="../DevDataProducts/libraries/frameworks/io2012/js/slides" 
     src="../DevDataProducts/libraries/frameworks/io2012/js/require-1.0.8.min.js">
   </script>
@@ -275,12 +275,8 @@ sequence.verbose("AppFramework","cout off")
 sequence.verbose("MyModule5","cout off")
 </pre>
 
-<p><br></p>
-
 <p>The first module can also inherit the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h">AppInputModule</a> class
-to be able to call <code>beginRun</code> and <code>endRun</code> methods of all of the modules using <code>beginRunNotify</code> and <code>endRunNotify</code> calls</p>
-
-<p><br></p>
+and be able to call <code>beginRun</code> and <code>endRun</code> methods of all of the modules using <code>beginRunNotify</code> and <code>endRunNotify</code> calls</p>
 
 <p>Persistence of the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h">AppEvent</a> container is also supported,
 but requires serializer/deserializer functions to be provided for every storable data</p>
@@ -294,9 +290,13 @@ but requires serializer/deserializer functions to be provided for every storable
     <h2>List of CMS specific packages and modules</h2>
   </hgroup>
   <article data-timings="">
-    <p>Framework&#39;s code was written around year 2000 and used for analyses with detector <a href="http://kedr.inp.nsk.su/%7Ekotov/work.php3">KEDR</a></p>
+    <p><br></p>
 
-<p>It was also worked well with the <a href="http://cms.cern.ch">CMS</a> detector using the following data processing code:</p>
+<p>Framework&#39;s code was written around year 2000 and used for analyses with detector <a href="http://kedr.inp.nsk.su/%7Ekotov/work.php3">KEDR</a></p>
+
+<p>It was also worked with the <a href="http://cms.cern.ch">CMS</a> detector using the following data processing code:</p>
+
+<p><br></p>
 
 <ul>
 <li><a href="https://github.com/koskot77/framework/blob/master/AnModBasic/InputModule.h">AnModBasic/InputModule</a> - module that reads <em>Events</em> and <em>ParameterSets</em> branches from a ROOT tree of a typical CMS EDM file</li>
