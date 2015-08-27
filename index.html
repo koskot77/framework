@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Event Analysis Framework</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Event Analysis Framework">
+  <meta name="author" content="Khristian Kotov">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Event Analysis Framework</h1>
+    <h2></h2>
+    <p>Khristian Kotov<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Introduction</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The project provides an environment for building an analysis pipeline of event type data</p>
+
+<p>It consists of the core package managing the pipeline and packages with processing modules:</p>
+
+<table><thead>
+<tr>
+<th>Package</th>
+<th>Functionality</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>AppFramework (core)</td>
+<td>initialization, scheduling, and messaging between the processing modules</td>
+</tr>
+<tr>
+<td>AnUtils</td>
+<td>generic algorithms, regexp, interactive formulae interpretation</td>
+</tr>
+<tr>
+<td>AnModBasic</td>
+<td>input and output modules</td>
+</tr>
+<tr>
+<td>Logistics</td>
+<td>database of samples, reweighting schemes, scaling factors, etc.</td>
+</tr>
+<tr>
+<td>AnObjects</td>
+<td>analysis objects comprising an event</td>
+</tr>
+<tr>
+<td>Readers</td>
+<td>collection of modules reading the EDM (<a href="http://cms.cern.ch">CMS</a> specific) objects</td>
+</tr>
+<tr>
+<td>workdir</td>
+<td>working directory with a short tutorial</td>
+</tr>
+</tbody></table>
+
+<p>The code can be installed with <code>git clone http://github.com/koskot77/framework.git</code></p>
+
+<p>It can be tested with <code>make &amp;&amp; cd workdir/tutorial &amp;&amp; make &amp;&amp; python test.py</code></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Analysis concept</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>A typical pipeline can be specified in a python <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/test.py">test.py</a>
+or a C++ <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/test.cc">test.cc</a> program</p>
+
+<p>A simplest example shows a pipeline built with just one example module <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h">MyModule1</a>:</p>
+
+<pre>
+sequence = AppFramework('MyModule1')
+sequence.beginJob()
+sequence.process(10)
+sequence.endJob()
+</pre>
+
+<p>The initialization is done with the <code>beginJob</code> and &quot;harvesting&quot; is associated with the <code>endJob</code></p>
+
+<p>Both calls map trivially to the <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L9">MyModule1::beginJob</a> and <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L12">MyModule1::endJob</a> methods</p>
+
+<p>Processing of events (just 10 here) lead to a series of calls to <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h#L14">MyModule1::event</a> method</p>
+
+<p><a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule1.h">MyModule1</a> inherits the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppModule.h">AppModule</a> class and implements <code>beginJob</code>, <code>beginRun</code>, <code>event</code>, <code>endRun</code>, and <code>endJob</code> methods</p>
+
+<!--Any of the calls can be skipped if needed, but the five methods have to be defined-->
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Execution flow</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>The return type of the five methods, <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppResult.h">AppResults</a>,
+implements an exception mechanism:</p>
+
+<p>Framework behavior:</p>
+
+<table><thead>
+<tr>
+<th>Flag</th>
+<th>Action</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>AppResult::OK</td>
+<td>keep calm and carry on</td>
+</tr>
+<tr>
+<td>AppResult::SKIP</td>
+<td>move on the the next event (= continue)</td>
+</tr>
+<tr>
+<td>AppResult::STOP</td>
+<td>stop processing (= break)</td>
+</tr>
+</tbody></table>
+
+<p><br></p>
+
+<p>Payload message:</p>
+
+<table><thead>
+<tr>
+<th>Flag</th>
+<th>Stream</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>AppResult::LOG</td>
+<td>clog</td>
+</tr>
+<tr>
+<td>AppResult::WARNING</td>
+<td>cout</td>
+</tr>
+<tr>
+<td>AppResult::ERROR</td>
+<td>cerr</td>
+</tr>
+</tbody></table>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Parameters</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Module can define a named parameter of any type; those can be modified as follows:</p>
+
+<pre>
+sequence = AppFramework('MyModule4')
+sequence.modify("MyModule4::mystring","Simple string")
+sequence.modify("MyModule4::mydouble","999")
+sequence.beginJob()
+</pre>
+
+<p>The <code>mystring</code> and <code>mydouble</code> objects in <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule4.h">MyModule4</a> are defined
+using <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppParameter.h">AppParameter&lt;T&gt;</a> wrapper that
+behaves itself as an object of type <code>T</code> and provides an additional <code>toString()</code> method along with possibility to be initialized from a string </p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Data flow</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Two types of data are supported: (1) &quot;by event&quot; and (2) &quot;on demand&quot;</p>
+
+<p>In the following example, <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L10">counter</a>
+and <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L12">obj</a> data members
+are modified in <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L37-L42">MyModule2::event</a>
+and passed over to downstream consumers under <code>counter1</code> and <code>counter2</code> labels via
+<a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h">AppEvent</a> container:</p>
+
+<pre>
+sequence = AppFramework('MyModule2->MyModule3')
+sequence.beginJob()
+sequence.process(10)
+</pre>
+
+<p>The <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h">MyModule3</a> consumer shows how to <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L19-L20">pull out the two
+objects</a> (note the <code>const</code> qualifier!)</p>
+
+<p>The <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule3.h#L21"><code>counter3</code></a> object is an example
+of the &quot;on demand&quot; data owned by a <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L14-L29">separate piece of code</a>
+that is <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule2.h#L32">registered at the initialization time</a></p>
+
+<p>The type of &quot;on demand&quot; data is declared as a template argument of the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppAgent.h">AppAgent<T></a> base class</p>
+
+<p>Request of the &quot;on demand&quot; data from <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h">AppEvent</a> container triggers 
+<code>fetch</code> or <code>set</code> methods</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Toolbox</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule5.h">MyModule5</a> shows how to build a mathematical expression:</p>
+
+<pre>
+sequence = AppFramework('MyModule5')
+sequence.modify("MyModule5::formula","( val1+ val2) *val3");
+sequence.process(10)
+</pre>
+
+<p>In this example the <a href="https://github.com/koskot77/framework/blob/master/AnUtils/CompiledFormula.h">CompiledFormula</a> container is populated
+with several random variables and the given formula is evaluated</p>
+
+<p>The <a href="https://github.com/koskot77/framework/blob/master/AnUtils/RegEx.h">RegEx</a> utility assists using regular expressions</p>
+
+<p>The <a href="https://github.com/koskot77/framework/blob/master/AnUtils/NchooseM.h">NchooseM</a> functions helps to avoid many nested loops</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Few more details</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Verbosity: one can switch off and on <code>cout</code>, <code>clog</code> and <code>cerr</code> streams; for example:</p>
+
+<pre>
+sequence.verbose("AppFramework","cout off")
+sequence.verbose("MyModule5","cout off")
+</pre>
+
+<p><br></p>
+
+<p>The first module can also inherit the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h">AppInputModule</a> class
+to be able to call <code>beginRun</code> and <code>endRun</code> methods of all of the modules using <code>beginRunNotify</code> and <code>endRunNotify</code> calls</p>
+
+<p><br></p>
+
+<p>Persistence of the <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h">AppEvent</a> container is also supported,
+but requires serializer/deserializer functions to be provided for every storable data</p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>List of CMS specific packages and modules</h2>
+  </hgroup>
+  <article data-timings="">
+    <p>Framework&#39;s code was written around year 2000 and used for analyses with detector <a href="http://kedr.inp.nsk.su/%7Ekotov/work.php3">KEDR</a></p>
+
+<p>It was also worked well with the <a href="http://cms.cern.ch">CMS</a> detector using the following data processing code:</p>
+
+<ul>
+<li><a href="https://github.com/koskot77/framework/blob/master/AnModBasic/InputModule.h">AnModBasic/InputModule</a> - module that reads <em>Events</em> and <em>ParameterSets</em> branches from a ROOT tree of a typical CMS EDM file</li>
+<li><a href="https://github.com/koskot77/framework/blob/master/AnModBasic/OutputModule.h">AnModBasic/OutputModule</a> - module that write selected variables (integers and doubles) into CSV files and flat ROOT trees</li>
+<li><a href="https://github.com/koskot77/framework/blob/master/Logistics/SampleHelper.h">Logistics/SampleHelper</a> - dictionary that associate of sample name with physical location of files for the InputModule</li>
+<li><a href="https://github.com/koskot77/framework/tree/master/AnObjects">AnObjects</a> - analysis objects comprising a particle physics event (leptons, jets, triggers...)</li>
+<li><a href="https://github.com/koskot77/framework/tree/master/Readers">Readers</a> - collection of modules that reads CMS specific physics objects </li>
+</ul>
+
+<p>A real world example is available in <a href="https://github.com/koskot77/framework/tree/master/workdir">workdir</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introduction'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Analysis concept'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Execution flow'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Parameters'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Data flow'>
+         5
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=6 title='Toolbox'>
+         6
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=7 title='Few more details'>
+         7
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=8 title='List of CMS specific packages and modules'>
+         8
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
