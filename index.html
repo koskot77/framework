@@ -8,18 +8,18 @@
   <meta name="generator" content="slidify" />
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta http-equiv="X-UA-Compatible" content="chrome=1">
-  <link rel="stylesheet" href="../DevDataProducts/libraries/frameworks/io2012/css/default.css" media="all" >
-  <link rel="stylesheet" href="../DevDataProducts/libraries/frameworks/io2012/css/phone.css" 
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
     media="only screen and (max-device-width: 480px)" >
-  <link rel="stylesheet" href="../DevDataProducts/libraries/frameworks/io2012/css/slidify.css" >
-  <link rel="stylesheet" href="../DevDataProducts/libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
   <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  
   
   <!-- Grab CDN jQuery, fall back to local if offline -->
   <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
   <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
-  <script data-main="../DevDataProducts/libraries/frameworks/io2012/js/slides" 
-    src="../DevDataProducts/libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
   </script>
   
   
@@ -35,6 +35,9 @@
     <h2></h2>
     <p>Khristian Kotov<br/></p>
   </hgroup>
+    <a href="https://github.com/koskot77/framework/zipball/gh-pages" class="example">
+     Download
+    </a>
   <article></article>  
 </slide>
     
@@ -199,6 +202,8 @@ sequence.beginJob()
 <p>The <code>mystring</code> and <code>mydouble</code> objects in <a href="https://github.com/koskot77/framework/blob/master/workdir/tutorial/MyModule4.h">MyModule4</a> are defined
 using <a href="https://github.com/koskot77/framework/blob/master/AppFramework/AppParameter.h">AppParameter&lt;T&gt;</a> wrapper that
 behaves itself as an object of type <code>T</code> and provides an additional <code>toString()</code> method along with possibility to be initialized from a string </p>
+
+<p>For user types one has to define pattern specialization with the two string functions</p>
 
   </article>
   <!-- Presenter Notes -->
