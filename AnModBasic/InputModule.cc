@@ -87,15 +87,26 @@ AppResult InputModule::beginRun(AppEvent& event){
 #include<TFile.h>
 AppResult InputModule::event(AppEvent& event){
 
+    if( !chain->GetEntry(chainEntryNumber) ){
+        // no more events left
+        AppEvent tmpEvent;
+        if( endRunNotify(tmpEvent) )
+            return AppResult(AppResult::STOP|AppResult::LOG, "Cannot finalize the job");
+        // exiting
+        return AppResult(AppResult::STOP|AppResult::LOG, "End of stream");
+    }
+
     const char *path = chain->GetFile()->GetName();
 
     if( currentFile != path ){
-        chain->GetEntry(chainEntryNumber);
         psets = (TChain*)chain->GetFile()->Get("ParameterSets");
 
-        AppEvent tmpEvent;
-        if( endRunNotify(tmpEvent) )
-            return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
+        // first run? if not, finish the previous
+        if( path ){
+            AppEvent tmpEvent;
+            if( endRunNotify(tmpEvent) )
+                return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
+        }
 
         AppEvent initEvent;
         initEvent.put("Events",(TTree*)chain);
@@ -104,6 +115,9 @@ AppResult InputModule::event(AppEvent& event){
             return AppResult(AppResult::STOP|AppResult::LOG, "Cannot move on to the next file");
 
         currentFile = path;
+
+        if( !chain->GetEntry(chainEntryNumber) )
+            return AppResult(AppResult::STOP|AppResult::ERROR, "Cannot reread the event");
     }
 
     if( (chainEntryNumber % showProgressPeriod) == 0 ){
@@ -111,12 +125,9 @@ AppResult InputModule::event(AppEvent& event){
         clog<<"Processed "<<chainEntryNumber<<" entries ("<<(file!=NULL?file+1:path)<<")"<<endl;
     }
 
-    if( chain->GetEntry(chainEntryNumber) ){
-        event.put("chainEntryNumber", chainEntryNumber);
-        event.put("inputFileName",    path);
-        chainEntryNumber++;
-        return AppResult();
-    }
+    event.put("chainEntryNumber", chainEntryNumber);
+    event.put("inputFileName",    path);
+    chainEntryNumber++;
 
-    return AppResult(AppResult::STOP|AppResult::LOG, "End of stream");
+    return AppResult();
 }
