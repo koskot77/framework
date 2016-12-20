@@ -175,7 +175,7 @@ private:
   
 
 typedef std::shared_ptr<EMTFTrack> EMTFTrackPointer;
-typedef std::vector<EMTFTrack> EMTFTrackCollection;
+typedef std::vector<EMTFTrackPointer> EMTFTrackCollection;
 bool operator<(EMTFTrackPointer i, EMTFTrackPointer j);
 
 

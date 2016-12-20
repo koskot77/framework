@@ -72,6 +72,7 @@ AppResult EMTFReader::event(AppEvent& event) {
           track->set_track_num     (trk->Track_num());
           track->set_has_neighbor  (trk->Has_neighbor());
           track->set_all_neighbor  (trk->All_neighbor());
+          tracks.push_back(track);
       }
 
     sort   (tracks.begin(),tracks.end());
