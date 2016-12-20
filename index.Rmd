@@ -100,6 +100,8 @@ The `mystring` and `mydouble` objects in [MyModule4](https://github.com/koskot77
 using [AppParameter\<T\>](https://github.com/koskot77/framework/blob/master/AppFramework/AppParameter.h) wrapper that
 behaves itself as an object of type `T` and provides an additional `toString()` method along with possibility to be initialized from a string 
 
+For user types one has to define pattern specialization with the two string functions
+
 --- .class #id
 
 ## Data flow
@@ -162,7 +164,7 @@ sequence.verbose("MyModule5","cout off")
 The first module can also inherit the [AppInputModule](https://github.com/koskot77/framework/blob/master/AppFramework/AppInputModule.h) class
 to be able to call `beginRun` and `endRun` methods of all of the modules using `beginRunNotify` and `endRunNotify` calls
 
-Persistence of the [AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container is also supported,
+Persistency of the [AppEvent](https://github.com/koskot77/framework/blob/master/AppFramework/AppEvent.h) container is also supported,
 but requires serializer/deserializer functions to be provided for every storable data (rarely needed, not explained here)
 
 All modules are named and registered in [Using.h](https://github.com/koskot77/framework/tree/master/workdir/tutorial/Using.h) file
