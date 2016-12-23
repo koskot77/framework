@@ -1,11 +1,8 @@
 using namespace std;
 #include "Analyser.h"
-#include "AnObjects/Jet.h"
-#include "AnObjects/Muon.h"
-#include "AnObjects/Electron.h"
-#include "AnObjects/MET.h"
-#include "AnObjects/Trigger.h"
-#include "TLorentzVector.h"
+#include "AnObjects/EMTFTrack.h"
+#include "AnObjects/Particle.h"
+#include "AnObjects/EMTFTrack.h"
 
 AppResult Analyser::beginJob(AppEvent& event){
     return AppResult();
@@ -15,52 +12,29 @@ AppResult Analyser::endJob(AppEvent& event){
     return AppResult();
 }
 
-//match(const double *source, double *destination){}
-
 AppResult Analyser::event(AppEvent& event){
-    ZpT = -1;
-    met = -1;
-    metNoMu   = -1;
-    diMuPtRec = 0;
-    diMuPtGen = 0;
-
-    numberOfJets = 0;
-    jetPtRec[0] = -1;
-    jetPtRec[1] = -1;
-    jetPtRec[2] = -1;
-    jetPtRec[3] = -1;
-
-    numberOfRecMuons = 0;
-    muPtRec[0] = -1;
-    muPtRec[1] = -1;
-    muPtRec[2] = -1;
-    muPtRec[3] = -1;
-
-    numberOfRecElectrons = 0;
-     ePtRec[0] = -1;
-     ePtRec[1] = -1;
-     ePtRec[2] = -1;
-     ePtRec[3] = -1;
-
-    numberOfGenMuons     = 0;
-    numberOfGenElectrons = 0;
-    numberOfGenTaus      = 0;
+    numberOfGenMuons = 0;
     muPtGen[0] = -1;
     muPtGen[1] = -1;
     muPtGen[2] = -1;
     muPtGen[3] = -1;
-
-    muPfIso[0] = -1;
-    muPfIso[1] = -1;
-    muPfIso[2] = -1;
-    muPfIso[3] = -1;
-
-     ePfIso[0] = -1;
-     ePfIso[1] = -1;
-     ePfIso[2] = -1;
-     ePfIso[3] = -1;
-
-    wPtGen = -1; tPtGen = -1;
+    bzero(mode,     sizeof(mode));
+    bzero(muEtaGen, sizeof(muEtaGen));
+    bzero(muPhiGen, sizeof(muPhiGen));
+    bzero(dPhi12,   sizeof(dPhi12));
+    bzero(dPhi23,   sizeof(dPhi23));
+    bzero(dPhi34,   sizeof(dPhi34));
+    bzero(dTheta12, sizeof(dTheta12));
+    bzero(dTheta23, sizeof(dTheta23));
+    bzero(dTheta34, sizeof(dTheta34));
+    bzero(clct1,    sizeof(clct1));
+    bzero(clct2,    sizeof(clct2));
+    bzero(clct3,    sizeof(clct3));
+    bzero(clct4,    sizeof(clct4));
+    bzero(fr1,      sizeof(fr1));
+    bzero(fr2,      sizeof(fr2));
+    bzero(fr3,      sizeof(fr3));
+    bzero(fr4,      sizeof(fr4));
 
     const char *path = 0;
 
@@ -75,153 +49,62 @@ AppResult Analyser::event(AppEvent& event){
 
     cout<<"Event #"<<evt<<endl;
 
-    const ParticleCollection *gen;
-    if( event.get("genParticles",gen) || !gen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No genParticles found");
-    cout<<" #genParts = "<<gen->size()<<std::endl;
-    bool hadronicWdecay = false;
-    unsigned int indexW = 0, indexT = 0;
-    for(unsigned int p=0; p<gen->size() && p<20; p++){
-        const Particle *gp = gen->at(p).get();
-        cout<<" gen "<<gp->pdgId()<<" pT["<<p<<"] = "<<gp->pt()<<" eta="<<gp->eta()<<" phi="<<gp->phi()<<" status="<<gp->status()<<" mId="<<gp->motherPdgId()<<std::endl;
-        if( abs(gp->pdgId())<=5  && abs(gen->at(p-1)->pdgId())==24 ) hadronicWdecay = true;
-        if( abs(gp->pdgId())==11 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenElectrons++;
-        if( abs(gp->pdgId())==13 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenMuons++;
-        if( abs(gp->pdgId())==15 && abs(gen->at(p-1)->pdgId())==24 ) numberOfGenTaus++;
-        if( abs(gp->pdgId())==24 ) indexW = p;
-        if( abs(gp->pdgId())==6  ) indexT = p;
-        if( abs(gp->pdgId())==23 ) ZpT = gp->pt();
+    const ParticleCollection *genParticles;
+    if( event.get("genParticles",genParticles) || !genParticles ) return AppResult(AppResult::STOP|AppResult::ERROR,"No Gen Info found");
+    cout<<" #genParticles = "<<genParticles->size()<<std::endl;
+
+    numberOfGenMuons = genParticles->size();
+    for(int j=0; j<numberOfGenMuons && j<2; j++){
+        cout<<" pTGenmuon["<<j<<"] = "<<genParticles->at(j)->pt()<<" eta="<<genParticles->at(j)->eta()<<" phi="<<genParticles->at(j)->phi()<<std::endl;
+        muPtGen [j] = genParticles->at(j)->pt();
+        muEtaGen[j] = genParticles->at(j)->eta();
+        muPhiGen[j] = genParticles->at(j)->phi();
     }
 
-    if( hadronicWdecay ){
-        wPtGen  = gen->at(indexW)->pt();
-        wEtaGen = gen->at(indexW)->eta();
-        wPhiGen = gen->at(indexW)->phi();
-        tPtGen  = gen->at(indexT)->pt();
-        tEtaGen = gen->at(indexT)->eta();
-        tPhiGen = gen->at(indexT)->phi();
-    }
-    if( numberOfGenMuons >= 2 ){
-      TLorentzVector lepton1, lepton2;
-      lepton1.SetPtEtaPhiM(muPtGen[0], muEtaGen[0], muPhiGen[0], 0.113);
-      lepton2.SetPtEtaPhiM(muPtGen[1], muEtaGen[1], muPhiGen[1], 0.113);
-      TLorentzVector sum( lepton1 + lepton2 );
-      diMuPtGen = sum.Pt();
-    }
+    event.put("numberOfGenMuons", (const int*)&numberOfGenMuons);
+    event.put("muPtGen",  (const double*)muPtGen);
+    event.put("muEtaGen", (const double*)muEtaGen);
+    event.put("muPhiGen", (const double*)muPhiGen);
 
-    const Trigger *result;
-//    if( event.get("trigger",result) || !result ) return AppResult(AppResult::STOP|AppResult::ERROR,"No trigger results found");
-//    if( result->accept(97) && !result->namesChanged() ){ cout<<result->name(97)<<" is fired"<<endl; pfmet170 = 1; } else pfmet170 = 0;
-    event.put("pfmet170", (const int*)&pfmet170);
+    const EMTFTrackCollection *tracks;
+    if( event.get("emtfTracks",tracks) || !tracks ) return AppResult(AppResult::STOP|AppResult::ERROR,"No EMTF tracks found");
+    cout<<" #tracks = "<<tracks->size()<<std::endl;
 
-    const JetCollection *jets;
-    if( event.get("jets",jets) || !jets ) return AppResult(AppResult::STOP|AppResult::ERROR,"No jets found");
-    cout<<" #jets = "<<jets->size()<<std::endl;
-    numberOfJets = jets->size();
-    for(int j=0; j<numberOfJets && j<4; j++){
-        cout<<" pTjet["<<j<<"] = "<<jets->at(j)->pt()<<" eta="<<jets->at(j)->eta()<<" phi="<<jets->at(j)->phi()<<std::endl;
-        jetPtRec [j] = jets->at(j)->pt();
-        jetEtaRec[j] = jets->at(j)->eta();
-        jetPhiRec[j] = jets->at(j)->phi();
-        jetCSV   [j] = jets->at(j)->isBJet();
-        jetMass  [j] = jets->at(j)->mass(); // tagMass
-        nSubJets [j] = jets->at(j)->nSubJets(); // tagMass
+    numberOfEMTFTracks = tracks->size();
+    for(int j=0; j<numberOfEMTFTracks && j<4; j++){
+        mode[j]     = tracks->at(j)->Mode();
+        dPhi12[j]   = tracks->at(j)->DPhi_12();
+        dPhi23[j]   = tracks->at(j)->DPhi_23();
+        dPhi34[j]   = tracks->at(j)->DPhi_34();
+        dTheta12[j] = tracks->at(j)->DTheta_12();
+        dTheta23[j] = tracks->at(j)->DTheta_23();
+        dTheta34[j] = tracks->at(j)->DTheta_34();
+        clct1[j]    = tracks->at(j)->CLCT_1();
+        clct2[j]    = tracks->at(j)->CLCT_2();
+        clct3[j]    = tracks->at(j)->CLCT_3();
+        clct4[j]    = tracks->at(j)->CLCT_4();
+        fr1[j]      = tracks->at(j)->FR_1();
+        fr2[j]      = tracks->at(j)->FR_2();
+        fr3[j]      = tracks->at(j)->FR_3();
+        fr4[j]      = tracks->at(j)->FR_4();
     }
 
-    const ElectronCollection *electrons;
-    if( event.get("electrons",electrons) || !electrons ) return AppResult(AppResult::STOP|AppResult::ERROR,"No electrons found");
-    cout<<" #electrons = "<<electrons->size()<<std::endl;
-    numberOfRecElectrons  = electrons->size();
-    for(unsigned int e=0; e<electrons->size(); e++){
-        cout<<" #pTele["<<e<<"] = "<<electrons->at(e)->pt()<<" gen="<<electrons->at(e)->genLepton().pt()<<std::endl;
-        ePtRec[e] = electrons->at(e)->pt();
-    }
-
-    const MuonCollection *muons;
-    if( event.get("muons",muons) || !muons ) return AppResult(AppResult::STOP|AppResult::ERROR,"No muons found");
-    cout<<" #muons = "<<muons->size()<<std::endl;
-    for(unsigned int m=0; m<muons->size(); m++){
-        cout<<" #pTmu["<<m<<"] "<<muons->at(m)->pt()<<" gen="<<muons->at(m)->genLepton().pt()<<std::endl;
-        muPtRec [ numberOfRecMuons ] = muons->at(m)->pt();
-        muEtaRec[ numberOfRecMuons ] = muons->at(m)->eta();
-        muPhiRec[ numberOfRecMuons ] = muons->at(m)->phi();
-        muPfIso [ numberOfRecMuons ] = muons->at(m)->pfIsolationDeltaBeta();
-        numberOfRecMuons++;
-    }
-
-    if( numberOfRecMuons == 2 ){
-      TLorentzVector lepton1, lepton2;
-      lepton1.SetPtEtaPhiM(muPtRec[0], muEtaRec[0], muPhiRec[0], 0.113);
-      lepton2.SetPtEtaPhiM(muPtRec[1], muEtaRec[1], muPhiRec[1], 0.113);
-      TLorentzVector sum( lepton1 + lepton2 );
-      diMuPtRec = sum.Pt();
-    }
-
-    const MET *ETmiss;
-    if( event.get("ETmiss",ETmiss) || !ETmiss) return AppResult(AppResult::STOP|AppResult::ERROR,"No met found");
-    cout<<" met= "<<ETmiss->pt()<<std::endl;
-    met = ETmiss->pt();
-    metNoMu = sqrt( (ETmiss->px() + muPtRec[0]*cos(muPhiRec[0]) + muPtRec[1]*cos(muPhiRec[1]))*
-                    (ETmiss->px() + muPtRec[0]*cos(muPhiRec[0]) + muPtRec[1]*cos(muPhiRec[1])) +
-                    (ETmiss->py() + muPtRec[0]*sin(muPhiRec[0]) + muPtRec[1]*sin(muPhiRec[1]))*
-                    (ETmiss->py() + muPtRec[0]*sin(muPhiRec[0]) + muPtRec[1]*sin(muPhiRec[1])) );
-
-    m3jets = 0; m2jets = 0; m1jet = 0;
-    if( numberOfJets==3 && muons->size()==0 && electrons->size()==0 ){
-        TLorentzVector jet1, jet2, jet3;
-        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], jetMass[0]);
-        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], jetMass[1]);
-        jet3.SetPtEtaPhiM(jetPtRec[2], jetEtaRec[2], jetPhiRec[2], jetMass[2]);
-        TLorentzVector sum3j( jet1 + jet2 + jet3 );
-        m3jets = sum3j.M();
-    }
-    if( numberOfJets==2 && muons->size()==0 && electrons->size()==0 ){
-        TLorentzVector jet1, jet2;
-        jet1.SetPtEtaPhiM(jetPtRec[0], jetEtaRec[0], jetPhiRec[0], jetMass[0]);
-        jet2.SetPtEtaPhiM(jetPtRec[1], jetEtaRec[1], jetPhiRec[1], jetMass[1]);
-        TLorentzVector sum2j( jet1 + jet2 );
-        m2jets = sum2j.M();
-    }
-    if( numberOfJets==1 && muons->size()==0 && electrons->size()==0 ){
-        m1jet = jetMass[0];
-    }
-
-    event.put("numberOfJets",(const int*)&numberOfJets);
-    event.put("m3jets",      (const double*)&m3jets);
-    event.put("m2jets",      (const double*)&m2jets);
-    event.put("m1jet",       (const double*)&m1jet);
-    event.put("met",         (const double*)&met);
-    event.put("metNoMu",     (const double*)&metNoMu);
-    event.put("jetPtRec[4]", (const double*)jetPtRec);
-    event.put("jetEtaRec[4]",(const double*)jetEtaRec);
-    event.put("jetPhiRec[4]",(const double*)jetPhiRec);
-    event.put("jetMass[4]",  (const double*)jetMass);
-    event.put("nSubJets[4]", (const int*)nSubJets);
-
-    event.put("numberOfRecMuons", (const int*)&numberOfRecMuons);
-    event.put("muPtRec[4]",  (const double*)muPtRec);
-    event.put("muEtaRec[4]", (const double*)muEtaRec);
-    event.put("muPhiRec[4]", (const double*)muPhiRec);
-    event.put("muPfIso[4]",  (const double*)muPfIso);
-
-    event.put("numberOfGenElectrons", (const int*)&numberOfGenElectrons);
-    event.put("numberOfGenMuons",     (const int*)&numberOfGenMuons);
-    event.put("numberOfGenTaus",      (const int*)&numberOfGenTaus);
-    event.put("muPtGen[4]",  (const double*)muPtGen);
-    event.put("muEtaGen[4]", (const double*)muEtaGen);
-    event.put("muPhiGen[4]", (const double*)muPhiGen);
-
-    event.put("diMuPtRec", (const double*)&diMuPtRec);
-    event.put("diMuPtGen", (const double*)&diMuPtGen);
-    event.put("ZpT",       (const double*)&ZpT);
-
-    event.put("numberOfRecElectrons", (const int*)&numberOfRecElectrons);
-    event.put("ePtRec[4]",  (const double*)ePtRec);
-    event.put("wPtGen",     (const double*)&wPtGen);
-    event.put("wEtaGen",    (const double*)&wEtaGen);
-    event.put("wPhiGen",    (const double*)&wPhiGen);
-    event.put("tPtGen",     (const double*)&tPtGen);
-    event.put("tEtaGen",    (const double*)&tEtaGen);
-    event.put("tPhiGen",    (const double*)&tPhiGen);
+    event.put("numberOfEMTFTracks", (const int*)&numberOfEMTFTracks);
+    event.put("mode[2]",   (const int*)mode);
+    event.put("dPhi12[2]", (const int*)dPhi12);
+    event.put("dPhi23[2]", (const int*)dPhi23);
+    event.put("dPhi34[2]", (const int*)dPhi34);
+    event.put("dTheta12[2]", (const int*)dTheta12);
+    event.put("dTheta23[2]", (const int*)dTheta23);
+    event.put("dTheta34[2]", (const int*)dTheta34);
+    event.put("clct1[2]", (const int*)clct1);
+    event.put("clct2[2]", (const int*)clct2);
+    event.put("clct3[2]", (const int*)clct3);
+    event.put("clct4[2]", (const int*)clct4);
+    event.put("fr", (const int*)fr1);
+    event.put("fr2[2]", (const int*)fr2);
+    event.put("fr3[2]", (const int*)fr3);
+    event.put("fr4[2]", (const int*)fr4);
 
     return AppResult();
 }

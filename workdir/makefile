@@ -11,7 +11,7 @@ LDOPT    := -Xlinker -rpath -Xlinker `cat ../.release`/lib/
 STDINC   := $(CXXFLAGS) -I./ -I../../ -I`cat ../.release` `root-config --cflags` $(BOOSTFLAGS) $(CLHEPFLAGS)
 STDLIB   := -lstdc++ -L../../lib -lAppFramework -lAnModBasic -lAnUtils -lReaders -lAnObjects -lLogistics -L`cat ../.release`/lib `root-config --glibs` -lGenVector
 
-STDLIB   += -L$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/lib/$(ARCH)/ -lFWCoreUtilities -lDataFormatsPatCandidates -lDataFormatsTrackReco -lDataFormatsCommon -lDataFormatsMuonReco -L../../../lib/$(ARCH)/
+STDLIB   += -L$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/lib/$(ARCH)/ -lFWCoreUtilities -lDataFormatsPatCandidates -lDataFormatsTrackReco -lDataFormatsCommon -lDataFormatsMuonReco -lDataFormatsL1TMuon -L../../../lib/$(ARCH)/
 
 STDLIB   += -lDataFormatsProvenance -lDataFormatsHepMCCandidate -lFWCoreParameterSet
 # -lProductAreaBNcollections -lDataFormatsCommon

@@ -7,18 +7,14 @@
 
 class Analyser : public AppModule{
 private:
-    int    run, evt, etr, pfmet170;
-    int    numberOfJets, numberOfRecMuons, numberOfRecElectrons;
-    int    numberOfGenMuons, numberOfGenElectrons, numberOfGenTaus;
-    double jetPtRec[4], jetEtaRec[4], jetPhiRec[4], jetCSV[4], jetMass[4];
-    int    nSubJets[4];
-    double muPtRec [4], muEtaRec [4], muPhiRec [4], muPfIso[4];
-    double muPtGen [4], muEtaGen [4], muPhiGen [4];
-    double  wPtGen    ,  wEtaGen    ,  wPhiGen    ;
-    double  tPtGen    ,  tEtaGen    ,  tPhiGen    ;
-    double  ePtRec [4],  eEtaRec [4],  ePhiRec [4],  ePfIso[4];
-    double m3jets, m2jets, m1jet, met, metNoMu;
-    double ZpT, diMuPtRec, diMuPtGen;
+    int    run, evt, etr;
+    int    numberOfGenMuons;
+    double muPtGen[2], muEtaGen[2], muPhiGen[2];
+    int    numberOfEMTFTracks, mode[4];
+    int    dPhi12[4],   dPhi23[4],   dPhi34[4];
+    int    dTheta12[4], dTheta23[4], dTheta34[4];
+    int    clct1[4],    clct2[4],    clct3[4], clct4[4];
+    int    fr1[4],      fr2[4],      fr3[4],   fr4[4];
 
     AppResult beginJob(AppEvent& event);
     AppResult beginRun(AppEvent& event){ return AppResult(); }
