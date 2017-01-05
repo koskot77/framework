@@ -74,10 +74,16 @@ AppResult Analyser::event(AppEvent& event){
     for(int j=0; j<numberOfEMTFTracks && j<4; j++){
         mode[j]     = tracks->at(j)->Mode();
         dPhi12[j]   = tracks->at(j)->DPhi_12();
+        dPhi13[j]   = tracks->at(j)->DPhi_13();
+        dPhi14[j]   = tracks->at(j)->DPhi_14();
         dPhi23[j]   = tracks->at(j)->DPhi_23();
+        dPhi24[j]   = tracks->at(j)->DPhi_24();
         dPhi34[j]   = tracks->at(j)->DPhi_34();
         dTheta12[j] = tracks->at(j)->DTheta_12();
+        dTheta13[j] = tracks->at(j)->DTheta_13();
+        dTheta14[j] = tracks->at(j)->DTheta_14();
         dTheta23[j] = tracks->at(j)->DTheta_23();
+        dTheta24[j] = tracks->at(j)->DTheta_24();
         dTheta34[j] = tracks->at(j)->DTheta_34();
         clct1[j]    = tracks->at(j)->CLCT_1();
         clct2[j]    = tracks->at(j)->CLCT_2();
@@ -87,21 +93,31 @@ AppResult Analyser::event(AppEvent& event){
         fr2[j]      = tracks->at(j)->FR_2();
         fr3[j]      = tracks->at(j)->FR_3();
         fr4[j]      = tracks->at(j)->FR_4();
+        pt[j]       = tracks->at(j)->Pt();
+        ptGMT[j]    = tracks->at(j)->Pt_GMT();
     }
 
     event.put("numberOfEMTFTracks", (const int*)&numberOfEMTFTracks);
     event.put("mode[2]",   (const int*)mode);
+    event.put("pt[2]",   (const double*)pt);
+    event.put("ptGMT[2]",   (const int*)ptGMT);
     event.put("dPhi12[2]", (const int*)dPhi12);
+    event.put("dPhi13[2]", (const int*)dPhi13);
+    event.put("dPhi14[2]", (const int*)dPhi14);
     event.put("dPhi23[2]", (const int*)dPhi23);
+    event.put("dPhi24[2]", (const int*)dPhi24);
     event.put("dPhi34[2]", (const int*)dPhi34);
     event.put("dTheta12[2]", (const int*)dTheta12);
+    event.put("dTheta13[2]", (const int*)dTheta13);
+    event.put("dTheta14[2]", (const int*)dTheta14);
     event.put("dTheta23[2]", (const int*)dTheta23);
+    event.put("dTheta24[2]", (const int*)dTheta24);
     event.put("dTheta34[2]", (const int*)dTheta34);
     event.put("clct1[2]", (const int*)clct1);
     event.put("clct2[2]", (const int*)clct2);
     event.put("clct3[2]", (const int*)clct3);
     event.put("clct4[2]", (const int*)clct4);
-    event.put("fr", (const int*)fr1);
+    event.put("fr1[2]", (const int*)fr1);
     event.put("fr2[2]", (const int*)fr2);
     event.put("fr3[2]", (const int*)fr3);
     event.put("fr4[2]", (const int*)fr4);
