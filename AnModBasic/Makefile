@@ -12,7 +12,7 @@ CXXFLAGS := `root-config --cflags`
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=
-CXX_LIB_FLAGS :=
+CXX_LIB_FLAGS := -std=c++1y
 F_LIB_FLAGS   :=
 
 # No dependencies on 3rd party libraries
