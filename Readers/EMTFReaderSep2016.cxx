@@ -106,7 +106,7 @@ AppResult EMTFReaderSep2016::event(AppEvent& event) {
               }
               stub[ hits[h].Station() ] = trkE.xhits[h];
           }
-
+/*
           track->set_dTheta_12( (stub[1].station==1 && stub[2].station==2 ? stub[1].theta_fp - stub[2].theta_fp : -99) );
           track->set_dTheta_13( (stub[1].station==1 && stub[3].station==3 ? stub[1].theta_fp - stub[3].theta_fp : -99) );
           track->set_dTheta_14( (stub[1].station==1 && stub[4].station==4 ? stub[1].theta_fp - stub[4].theta_fp : -99) );
@@ -120,7 +120,7 @@ AppResult EMTFReaderSep2016::event(AppEvent& event) {
           track->set_dPhi_23( (stub[2].station==2 && stub[3].station==3 ? stub[2].phi_fp - stub[3].phi_fp : -999) );
           track->set_dPhi_24( (stub[2].station==2 && stub[4].station==4 ? stub[2].phi_fp - stub[4].phi_fp : -999) );
           track->set_dPhi_34( (stub[3].station==3 && stub[4].station==4 ? stub[3].phi_fp - stub[4].phi_fp : -999) );
-
+*/
 /*
           if( stub[1].station==1 && stub[2].station==2 && trkE.ptlut_data.delta_ph[0] != stub[1].phi_fp - stub[2].phi_fp )
             cerr << "Inconsistent dPhi12: " << trk.DPhi_12() << " = " << trkE.ptlut_data.delta_ph[0] << " = " << stub[1].phi_fp << "-" << stub[2].phi_fp << endl;
