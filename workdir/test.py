@@ -11,7 +11,7 @@ fw.modify("OutputModule::filter","1 && 1");
 fw.modify("OutputModule::output","muonGunPt3_100_emtf.csv");
 fw.modify("OutputModule::leaflist",
 "entry/I:muPtGen/D:muEtaGen/D:muPhiGen/D:\
-numberOfEMTFTracks/I:pt[2]/D:ptGMT[2]/I:mode[2]/I:\
+numberOfEMTFTracks/I:pt[2]/D:mypt[2]/D:ptGMT[2]/I:mode[2]/I:\
 dPhi12[2]/I:dPhi13[2]/I:dPhi14[2]/I:\
 dPhi23[2]/I:dPhi24[2]/I:dPhi34[2]/I:\
 dTheta12[2]/I:dTheta13[2]/I:dTheta14[2]/I:\
