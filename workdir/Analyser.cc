@@ -3,8 +3,34 @@ using namespace std;
 #include "AnObjects/EMTFTrack.h"
 #include "AnObjects/Particle.h"
 #include "AnObjects/EMTFTrack.h"
+#include <fstream>
+namespace {
+
+unsigned int sat(unsigned int x, unsigned int n){ unsigned int m = (1<<n)-1; if(x<m) return x; return m; }
+
+unsigned int predictors2address15(int dPhi12, int dPhi23, int dPhi34, int dTheta12, int dTheta23, int dTheta34, int clct1, int clct2=0, int clct3=0, int clct4=0, int fr1=0, int fr2=0, int fr3=0, int fr4=0){
+  unsigned int address = 0;
+  // set highest bit [29:29] to indicate this was mode_inv=15
+  // address |= 0x20000000;
+  // ignore all of the signs
+  address |= (sat(abs(dPhi12),7)&0x7F) << 0;
+  address |= (sat(abs(dPhi23),7)&0x7F) << (0+7);
+  address |= (sat(abs(dPhi34),7)&0x7F) << (7+7);
+  address |= (dPhi23*dPhi12>=0?0:1) << (7+7+7);
+  address |= (dPhi34*dPhi12>=0?0:1) << (7+7+7+1);
+  address |= (sat(abs(dTheta23),2)&0x3) << (7+7+7+1+1);
+  address |= ((const int[]){0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0})[(clct1&0xF)] << (7+7+7+1+1+2);
+  return address;
+}
+
+}
 
 AppResult Analyser::beginJob(AppEvent& event){
+    ptLUT.reset(new float[0x8000000]);
+    std::ifstream in("lut15.txt");
+    for(int i=0; i<0x8000000; i++)
+        in>>ptLUT[i];
+    in.close();
     return AppResult();
 }
 
@@ -95,12 +121,14 @@ AppResult Analyser::event(AppEvent& event){
         fr4[j]      = tracks->at(j)->FR_4();
         pt[j]       = tracks->at(j)->Pt();
         ptGMT[j]    = tracks->at(j)->Pt_GMT();
+        mypt[j]     = ptLUT[ predictors2address15(dPhi12[j], dPhi23[j], dPhi34[j], 0, dTheta23[j], 0, clct1[j]) ];
     }
 
     event.put("numberOfEMTFTracks", (const int*)&numberOfEMTFTracks);
     event.put("mode[2]",   (const int*)mode);
     event.put("pt[2]",   (const double*)pt);
-    event.put("ptGMT[2]",   (const int*)ptGMT);
+    event.put("ptGMT[2]",  (const int*)ptGMT);
+    event.put("mypt[2]",   (const double*)mypt);
     event.put("dPhi12[2]", (const int*)dPhi12);
     event.put("dPhi13[2]", (const int*)dPhi13);
     event.put("dPhi14[2]", (const int*)dPhi14);

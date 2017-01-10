@@ -4,6 +4,7 @@
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
+#include <memory>
 
 class Analyser : public AppModule{
 private:
@@ -11,7 +12,7 @@ private:
     int    numberOfGenMuons;
     double muPtGen[2], muEtaGen[2], muPhiGen[2];
     int    numberOfEMTFTracks, mode[4], ptGMT[4];
-    double pt[4];
+    double pt[4], mypt[4];
     int    dPhi12[4],   dPhi13[4],   dPhi14[4];
     int    dPhi23[4],   dPhi24[4],   dPhi34[4];
     int    dTheta12[4], dTheta13[4], dTheta14[4];
@@ -25,6 +26,8 @@ private:
     AppResult endJob  (AppEvent& event);
 
     AppResult event (AppEvent& event);
+
+    unique_ptr<float[]> ptLUT;
 
 public:
     Analyser(const char *nm, const char *descr):AppModule(nm,descr){}
