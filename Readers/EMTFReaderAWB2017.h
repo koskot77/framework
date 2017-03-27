@@ -1,5 +1,5 @@
-#ifndef EMTFReaderSep2016_h
-#define EMTFReaderSep2016_h
+#ifndef EMTFReaderAWB2017_h
+#define EMTFReaderAWB2017_h
 
 #include "AppFramework/AppParameter.h"
 #include "AppFramework/AppModule.h"
@@ -8,9 +8,9 @@
 
 #include "AnObjects/EMTFTrackSep2016.h"
 
-class EMTFReaderSep2016 : public AppModule {
+class EMTFReaderAWB2017 : public AppModule {
 private:
-        EMTFTrackCollection tracks;
+        EMTFTrackSep2016Collection tracks;
 
 protected:
         AppResult beginJob(AppEvent& event){ return AppResult(); }
@@ -22,8 +22,8 @@ protected:
 public:
 	//virtual const MuonCollection& getMuons(void){ return muons; }
 
-        EMTFReaderSep2016(const char *nm, const char *descr):AppModule(nm,descr){}
-	virtual ~EMTFReaderSep2016(void){}
+        EMTFReaderAWB2017(const char *nm, const char *descr):AppModule(nm,descr){}
+	virtual ~EMTFReaderAWB2017(void){}
 };
 
 

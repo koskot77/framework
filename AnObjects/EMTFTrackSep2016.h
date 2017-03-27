@@ -1,13 +1,13 @@
-#ifndef EMTFTrack_h
-#define EMTFTrack_h
+#ifndef EMTFTrackSep2016_h
+#define EMTFTrackSep2016_h
 
 #include <vector>
 #include <memory>
 
-class EMTFTrack {
+class EMTFTrackSep2016 {
 public:
     
-  EMTFTrack() :
+  EMTFTrackSep2016() :
     // Using -999 instead of -99 b/c this seems most common in the emulator.  Unfortunate. - AWB 17.03.16
     endcap(-999), sector(-999), sector_GMT(-999), sector_index(-999), mode(-999), mode_LUT(-999), quality(-999), bx(-999),
       pt(-999), pt_GMT(-999), pt_LUT_addr(0), eta(-999), eta_GMT(-999), eta_LUT(-999), phi_loc_int(-999), 
@@ -15,12 +15,14 @@ public:
       charge(-999), charge_GMT(-999), charge_valid(-999), dPhi_12(-999), dPhi_13(-999), dPhi_14(-999), 
       dPhi_23(-999), dPhi_24(-999), dPhi_34(-999), dTheta_12(-999), dTheta_13(-999), dTheta_14(-999), 
       dTheta_23(-999), dTheta_24(-999), dTheta_34(-999), clct_1(-999), clct_2(-999), clct_3(-999), clct_4(-999), 
-      fr_1(-999), fr_2(-999), fr_3(-999), fr_4(-999), track_num(-999), has_neighbor(-999), all_neighbor(-999), numHits(0)
+      fr_1(-999), fr_2(-999), fr_3(-999), fr_4(-999), track_num(-999), has_neighbor(-999), all_neighbor(-999), numHits(0),
+      theta(-999), theta_i(-999), ring_st1(-999), ring_st2(-999), ring_st3(-999), ring_st4(-999),
+      is_rpc_st1(-999), is_rpc_st2(-999), is_rpc_st3(-999), is_rpc_st4(-999)
       {};
     
-    virtual ~EMTFTrack() {};
+    virtual ~EMTFTrackSep2016() {};
 
-    bool operator< (const EMTFTrack& emtfTrack){ return Pt() < emtfTrack.Pt(); }
+    bool operator< (const EMTFTrackSep2016& emtfTrack){ return Pt() < emtfTrack.Pt(); }
 
     int NumHits()            const { return numHits; }
    
@@ -119,7 +121,28 @@ public:
     int   Has_neighbor()  const { return has_neighbor;  }
     int   All_neighbor()  const { return all_neighbor;  }
 
-    
+    float Theta()         const { return theta;         }
+    int  Theta_int()      const { return theta_i;       }
+    void set_theta(float th)    { theta = th;           }
+    void set_theta_int(int th)  { theta_i = th;         }
+    void set_ring_station1(int r){ ring_st1 = r; } 
+    void set_ring_station2(int r){ ring_st2 = r; } 
+    void set_ring_station3(int r){ ring_st3 = r; } 
+    void set_ring_station4(int r){ ring_st4 = r; } 
+    int  ring_station1(void) const { return ring_st1; }
+    int  ring_station2(void) const { return ring_st2; }
+    int  ring_station3(void) const { return ring_st3; }
+    int  ring_station4(void) const { return ring_st4; }
+
+    int  isRPC_station1(void) const { return is_rpc_st1; }
+    int  isRPC_station2(void) const { return is_rpc_st2; }
+    int  isRPC_station3(void) const { return is_rpc_st3; }
+    int  isRPC_station4(void) const { return is_rpc_st4; }
+    void set_rpc_station1(int isRPC) { is_rpc_st1 = isRPC; }
+    void set_rpc_station2(int isRPC) { is_rpc_st2 = isRPC; }
+    void set_rpc_station3(int isRPC) { is_rpc_st3 = isRPC; }
+    void set_rpc_station4(int isRPC) { is_rpc_st4 = isRPC; }
+
 private:
     
     int   endcap;       // -1 or 1.  Filled in emulator from hit. 
@@ -170,14 +193,18 @@ private:
     int   has_neighbor;
     int   all_neighbor;
     int   numHits;
-    
-}; // End of class EMTFTrack
+
+    float theta;    
+    int   theta_i;
+    int   ring_st1, ring_st2, ring_st3, ring_st4;
+    int   is_rpc_st1, is_rpc_st2, is_rpc_st3, is_rpc_st4;
+}; // End of class EMTFTrackSep2016
   
 
-typedef std::shared_ptr<EMTFTrack> EMTFTrackPointer;
-typedef std::vector<EMTFTrackPointer> EMTFTrackCollection;
-bool operator<(EMTFTrackPointer i, EMTFTrackPointer j);
+typedef std::shared_ptr<EMTFTrackSep2016> EMTFTrackSep2016Pointer;
+typedef std::vector<EMTFTrackSep2016Pointer> EMTFTrackSep2016Collection;
+bool operator<(EMTFTrackSep2016Pointer i, EMTFTrackSep2016Pointer j);
 
 
-#endif /* define EMTFTrack_h */
+#endif /* define EMTFTrackSep2016_h */
 

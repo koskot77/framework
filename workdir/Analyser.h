@@ -19,6 +19,8 @@ private:
     int    dTheta23[4], dTheta24[4], dTheta34[4];
     int    clct1[4],    clct2[4],    clct3[4], clct4[4];
     int    fr1[4],      fr2[4],      fr3[4],   fr4[4];
+    int    ring1[4],    ring2[4],    ring3[4], ring4[4];
+    int    rpc1[4],     rpc2[4],     rpc3[4],  rpc4[4];
 
     AppResult beginJob(AppEvent& event);
     AppResult beginRun(AppEvent& event){ return AppResult(); }

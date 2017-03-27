@@ -21,8 +21,9 @@ else
 endif
 
 CXXFLAGS     += -std=c++0x -fPIC -Wall -frtti -fexceptions -fpic -g \
-                -I$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/src/ \
-                -I../../
+                -I$(CMSSW_BASE)/src/ \
+                -I../../ \
+                -I$(ROOT)/$(ARCH)/cms/cmssw/$(CMSSW)/src/
 
 BOOSTFLAGS   := -I$(ROOT)/$(ARCH)/external/boost/$(BOOST)/include/
 

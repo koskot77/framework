@@ -148,7 +148,7 @@ AppResult EMTFReaderSep2016::event(AppEvent& event) {
     sort   (tracks.begin(),tracks.end());
     reverse(tracks.begin(),tracks.end());
 
-    event.put("emtfTracks",(const EMTFTrackCollection*)&tracks);
+    event.put("emtfTracks",(const EMTFTrackSep2016Collection*)&tracks);
 
     return AppResult();
 }

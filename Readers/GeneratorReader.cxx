@@ -19,8 +19,8 @@ AppResult GeneratorReader::beginRun(AppEvent& event) {
     if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_prunedGenParticles__PAT.' branch found");
     inputGen->SetAddress(&__genParticles);
 */
-    TBranch *inputGen = Events->GetBranch("recoGenParticles_genParticles__L1.");
-    if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_genParticles__L1.' branch found");
+    TBranch *inputGen = Events->GetBranch("recoGenParticles_genParticles__HLT.");
+    if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_genParticles__HLT.' branch found");
     inputGen->SetAddress(&__genParticles);
 
     return AppResult();
@@ -35,8 +35,8 @@ AppResult GeneratorReader::event(AppEvent& event) {
     if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_prunedGenParticles__PAT.' branch found");
     inputGen->SetAddress(&__genParticles);
 */
-    TBranch *inputGen = Events->GetBranch("recoGenParticles_genParticles__L1.");
-    if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_genParticles__L1.' branch found");
+    TBranch *inputGen = Events->GetBranch("recoGenParticles_genParticles__HLT.");
+    if( !inputGen ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoGenParticles_genParticles__HLT.' branch found");
     inputGen->SetAddress(&__genParticles);
 
     genParticles.clear();

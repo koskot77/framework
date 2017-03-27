@@ -1,8 +1,7 @@
 using namespace std;
 #include "Analyser.h"
-#include "AnObjects/EMTFTrack.h"
 #include "AnObjects/Particle.h"
-#include "AnObjects/EMTFTrack.h"
+#include "AnObjects/EMTFTrackSep2016.h"
 #include <fstream>
 namespace {
 
@@ -61,6 +60,14 @@ AppResult Analyser::event(AppEvent& event){
     bzero(fr2,      sizeof(fr2));
     bzero(fr3,      sizeof(fr3));
     bzero(fr4,      sizeof(fr4));
+    bzero(ring1,    sizeof(ring1));
+    bzero(ring2,    sizeof(ring2));
+    bzero(ring3,    sizeof(ring3));
+    bzero(ring4,    sizeof(ring4));
+    bzero(rpc1,     sizeof(rpc1));
+    bzero(rpc2,     sizeof(rpc2));
+    bzero(rpc3,     sizeof(rpc3));
+    bzero(rpc4,     sizeof(rpc4));
 
     const char *path = 0;
 
@@ -92,7 +99,7 @@ AppResult Analyser::event(AppEvent& event){
     event.put("muEtaGen", (const double*)muEtaGen);
     event.put("muPhiGen", (const double*)muPhiGen);
 
-    const EMTFTrackCollection *tracks;
+    const EMTFTrackSep2016Collection *tracks;
     if( event.get("emtfTracks",tracks) || !tracks ) return AppResult(AppResult::STOP|AppResult::ERROR,"No EMTF tracks found");
     cout<<" #tracks = "<<tracks->size()<<std::endl;
 
@@ -119,6 +126,14 @@ AppResult Analyser::event(AppEvent& event){
         fr2[j]      = tracks->at(j)->FR_2();
         fr3[j]      = tracks->at(j)->FR_3();
         fr4[j]      = tracks->at(j)->FR_4();
+        ring1[j]    = tracks->at(j)->ring_station1();
+        ring2[j]    = tracks->at(j)->ring_station2();
+        ring3[j]    = tracks->at(j)->ring_station3();
+        ring4[j]    = tracks->at(j)->ring_station4();
+        rpc1[j]     = tracks->at(j)->isRPC_station1();
+        rpc2[j]     = tracks->at(j)->isRPC_station2();
+        rpc3[j]     = tracks->at(j)->isRPC_station3();
+        rpc4[j]     = tracks->at(j)->isRPC_station4();
         pt[j]       = tracks->at(j)->Pt();
         ptGMT[j]    = tracks->at(j)->Pt_GMT();
         mypt[j]     = ptLUT[ predictors2address15(dPhi12[j], dPhi23[j], dPhi34[j], 0, dTheta23[j], 0, clct1[j]) ];
@@ -149,6 +164,14 @@ AppResult Analyser::event(AppEvent& event){
     event.put("fr2[2]", (const int*)fr2);
     event.put("fr3[2]", (const int*)fr3);
     event.put("fr4[2]", (const int*)fr4);
+    event.put("ring1[2]", (const int*)ring1);
+    event.put("ring2[2]", (const int*)ring2);
+    event.put("ring3[2]", (const int*)ring3);
+    event.put("ring4[2]", (const int*)ring4);
+    event.put("rpc1[2]", (const int*)rpc1);
+    event.put("rpc2[2]", (const int*)rpc2);
+    event.put("rpc3[2]", (const int*)rpc3);
+    event.put("rpc4[2]", (const int*)rpc4);
 
     return AppResult();
 }

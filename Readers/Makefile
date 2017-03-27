@@ -14,7 +14,7 @@ CXXFLAGS  = `root-config --cflags` $(CLHEPFLAGS) $(BOOSTFLAGS)
 FFLAGS   :=
 CXX_BIN_FLAGS :=
 F_BIN_FLAGS   :=
-CXX_LIB_FLAGS := -std=c++1y -I$(CMSSW_BASE)/src/
+CXX_LIB_FLAGS := -std=c++1y
 F_LIB_FLAGS   :=
 
 # No dependencies on 3rd party libraries
@@ -28,5 +28,5 @@ ifeq (,$(WORKDIR))
 WORKDIR := $(shell { cd ../ && pwd; } || exit $$? )
 endif
 
-#  Собственно Makefile
+# Makefile
 include $(WORKDIR)/rules.mk
