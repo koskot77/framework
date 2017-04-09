@@ -5,29 +5,33 @@ using namespace std;
 #include <fstream>
 namespace {
 
-unsigned int sat(unsigned int x, unsigned int n){ unsigned int m = (1<<n)-1; if(x<m) return x; return m; }
+unsigned int sat(unsigned int x, unsigned int n){ unsigned int m = (1<<n)-1; if(x>m) return m; if(x<-m) return -m; return x; }
+unsigned int lsb(unsigned int x, unsigned int n){ return (x&((1<<n)-1)); }
+unsigned int msb(unsigned int x, unsigned int n, unsigned int m){ return (x>>m)&((1<<(n+1-m))-1); }
 
-unsigned int predictors2address15(int dPhi12, int dPhi23, int dPhi34, int dTheta12, int dTheta23, int dTheta34, int clct1, int clct2=0, int clct3=0, int clct4=0, int fr1=0, int fr2=0, int fr3=0, int fr4=0){
+unsigned int predictors2address15(int dPhi12, int dPhi23, int dPhi34, int dTheta14, unsigned int theta, unsigned int ring1, int clct1, int fr1){
   unsigned int address = 0;
   // set highest bit [29:29] to indicate this was mode_inv=15
   // address |= 0x20000000;
   // ignore all of the signs
-  address |= (sat(abs(dPhi12),7)&0x7F) << 0;
-  address |= (sat(abs(dPhi23),7)&0x7F) << (0+7);
-  address |= (sat(abs(dPhi34),7)&0x7F) << (7+7);
-  address |= (dPhi23*dPhi12>=0?0:1) << (7+7+7);
-  address |= (dPhi34*dPhi12>=0?0:1) << (7+7+7+1);
-  address |= (sat(abs(dTheta23),2)&0x3) << (7+7+7+1+1);
-  address |= ((const int[]){0,0,0,0,0,0,1,0,2,0,3,0,0,0,0,0,0})[(clct1&0xF)] << (7+7+7+1+1+2);
+  address |= (msb(sat(abs(dPhi12),9),9,2) & 0x7F) << 0;
+  address |= (msb(sat(abs(dPhi23),7),7,2) & 0x1F) << (0+7);
+  address |= (msb(sat(abs(dPhi34),7),7,2) & 0x1F) << (7+5);
+  address |= (dPhi23*dPhi12>=0?0:1) << (7+5+5);
+  address |= (dPhi34*dPhi12>=0?0:1) << (7+5+5+1);
+  address |= (sat(abs(dTheta14),2) & 0x3) << (7+5+5+1+1);
+  address |= ((const int[]){0,0,0,0,1,1,2,2,3,3,3,0,0,0,0,0})[(clct1&0xF)] << (7+5+5+1+1+2);
+  address |= fr1 << (0+7+5+5+1+1+2+2);
+  address |= (msb(theta + (const int[]){0,0,6,6,0}[ring1],7,2)&0x1F) << (0+7+5+5+1+1+2+2+1);
   return address;
 }
 
 }
 
 AppResult Analyser::beginJob(AppEvent& event){
-    ptLUT.reset(new float[0x8000000]);
+    ptLUT.reset(new float[0x20000000]);
     std::ifstream in("lut15.txt");
-    for(int i=0; i<0x8000000; i++)
+    for(int i=0; i<0x20000000; i++)
         in>>ptLUT[i];
     in.close();
     return AppResult();
@@ -43,6 +47,7 @@ AppResult Analyser::event(AppEvent& event){
     muPtGen[1] = -1;
     muPtGen[2] = -1;
     muPtGen[3] = -1;
+    bzero(theta_i,  sizeof(theta_i));
     bzero(mode,     sizeof(mode));
     bzero(muEtaGen, sizeof(muEtaGen));
     bzero(muPhiGen, sizeof(muPhiGen));
@@ -136,12 +141,27 @@ AppResult Analyser::event(AppEvent& event){
         rpc4[j]     = tracks->at(j)->isRPC_station4();
         pt[j]       = tracks->at(j)->Pt();
         ptGMT[j]    = tracks->at(j)->Pt_GMT();
-        mypt[j]     = ptLUT[ predictors2address15(dPhi12[j], dPhi23[j], dPhi34[j], 0, dTheta23[j], 0, clct1[j]) ];
+        theta_i[j]  = tracks->at(j)->Theta_int();
+//                           ( ifelse( 2*atan(exp(-muEtaGen))<3.1415927/2,
+//                                     2*atan(exp(-muEtaGen)),
+//                                     3.1415927-2*atan(exp(-muEtaGen))
+//                             ) * 180/3.1415927 - 8.5
+//                           ) * 128 / (45.0-8.5),
+////        if( mode[j]==15 ){
+//        std::cout << dPhi12[j] << " " << dPhi23[j] << " " << dPhi34[j] << " " << dTheta14[j] << " " << theta_i[j] << " " << ring1[j] << " " << clct1[j] << " " << fr1[j] << endl;
+//        std::cout << std::hex<<predictors2address15(dPhi12[j], dPhi23[j], dPhi34[j], dTheta14[j], theta_i[j], ring1[j], clct1[j], fr1[j]) <<std::dec<< endl;
+//}
+        mypt[j]     = (mode[j]==15 ?
+                       ptLUT[ predictors2address15(dPhi12[j], dPhi23[j], dPhi34[j], dTheta14[j], theta_i[j], ring1[j], clct1[j], fr1[j]) ]
+                       :
+                       -1
+                      );
     }
 
     event.put("numberOfEMTFTracks", (const int*)&numberOfEMTFTracks);
     event.put("mode[2]",   (const int*)mode);
     event.put("pt[2]",   (const double*)pt);
+    event.put("theta_i[2]",(const int*)theta_i);
     event.put("ptGMT[2]",  (const int*)ptGMT);
     event.put("mypt[2]",   (const double*)mypt);
     event.put("dPhi12[2]", (const int*)dPhi12);
