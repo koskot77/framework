@@ -6,11 +6,11 @@
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
-#include "AnObjects/EMTFTrackSep2016.h"
+#include "AnObjects/EMTFTrack.h"
 
 class EMTFReader : public AppModule {
 private:
-        EMTFTrackSep2016Collection tracks;
+        EMTFTrackCollection tracks;
 
 protected:
         AppResult beginJob(AppEvent& event){ return AppResult(); }
