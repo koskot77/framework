@@ -16,9 +16,9 @@ AppResult EMTFReader::beginRun(AppEvent& event) {
     if( event.get("Events",Events) || !Events )
         return AppResult(AppResult::STOP|AppResult::ERROR,"No 'Events' tree found");
 
-    TBranch *inputEMTFTrackBranch = Events->GetBranch("l1tEMTFTracks_simEmtfDigis__reL1T.");
+    TBranch *inputEMTFTrackBranch = Events->GetBranch("l1tEMTFTracks_simEmtfDigis__L1TMuonEmulation.");
     if( !inputEMTFTrackBranch )
-        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'l1tEMTFTracks_simEmtfDigis__reL1T.' branch found");
+        return AppResult(AppResult::STOP|AppResult::ERROR,"No 'l1tEMTFTracks_simEmtfDigis__L1TMuonEmulation.' branch found");
     inputEMTFTrackBranch->SetAddress(&__emtfTracks);
 
     return AppResult();
