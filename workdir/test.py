@@ -2,7 +2,7 @@ from init import *
 
 fw = AppFramework('InputModule->BasicReader->HLTReader->EMTFReader->Analyser->OutputModule')
 fw.verbose("AppFramework","cout on") 
-fw.verbose("Analyser","cout on");
+fw.verbose("Analyser","cout off");
 fw.modList();
 #fw.modify("InputModule::path","/afs/cern.ch/work/a/abrinke1/public/EMTF/Commissioning/2017/EMTF_Tree_ZeroBias_29717_678_emul17_1p7M.root");
 fw.modify("InputModule::path","/tmp/kkotov/qwe.root");
@@ -24,5 +24,5 @@ fw.modify("OutputModule::leaflist",
 #fr1[2]/I:fr2[2]/I:fr3[2]/I:fr4[2]/I:\
 #rpc1[2]/I:rpc2[2]/I:rpc3[2]/I:rpc4[2]/I");
 fw.beginJob();
-fw.process(3);
+fw.process(10000);
 fw.endJob();

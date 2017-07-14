@@ -301,9 +301,9 @@ AppResult Analyser::event(AppEvent& event){
         cout<<" HLT object: type["<<j<<"] = "<<hlt->at(j)->type()<<" pT="<<hlt->at(j)->pt()<<" eta="<<hlt->at(j)->eta()<<" phi="<<hlt->at(j)->phi()<<std::endl;
 
         for(int i=0; i<numberOfEMTFTracks && i<4; i++){
-            double dist_ij = sqrt((eta_glob[i]-hlt->at(j)->eta())*(eta_glob[i]-hlt->at(j)->eta()) +
-                                  (phi_glob[i]-hlt->at(j)->phi())*(phi_glob[i]-hlt->at(j)->phi())
-                             );
+            double delta_phi = phi_glob[i]*3.1415927/180. - hlt->at(j)->phi();
+            delta_phi = (delta_phi > 3.1415927 ? 3.1415927 - delta_phi : delta_phi);
+            double dist_ij = sqrt((eta_glob[i]-hlt->at(j)->eta())*(eta_glob[i]-hlt->at(j)->eta()) + delta_phi*delta_phi);
             if( dist_ij < 0.3 && hlt->at(j)->pt() > muPtGen[i] ){
                 muPtGen [i] = hlt->at(j)->pt();
                 muEtaGen[i] = hlt->at(j)->eta();
