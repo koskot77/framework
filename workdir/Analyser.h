@@ -10,7 +10,7 @@ class Analyser : public AppModule{
 private:
     int    run, evt, etr;
     int    numberOfGenMuons;
-    double muPtGen[2], muEtaGen[2], muPhiGen[2];
+    double muPtGen[4], muEtaGen[4], muPhiGen[4];
     int    numberOfEMTFTracks;
 
     // pT LUT fields
@@ -25,6 +25,8 @@ private:
     int    clct1[4],    clct2[4],    clct3[4], clct4[4];
     int    fr1[4],      fr2[4],      fr3[4],   fr4[4];
     int    rpc1[4],     rpc2[4],     rpc3[4],  rpc4[4];
+
+    double pt[4], ptXML[4], theta_glob[4], eta_glob[4], phi_glob[4];
 
     AppResult beginJob(AppEvent& event);
     AppResult beginRun(AppEvent& event){ return AppResult(); }

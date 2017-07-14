@@ -1,16 +1,16 @@
-#ifndef EMTFReaderSep2016_h
-#define EMTFReaderSep2016_h
+#ifndef HLTReader_h
+#define HLTReader_h
 
 #include "AppFramework/AppParameter.h"
 #include "AppFramework/AppModule.h"
 #include "AppFramework/AppResult.h"
 #include "AppFramework/AppEvent.h"
 
-#include "AnObjects/EMTFTrackSep2016.h"
+#include "AnObjects/HLTEvent.h"
 
-class EMTFReaderSep2016 : public AppModule {
+class HLTReader : public AppModule {
 private:
-        EMTFTrackCollection tracks;
+        HLTObjectCollection objects;
 
 protected:
         AppResult beginJob(AppEvent& event){ return AppResult(); }
@@ -20,10 +20,10 @@ protected:
         AppResult endJob(AppEvent& event){ return AppResult(); }
 
 public:
-	//virtual const MuonCollection& getMuons(void){ return muons; }
+	//virtual const METCollection& getMETs(void){ return muons; }
 
-        EMTFReaderSep2016(const char *nm, const char *descr):AppModule(nm,descr){}
-	virtual ~EMTFReaderSep2016(void){}
+        HLTReader(const char *nm, const char *descr):AppModule(nm,descr){}
+	virtual ~HLTReader(void){}
 };
 
 

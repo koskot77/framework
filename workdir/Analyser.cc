@@ -2,6 +2,7 @@ using namespace std;
 #include "Analyser.h"
 #include "AnObjects/Particle.h"
 #include "AnObjects/EMTFTrack.h"
+#include "AnObjects/HLTEvent.h"
 #include "PtLutVarCalc.cc"
 #include <fstream>
 namespace {
@@ -79,6 +80,12 @@ AppResult Analyser::event(AppEvent& event){
     bzero(dPhiS3,   sizeof(dPhiS3));
     bzero(dPhiS3A,  sizeof(dPhiS3A));
 
+    bzero(theta_glob,  sizeof(theta_glob));
+    bzero(eta_glob,    sizeof(eta_glob));
+    bzero(phi_glob,    sizeof(phi_glob));
+    bzero(pt,          sizeof(pt));
+    bzero(ptXML,       sizeof(ptXML));
+
     const char *path = 0;
 
     if( event.get("runNumber",       run) ) return AppResult(AppResult::STOP|AppResult::ERROR,"No runNumber found");
@@ -91,67 +98,22 @@ AppResult Analyser::event(AppEvent& event){
     event.put("entry", (const int*)&etr);
 
     cout<<"Event #"<<evt<<endl;
-/*
-    const ParticleCollection *genParticles;
-    if( event.get("genParticles",genParticles) || !genParticles ) return AppResult(AppResult::STOP|AppResult::ERROR,"No Gen Info found");
-    cout<<" #genParticles = "<<genParticles->size()<<std::endl;
 
-    numberOfGenMuons = genParticles->size();
-    for(int j=0; j<numberOfGenMuons && j<2; j++){
-        cout<<" pTGenmuon["<<j<<"] = "<<genParticles->at(j)->pt()<<" eta="<<genParticles->at(j)->eta()<<" phi="<<genParticles->at(j)->phi()<<std::endl;
-        muPtGen [j] = genParticles->at(j)->pt();
-        muEtaGen[j] = genParticles->at(j)->eta();
-        muPhiGen[j] = genParticles->at(j)->phi();
-    }
 
-    event.put("numberOfGenMuons", (const int*)&numberOfGenMuons);
-    event.put("muPtGen",  (const double*)muPtGen);
-    event.put("muEtaGen", (const double*)muEtaGen);
-    event.put("muPhiGen", (const double*)muPhiGen);
-*/
     const EMTFTrackCollection *tracks;
     if( event.get("emtfTracks",tracks) || !tracks ) return AppResult(AppResult::STOP|AppResult::ERROR,"No EMTF tracks found");
     cout<<" #tracks = "<<tracks->size()<<std::endl;
 
     numberOfEMTFTracks = tracks->size();
+
     for(int j=0; j<numberOfEMTFTracks && j<4; j++){
-/*
-        mode[j]     = tracks->at(j)->Mode();
-        theta[j]    = tracks->at(j)->Theta_fp();
-        dPhi12[j]   = tracks->at(j)->PtLUT().delta_ph[0];
-        dPhi13[j]   = tracks->at(j)->PtLUT().delta_ph[1];
-        dPhi14[j]   = tracks->at(j)->PtLUT().delta_ph[2];
-        dPhi23[j]   = tracks->at(j)->PtLUT().delta_ph[3];
-        dPhi24[j]   = tracks->at(j)->PtLUT().delta_ph[4];
-        dPhi34[j]   = tracks->at(j)->PtLUT().delta_ph[5];
-        dTheta12[j] = tracks->at(j)->PtLUT().delta_th[0];
-        dTheta13[j] = tracks->at(j)->PtLUT().delta_th[1];
-        dTheta14[j] = tracks->at(j)->PtLUT().delta_th[2];
-        dTheta23[j] = tracks->at(j)->PtLUT().delta_th[3];
-        dTheta24[j] = tracks->at(j)->PtLUT().delta_th[4];
-        dTheta34[j] = tracks->at(j)->PtLUT().delta_th[5];
-        sPhi12[j]   = tracks->at(j)->PtLUT().sign_ph[0];
-        sPhi13[j]   = tracks->at(j)->PtLUT().sign_ph[1];
-        sPhi14[j]   = tracks->at(j)->PtLUT().sign_ph[2];
-        sPhi23[j]   = tracks->at(j)->PtLUT().sign_ph[3];
-        sPhi24[j]   = tracks->at(j)->PtLUT().sign_ph[4];
-        sPhi34[j]   = tracks->at(j)->PtLUT().sign_ph[5];
-        sTheta12[j] = tracks->at(j)->PtLUT().sign_th[0];
-        sTheta13[j] = tracks->at(j)->PtLUT().sign_th[1];
-        sTheta14[j] = tracks->at(j)->PtLUT().sign_th[2];
-        sTheta23[j] = tracks->at(j)->PtLUT().sign_th[3];
-        sTheta24[j] = tracks->at(j)->PtLUT().sign_th[4];
-        sTheta34[j] = tracks->at(j)->PtLUT().sing_th[5];
-        clct1[j]    = tracks->at(j)->PtLUT().cpattern[0];
-        clct2[j]    = tracks->at(j)->PtLUT().cpattern[1];
-        clct3[j]    = tracks->at(j)->PtLUT().cpattern[2];
-        clct4[j]    = tracks->at(j)->PtLUT().cpattern[3];
-        fr1[j]      = tracks->at(j)->PtLUT().fr[0];
-        fr2[j]      = tracks->at(j)->PtLUT().fr[1];
-        fr3[j]      = tracks->at(j)->PtLUT().fr[2];
-        fr4[j]      = tracks->at(j)->PtLUT().fr[3];
-*/
-        // https://github.com/cms-l1t-offline/cmssw/blob/l1t-integration-CMSSW_9_2_5_patch2/L1Trigger/L1TMuonEndCap/src/PtAssignmentEngine2017.cc#L424-L505
+  // https://github.com/cms-l1t-offline/cmssw/blob/l1t-integration-CMSSW_9_2_5_patch2/L1Trigger/L1TMuonEndCap/src/PtAssignmentEngine2017.cc#L424-L505
+
+        pt        [j] = tracks->at(j)->Pt();
+        ptXML     [j] = tracks->at(j)->Pt_XML();
+        theta_glob[j] = tracks->at(j)->Theta();
+        eta_glob  [j] = tracks->at(j)->Eta();
+        phi_glob  [j] = tracks->at(j)->Phi_glob();
 
   int endcap = tracks->at(j)->Endcap();
   int mode   = tracks->at(j)->Mode();
@@ -226,16 +188,16 @@ AppResult Analyser::event(AppEvent& event){
   
   CalcDeltaThetas( dTh_12, dTh_13, dTh_14, dTh_23, dTh_24, dTh_34,
 		   th1, th2, th3, th4, mode, true );
-  
+
   FR_1 = (st1 ? data.fr[0] : -99);
   FR_2 = (st2 ? data.fr[1] : -99);
   FR_3 = (st3 ? data.fr[2] : -99);
   FR_4 = (st4 ? data.fr[3] : -99);
-  
+
   CalcBends( bend_1, bend_2, bend_3, bend_4,
 	     pat1, pat2, pat3, pat4,
 	     dPhiSign, endcap, mode, true );
-  
+
   RPC_1 = (st1 ? (pat1 == 0) : -99);
   RPC_2 = (st2 ? (pat2 == 0) : -99);
   RPC_3 = (st3 ? (pat3 == 0) : -99);
@@ -313,6 +275,48 @@ AppResult Analyser::event(AppEvent& event){
     event.put("dPhiS4A[2]", (const int*)dPhiS4A);
     event.put("dPhiS3[2]",  (const int*)dPhiS3);
     event.put("dPhiS3A[2]", (const int*)dPhiS3A);
+    event.put("theta_glob[2]", (const double*)theta_glob);
+    event.put("eta_glob[2]",   (const double*)eta_glob);
+    event.put("phi_glob[2]",   (const double*)phi_glob);
+    event.put("pt[2]",         (const double*)pt);
+    event.put("ptXML[2]",      (const double*)ptXML);
+
+//    const ParticleCollection *genParticles;
+//    if( event.get("genParticles",genParticles) || !genParticles ) return AppResult(AppResult::STOP|AppResult::ERROR,"No Gen Info found");
+//    numberOfGenMuons = genParticles->size();
+//    for(int j=0; j<numberOfGenMuons && j<2; j++){
+//        cout<<" pTGenmuon["<<j<<"] = "<<genParticles->at(j)->pt()<<" eta="<<genParticles->at(j)->eta()<<" phi="<<genParticles->at(j)->phi()<<std::endl;
+//        muPtGen [j] = genParticles->at(j)->pt();
+//        muEtaGen[j] = genParticles->at(j)->eta();
+//        muPhiGen[j] = genParticles->at(j)->phi();
+//    }
+
+    // matching with HLT objects
+    const HLTObjectCollection *hlt;
+    if( event.get("HLTObjects",hlt) || !hlt ) return AppResult(AppResult::STOP|AppResult::ERROR,"No HLT Info found");
+    cout<<" #HLTObjects = "<<hlt->size()<<std::endl;
+
+    numberOfGenMuons = 0;
+    for(unsigned int j=0; j<hlt->size(); j++){
+        cout<<" HLT object: type["<<j<<"] = "<<hlt->at(j)->type()<<" pT="<<hlt->at(j)->pt()<<" eta="<<hlt->at(j)->eta()<<" phi="<<hlt->at(j)->phi()<<std::endl;
+
+        for(int i=0; i<numberOfEMTFTracks && i<4; i++){
+            double dist_ij = sqrt((eta_glob[i]-hlt->at(j)->eta())*(eta_glob[i]-hlt->at(j)->eta()) +
+                                  (phi_glob[i]-hlt->at(j)->phi())*(phi_glob[i]-hlt->at(j)->phi())
+                             );
+            if( dist_ij < 0.3 && hlt->at(j)->pt() > muPtGen[i] ){
+                muPtGen [i] = hlt->at(j)->pt();
+                muEtaGen[i] = hlt->at(j)->eta();
+                muPhiGen[i] = hlt->at(j)->phi();
+           }
+
+        }
+    }
+
+    event.put("numberOfGenMuons", (const int*)&numberOfGenMuons);
+    event.put("muPtGen[2]",  (const double*)muPtGen);
+    event.put("muEtaGen[2]", (const double*)muEtaGen);
+    event.put("muPhiGen[2]", (const double*)muPhiGen);
 
     return AppResult();
 }
