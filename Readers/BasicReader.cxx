@@ -17,7 +17,7 @@ AppResult BasicReader::beginRun(AppEvent& event) {
 
 //    TBranch *inputRho = Events->GetBranch("double_fixedGridRhoFastjetAll__RECO.");
 //    if( !inputRho ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'double_fixedGridRhoFastjetAll__RECO.' branch found");
-    TBranch *inputRho = Events->GetBranch("double_fixedGridRhoFastjetAll__HLT.");
+/*    TBranch *inputRho = Events->GetBranch("double_fixedGridRhoFastjetAll__HLT.");
     if( !inputRho ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'double_fixedGridRhoFastjetAll__HLT.' branch found");
     inputRho->SetAddress(&__rho);
 
@@ -26,7 +26,7 @@ AppResult BasicReader::beginRun(AppEvent& event) {
     TBranch *inputVtx = Events->GetBranch("recoVertexs_offlinePrimaryVertices__HLT.");
     if( !inputVtx ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'recoVertexs_offlinePrimaryVertices__HLT.' branch found");
     inputVtx->SetAddress(&__vertices);
-
+*/
     TBranch *inputAux = Events->GetBranch("EventAuxiliary");
     if( !inputAux ) return AppResult(AppResult::STOP|AppResult::ERROR,"No 'EventAuxiliary' branch found");
     inputAux->SetAddress(&__eventAux);
@@ -37,7 +37,7 @@ AppResult BasicReader::beginRun(AppEvent& event) {
 AppResult BasicReader::event(AppEvent& event) {
 
     bool foundVertex = false;
-    if( __vertices->isPresent() )
+/*    if( __vertices->isPresent() )
       for(std::vector<reco::Vertex>::const_iterator vtx = __vertices->product()->begin(); vtx != __vertices->product()->end(); vtx++){
         // looks for the first good vertex
         if( vtx->ndof() > 4 && fabs(vtx->z()) <= 24 && fabs(vtx->position().rho()) <= 2 ){
@@ -55,7 +55,7 @@ AppResult BasicReader::event(AppEvent& event) {
     event.put("vy",vy);
     event.put("vz",vz);
     event.put("rho_event", (__rho->isPresent() ? *(__rho->product()) : -1) );
-
+*/
     eventNumber = __eventAux->id().event();
     runNumber   = __eventAux->id().run();
 
